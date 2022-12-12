@@ -1,0 +1,622 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+    <style>
+    .dataTables_length label {
+        margin-top: 15px;
+        color: #000080;
+    }
+
+    .Button {
+        padding: 5px 10px;
+        margin: 5px;
+        background-color: white;
+        border: 1px solid #ccc;
+    }
+
+        .Button:hover {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: white;
+            border: 1px solid black;
+        }
+
+    .table-1 {
+        color: #00008b;
+        font-weight: bold;
+        float: left;
+    }
+
+        .table-1 tr {
+            float: left;
+        }
+
+    .dataTables_filter input {
+        padding: 5px 2px;
+        border: 1px solid #ccc;
+        width: 300px;
+    }
+
+    .dt-buttons {
+        float: left;
+    }
+
+    #my_table th {
+        background-color: White;
+        color: black;
+    }
+
+    #my_table tr td {
+        background-color: white !important;
+    }
+
+    span a {
+        background: #ffffff !important;
+    }
+
+    .dataTables_length label {
+        margin-top: 5px;
+        color: #000080;
+    }
+
+    .button, input, select, textarea {
+        padding: 5px;
+    }
+    .Blink {
+  animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+}
+@@keyframes blinker {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+    </style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                @*<h2 class="text-info" align="center">Welcome</h2>*@
+            </div>
+        </div>
+
+
+        @*<input type="text" values="@ViewBag.UserID" />*@
+        @*<p>@ViewBag.UserID</p>*@
+
+        @*<input type="text" values="@ViewBag.rolesCookie" />
+            <input type="text" values="@ViewBag.appsidCookie" />*@
+
+        @*<div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header ">
+                            <h3 class="card-title">Requisition List</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                            </div>
+
+                            <div class="table">
+                                <table id="my_table" class="cell-border">
+                                    <thead>
+                                        <tr>
+                                            <th class="center">Branch</th>
+                                            <th class="center">Date</th>
+                                            <th class="center">Type</th>
+                                            <th class="center">Status</th>
+                                            <th class="center">Requested</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                @section scripts{
+                                    <script>
+                                        $(document).ready(function () {
+                                            $("#my_table").DataTable({
+                                                //"rowReorder ": { selector: 'td:nth-child(2)' },
+                                                //"pagingType": "full_numbers",
+                                                //"responsive": true,
+                                                "processing": true,
+                                                "language": {
+                                                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+                                                },
+                                                "ajax": {
+                                                    "url": "/Home/GetRequestionList",
+                                                    "type": "GET",
+                                                    "datatype": "json"
+                                                },
+                                                "columns": [
+                                                    { "data": "BranchName" },
+                                                    {
+                                                        "data": "Requisition_Date", "type": "date",
+                                                        "render": function (value) {
+                                                            if (value === null) return "";
+                                                            var pattern = /Date\(([^)]+)\)/;
+                                                            var results = pattern.exec(value);
+                                                            var dt = new Date(parseFloat(results[1]));
+                                                            return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                                                        }
+                                                    },
+                                                    { "data": "Requsition_Type" },
+                                                    { "data": "Status" },
+                                                    { "data": "Name" }
+                                                ],
+                                                "dom": "f",
+                                            });
+                                        });
+                                    </script>
+                                }
+                            </div>
+
+
+                        </div>
+                        <div class="card-footer">
+
+                        </div>
+                    </div>
+                </div>
+            <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Service List</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table">
+                                <table id="my_table2" class="table table-bordered table-sm table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="center">Branch</th>
+                                            <th class="center">Requisition Date</th>
+                                            <th class="center">Type</th>
+                                            <th class="center">CMDC Authorized</th>
+                                            <th class="center">Procurement Status</th>
+                                            <th class="center">Requested by</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                @section scripts2{
+                                    <script>
+                                        $(document).ready(function () {
+                                            $("#my_table2").DataTable({
+                                                //"rowReorder": { selector: 'td:nth-child(2)' },
+                                                "responsive": true,
+                                                "processing": true,
+                                                "language": {
+                                                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+                                                },
+                                                "pageLength": 3,
+                                                "dom": "f",
+                                            });
+                                        });
+
+                                    </script>
+                                }
+                            </div>
+
+
+                        </div>
+                        <div class="card-footer">
+
+                        </div>
+                    </div>
+                </div>*@
+    </div>
+    @*<div class="row">
+            <div class="col-md-6">
+                <div id="chartContainer" style="padding: 0px 0px 0px 0px; margin: auto; display: block; height: 350px;"></div>
+            </div>
+        </div>*@
+</div>
+<section class="content">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-12 ">
+                <div class="info-box bg-info">
+                    <span class="info-box-icon"><i class="fa fa-users" style=" color: white;"></i></span>
+                    <div class="info-box-content">
+                        <span style="color: white;" class="info-box-text">Own Submitted</span>
+                        <h2 style="color: white;"><span>@ViewBag.OwnSubmited</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-success">
+                    <span class="info-box-icon"><i class="fa fa-check-circle" style="color: white;"></i></span>
+                    <div class="info-box-content">
+                        <span style="color: white;" class="info-box-text">Pending</span>
+                        <h2 style=" color:white;"><span>@ViewBag.Pending</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-warning">
+                    <span class="info-box-icon"><i class="fa fa-paper-plane" style="color: white;"></i></span>
+                    <div class="info-box-content">
+                        <span style="color: black;" class="info-box-text">Approved</span>
+                        <h2 style=" color:black;"><span>@ViewBag.Approval </span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box bg-danger">
+                    <span class="info-box-icon"><i class="fa fa-window-close" style="color: white;"></i></span>
+                    <div class="info-box-content">
+                        <span style="color: white;" class="info-box-text">Canceled</span>
+                        <h2 style=" color:white;"><span>@ViewBag.Approval </span></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            @{
+                if (ViewBag.UserExist != null)
+                {
+                    <div class="col-md-12 pull-right">
+                        <div class=" col-md-4 alert alert-success" id="success-alert">
+                            <button type="button" class="close" data-dismiss="alert">x</button>
+                            <p>@ViewBag.UserExist</p>
+                        </div>
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+
+                            $("#success-alert").fadeTo(10000, 0).slideUp(10000, function () {
+                                $("#success-alert").slideUp(10000);
+                            });
+                        });
+                    </script>
+                }
+            }
+        </div>
+    </div>
+    @if (ViewBag.TotalApproval > 0)
+    {
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card ">
+                        <div class="card-header bg-primary">
+                            <h3 class="card-title">Requested Requisition Overview</h3>
+                        </div>
+                        <div class="card-body">
+                            <br />
+                            <div class="row">
+                                <div class="col-md-4 col-sm-6 col-12">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-success"><i class="far fa-flag"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Total Request</span>
+                                            <span class="info-box-number">@ViewBag.TotalRequistion</span>
+                                        </div>
+                                        <!-- /.info-box-content -->
+                                    </div>
+                                    <!-- /.info-box -->
+                                </div>
+                                <div class="col-md-4 col-sm-6 col-12">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-warning"><i class="far fa-copy"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Approved By You</span>
+                                            <span class="info-box-number">
+                                                @ViewBag.ApprovedByYou
+                                                @if (ViewBag.ApprovedByYou != 0)
+                                                {
+                                                    <a class="float-right" href="~/Requestion/RequestionApprovedList">View <i class="fas fa-arrow-circle-right Blink"></i></a>
+                                                }
+                                            </span>
+
+                                        </div>
+                                        <!-- /.info-box-content -->
+                                    </div>
+                                    <!-- /.info-box -->
+                                </div>
+                                <div class="col-md-4 col-sm-6 col-12">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-danger"><i class="far fa-star"></i></span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Waiting For Approval</span>
+                                            <span class="info-box-number">
+                                                @ViewBag.WaitingForApproval
+                                                @if (ViewBag.WaitingForApproval != 0)
+                                                {
+                                                    <a class="float-right" href="~/Requestion/RequestionApproval">View <i class="fas fa-arrow-circle-right Blink"></i></a>
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <!-- /.info-box-content -->
+                                    </div>
+                                    <!-- /.info-box -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</section>
+
+
+
+<script type="text/javascript">
+
+</script>
+
+
+@*<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>*@
+
+@*<script>
+        window.onload = function () {
+            var chart = new CanvasJS.Chart("chartContainer", {
+                title: {
+                    text: "Service, Purchage, Delivery, Requisition Month Wise Summery"
+                },
+                axisX: {
+                    valueFormatString: "MMM YYYY"
+                },
+                //axisY2: {
+                //    title: "Median List Price",
+                //    prefix: "0",
+                //    suffix: "0.0"
+                //},
+                toolTip: {
+                    shared: true
+                },
+                legend: {
+                    cursor: "pointer",
+                    verticalAlign: "top",
+                    horizontalAlign: "center",
+                    dockInsidePlotArea: true,
+                    itemclick: toogleDataSeries
+                },
+                data: [{
+                    type: "line",
+                    axisYType: "secondary",
+                    name: "Service",
+                    showInLegend: true,
+                    markerSize: 0,
+                    yValueFormatString: "$#,###k",
+                    dataPoints: [
+                        { x: new Date(2014, 00, 01), y: 850 },
+                        { x: new Date(2014, 01, 01), y: 889 },
+                        { x: new Date(2014, 02, 01), y: 890 },
+                        { x: new Date(2014, 03, 01), y: 899 },
+                        { x: new Date(2014, 04, 01), y: 903 },
+                        { x: new Date(2014, 05, 01), y: 925 },
+                        { x: new Date(2014, 06, 01), y: 899 },
+                        { x: new Date(2014, 07, 01), y: 875 },
+                        { x: new Date(2014, 08, 01), y: 927 },
+                        { x: new Date(2014, 09, 01), y: 949 },
+                        { x: new Date(2014, 10, 01), y: 946 },
+                        { x: new Date(2014, 11, 01), y: 927 },
+                        { x: new Date(2015, 00, 01), y: 950 },
+                        { x: new Date(2015, 01, 01), y: 998 },
+                        { x: new Date(2015, 02, 01), y: 998 },
+                        { x: new Date(2015, 03, 01), y: 1050 },
+                        { x: new Date(2015, 04, 01), y: 1050 },
+                        { x: new Date(2015, 05, 01), y: 999 },
+                        { x: new Date(2015, 06, 01), y: 998 },
+                        { x: new Date(2015, 07, 01), y: 998 },
+                        { x: new Date(2015, 08, 01), y: 1050 },
+                        { x: new Date(2015, 09, 01), y: 1070 },
+                        { x: new Date(2015, 10, 01), y: 1050 },
+                        { x: new Date(2015, 11, 01), y: 1050 },
+                        { x: new Date(2016, 00, 01), y: 995 },
+                        { x: new Date(2016, 01, 01), y: 1090 },
+                        { x: new Date(2016, 02, 01), y: 1100 },
+                        { x: new Date(2016, 03, 01), y: 1150 },
+                        { x: new Date(2016, 04, 01), y: 1150 },
+                        { x: new Date(2016, 05, 01), y: 1150 },
+                        { x: new Date(2016, 06, 01), y: 1100 },
+                        { x: new Date(2016, 07, 01), y: 1100 },
+                        { x: new Date(2016, 08, 01), y: 1150 },
+                        { x: new Date(2016, 09, 01), y: 1170 },
+                        { x: new Date(2016, 10, 01), y: 1150 },
+                        { x: new Date(2016, 11, 01), y: 1150 },
+                        { x: new Date(2017, 00, 01), y: 1150 },
+                        { x: new Date(2017, 01, 01), y: 1200 },
+                        { x: new Date(2017, 02, 01), y: 1200 },
+                        { x: new Date(2017, 03, 01), y: 1200 },
+                        { x: new Date(2017, 04, 01), y: 1190 },
+                        { x: new Date(2017, 05, 01), y: 1170 }
+                    ]
+                },
+                {
+                    type: "line",
+                    axisYType: "secondary",
+                    name: "Requisition",
+                    showInLegend: true,
+                    markerSize: 0,
+                    yValueFormatString: "$#,###k",
+                    dataPoints: [
+                        { x: new Date(2014, 00, 01), y: 1200 },
+                        { x: new Date(2014, 01, 01), y: 1200 },
+                        { x: new Date(2014, 02, 01), y: 1190 },
+                        { x: new Date(2014, 03, 01), y: 1180 },
+                        { x: new Date(2014, 04, 01), y: 1250 },
+                        { x: new Date(2014, 05, 01), y: 1270 },
+                        { x: new Date(2014, 06, 01), y: 1300 },
+                        { x: new Date(2014, 07, 01), y: 1300 },
+                        { x: new Date(2014, 08, 01), y: 1358 },
+                        { x: new Date(2014, 09, 01), y: 1410 },
+                        { x: new Date(2014, 10, 01), y: 1480 },
+                        { x: new Date(2014, 11, 01), y: 1500 },
+                        { x: new Date(2015, 00, 01), y: 1500 },
+                        { x: new Date(2015, 01, 01), y: 1550 },
+                        { x: new Date(2015, 02, 01), y: 1550 },
+                        { x: new Date(2015, 03, 01), y: 1590 },
+                        { x: new Date(2015, 04, 01), y: 1600 },
+                        { x: new Date(2015, 05, 01), y: 1590 },
+                        { x: new Date(2015, 06, 01), y: 1590 },
+                        { x: new Date(2015, 07, 01), y: 1620 },
+                        { x: new Date(2015, 08, 01), y: 1670 },
+                        { x: new Date(2015, 09, 01), y: 1720 },
+                        { x: new Date(2015, 10, 01), y: 1750 },
+                        { x: new Date(2015, 11, 01), y: 1820 },
+                        { x: new Date(2016, 00, 01), y: 2000 },
+                        { x: new Date(2016, 01, 01), y: 1920 },
+                        { x: new Date(2016, 02, 01), y: 1750 },
+                        { x: new Date(2016, 03, 01), y: 1850 },
+                        { x: new Date(2016, 04, 01), y: 1750 },
+                        { x: new Date(2016, 05, 01), y: 1730 },
+                        { x: new Date(2016, 06, 01), y: 1700 },
+                        { x: new Date(2016, 07, 01), y: 1730 },
+                        { x: new Date(2016, 08, 01), y: 1720 },
+                        { x: new Date(2016, 09, 01), y: 1740 },
+                        { x: new Date(2016, 10, 01), y: 1750 },
+                        { x: new Date(2016, 11, 01), y: 1750 },
+                        { x: new Date(2017, 00, 01), y: 1750 },
+                        { x: new Date(2017, 01, 01), y: 1770 },
+                        { x: new Date(2017, 02, 01), y: 1750 },
+                        { x: new Date(2017, 03, 01), y: 1750 },
+                        { x: new Date(2017, 04, 01), y: 1730 },
+                        { x: new Date(2017, 05, 01), y: 1730 }
+                    ]
+                },
+                {
+                    type: "line",
+                    axisYType: "secondary",
+                    name: "Delivery",
+                    showInLegend: true,
+                    markerSize: 0,
+                    yValueFormatString: "$#,###k",
+                    dataPoints: [
+                        { x: new Date(2014, 00, 01), y: 409 },
+                        { x: new Date(2014, 01, 01), y: 415 },
+                        { x: new Date(2014, 02, 01), y: 419 },
+                        { x: new Date(2014, 03, 01), y: 429 },
+                        { x: new Date(2014, 04, 01), y: 429 },
+                        { x: new Date(2014, 05, 01), y: 450 },
+                        { x: new Date(2014, 06, 01), y: 450 },
+                        { x: new Date(2014, 07, 01), y: 445 },
+                        { x: new Date(2014, 08, 01), y: 450 },
+                        { x: new Date(2014, 09, 01), y: 450 },
+                        { x: new Date(2014, 10, 01), y: 440 },
+                        { x: new Date(2014, 11, 01), y: 429 },
+                        { x: new Date(2015, 00, 01), y: 435 },
+                        { x: new Date(2015, 01, 01), y: 450 },
+                        { x: new Date(2015, 02, 01), y: 475 },
+                        { x: new Date(2015, 03, 01), y: 475 },
+                        { x: new Date(2015, 04, 01), y: 475 },
+                        { x: new Date(2015, 05, 01), y: 489 },
+                        { x: new Date(2015, 06, 01), y: 495 },
+                        { x: new Date(2015, 07, 01), y: 495 },
+                        { x: new Date(2015, 08, 01), y: 500 },
+                        { x: new Date(2015, 09, 01), y: 508 },
+                        { x: new Date(2015, 10, 01), y: 520 },
+                        { x: new Date(2015, 11, 01), y: 525 },
+                        { x: new Date(2016, 00, 01), y: 525 },
+                        { x: new Date(2016, 01, 01), y: 529 },
+                        { x: new Date(2016, 02, 01), y: 549 },
+                        { x: new Date(2016, 03, 01), y: 550 },
+                        { x: new Date(2016, 04, 01), y: 568 },
+                        { x: new Date(2016, 05, 01), y: 575 },
+                        { x: new Date(2016, 06, 01), y: 579 },
+                        { x: new Date(2016, 07, 01), y: 575 },
+                        { x: new Date(2016, 08, 01), y: 585 },
+                        { x: new Date(2016, 09, 01), y: 589 },
+                        { x: new Date(2016, 10, 01), y: 595 },
+                        { x: new Date(2016, 11, 01), y: 595 },
+                        { x: new Date(2017, 00, 01), y: 595 },
+                        { x: new Date(2017, 01, 01), y: 600 },
+                        { x: new Date(2017, 02, 01), y: 624 },
+                        { x: new Date(2017, 03, 01), y: 635 },
+                        { x: new Date(2017, 04, 01), y: 650 },
+                        { x: new Date(2017, 05, 01), y: 675 }
+                    ]
+                },
+                {
+                    type: "line",
+                    axisYType: "secondary",
+                    name: "Purchage",
+                    showInLegend: true,
+                    markerSize: 0,
+                    yValueFormatString: "$#,###k",
+                    dataPoints: [
+                        { x: new Date(2014, 00, 01), y: 529 },
+                        { x: new Date(2014, 01, 01), y: 540 },
+                        { x: new Date(2014, 02, 01), y: 539 },
+                        { x: new Date(2014, 03, 01), y: 565 },
+                        { x: new Date(2014, 04, 01), y: 575 },
+                        { x: new Date(2014, 05, 01), y: 579 },
+                        { x: new Date(2014, 06, 01), y: 589 },
+                        { x: new Date(2014, 07, 01), y: 579 },
+                        { x: new Date(2014, 08, 01), y: 579 },
+                        { x: new Date(2014, 09, 01), y: 579 },
+                        { x: new Date(2014, 10, 01), y: 569 },
+                        { x: new Date(2014, 11, 01), y: 525 },
+                        { x: new Date(2015, 00, 01), y: 535 },
+                        { x: new Date(2015, 01, 01), y: 575 },
+                        { x: new Date(2015, 02, 01), y: 599 },
+                        { x: new Date(2015, 03, 01), y: 619 },
+                        { x: new Date(2015, 04, 01), y: 639 },
+                        { x: new Date(2015, 05, 01), y: 648 },
+                        { x: new Date(2015, 06, 01), y: 640 },
+                        { x: new Date(2015, 07, 01), y: 645 },
+                        { x: new Date(2015, 08, 01), y: 648 },
+                        { x: new Date(2015, 09, 01), y: 649 },
+                        { x: new Date(2015, 10, 01), y: 649 },
+                        { x: new Date(2015, 11, 01), y: 649 },
+                        { x: new Date(2016, 00, 01), y: 650 },
+                        { x: new Date(2016, 01, 01), y: 665 },
+                        { x: new Date(2016, 02, 01), y: 675 },
+                        { x: new Date(2016, 03, 01), y: 695 },
+                        { x: new Date(2016, 04, 01), y: 690 },
+                        { x: new Date(2016, 05, 01), y: 699 },
+                        { x: new Date(2016, 06, 01), y: 699 },
+                        { x: new Date(2016, 07, 01), y: 699 },
+                        { x: new Date(2016, 08, 01), y: 699 },
+                        { x: new Date(2016, 09, 01), y: 699 },
+                        { x: new Date(2016, 10, 01), y: 709 },
+                        { x: new Date(2016, 11, 01), y: 699 },
+                        { x: new Date(2017, 00, 01), y: 700 },
+                        { x: new Date(2017, 01, 01), y: 700 },
+                        { x: new Date(2017, 02, 01), y: 724 },
+                        { x: new Date(2017, 03, 01), y: 739 },
+                        { x: new Date(2017, 04, 01), y: 749 },
+                        { x: new Date(2017, 05, 01), y: 740 }
+                    ]
+                }]
+            });
+            chart.render();
+            function toogleDataSeries(e) {
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+                chart.render();
+            }
+        }
+    </script>*@
+
+@*<script type="text/javascript">
+        $(document).ready(function () {
+            var session = @Html.Raw(Json.Encode(@HttpContext.Current.Session["UserProfile"]));
+            console.log(session.Id);
+        });
+    </script>*@

@@ -1,0 +1,178 @@
+﻿@model SCS_Inventory.Models.UserInfo
+
+@{
+    ViewBag.Title = "Crete User";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+@*<h2>CreteUser</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>UserInfo</h4>
+            <hr />
+            @Html.ValidationSummary(true)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password)
+                    @Html.ValidationMessageFor(model => model.Password)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Gender, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Gender)
+                    @Html.ValidationMessageFor(model => model.Gender)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Activation_Date, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Activation_Date)
+                    @Html.ValidationMessageFor(model => model.Activation_Date)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Old_Password, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Old_Password)
+                    @Html.ValidationMessageFor(model => model.Old_Password)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>*@
+
+
+
+<div class="container cus" style="padding: 10px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+    @using (Html.BeginForm())
+    {
+        <div class="col-md-3">
+
+        </div>
+
+        <div class="col-md-6" style="padding: 10px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+            <div class="card-style">
+                <div class="card-style-header">
+                    <h4><b>User </b>Registration</h4>
+                </div>
+                <div class="card-style-body">
+
+                    <!-- /.login-logo -->
+                    <div class="login-box-body">
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            @*@if (ViewBag.Message != "")
+        {
+            <div class="text-danger">@ViewBag.Message</div>
+        }*@
+
+
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @Html.DropDownList("BranchCode", (IEnumerable<SelectListItem>)ViewBag.BranchName, "Select Branch", htmlAttributes: new { @class = "form-control" })
+
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.DepartmentName, "Select Department", htmlAttributes: new { @class = "form-control" })
+
+                                </div>
+                            </div>
+
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", @placeholder = "HR ID" } })
+                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
+                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email Address" } })
+                                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @placeholder = "Phone Number" } })
+                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @*@Html.EnumDropDownListFor(model => model.Genders, htmlAttributes: new { @class = "form-control" })*@
+                                    @Html.DropDownList("Gender", new SelectList(new List<SelectListItem> { new SelectListItem { Text = "Male", Value = "Male", Selected = true }, new SelectListItem { Text = "Female", Value = "Female" } }, "Value", "Text"), new { @class = "form-control" })
+                                    @*@Html.DropDownList(model => model.Gender, new SelectList(new List<SelectListItem> { new SelectListItem { Text = "Male", Value = "Male", Selected = true }, new SelectListItem { Text = "Female", Value = "Female" } }, "Value", "Text"), new { @class = "form-control" })*@
+                                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
+                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <div class="col-md-12">
+                                    @Html.DropDownList("Designation", (IEnumerable<SelectListItem>)ViewBag.Designation, "Select Designation", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-style-footer">
+
+                    <div class="form-group has-feedback">
+                        <div style="float: left;">
+                            @Html.ActionLink("Go Login", "Login") | @Html.ActionLink("Re Send Verification Mail", "Emailverify")
+                        </div>
+                        <div style="float: right;">
+                            <input type="submit" value="Create" class="btn btn-success" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+        </div>
+    }
+</div>

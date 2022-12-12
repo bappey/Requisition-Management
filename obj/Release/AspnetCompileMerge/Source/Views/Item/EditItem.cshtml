@@ -1,0 +1,98 @@
+﻿@model scs_Project.Models.ItemInfo
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Id)
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">Update Item</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="form-group row">
+            @*<label for="message-text" class="col-form-label">Category Name</label>*@
+            <label class="col-sm-4 col-form-label">Category Name</label>
+            <div class="col-sm-8">
+                @Html.DropDownList("CategoryInfoid", (IEnumerable<SelectListItem>)ViewBag.Category, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label for="message-text" class="col-form-label">Sub Category Name</label>*@
+            <label class="col-sm-4 col-form-label">Sub Category Name</label>
+            <div class="col-sm-8">
+                @Html.DropDownList("SubCategoryInfoid", (IEnumerable<SelectListItem>)ViewBag.SubCategory, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label for="message-text" class="col-form-label">Model Name</label>*@
+            <label class="col-sm-4 col-form-label">Model Name</label>
+            <div class="col-sm-8">
+                @Html.DropDownList("ModelInfoid", (IEnumerable<SelectListItem>)ViewBag.Model, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label for="message-text" class="col-form-label">Item Name</label>*@
+            <label class="col-sm-4 col-form-label">Item Name</label>
+            <div class="col-sm-8">
+                @*<input type="text" class="form-control col-md-10" value="@Model.ItemName" name="ItemName" id="ItemName" />*@
+                @Html.EditorFor(model => model.ItemName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ItemName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group row">
+            @*<label for="message-text" class="col-form-label">Opening Qty</label>*@
+            <label class="col-sm-4 col-form-label">Opening Qty</label>
+            <div class="col-sm-8">
+                @*<input type="text" class="form-control col-md-10" value="@Model.Opening_Qty" name="Opening_Qty" id="Opening_Qty" />*@
+                @Html.EditorFor(model => model.Opening_Qty, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Opening_Qty, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            @*<label for="message-text" class="col-form-label">Unit</label>*@
+            <label class="col-sm-4 col-form-label">Unit</label>
+            @*<input type="text" class="form-control col-md-10" value="@Model.Unit" name="Unit" id="Unit" />*@
+            <div class="col-sm-8">
+                @Html.EditorFor(model => model.Unit, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group row">
+            @*<label for="message-text" class="col-form-label">Barcode</label>*@
+            <label class="col-sm-4 col-form-label">Barcode</label>
+            <div class="col-sm-8">
+                @*<input type="text" class="form-control col-md-10" value="@Model.Barcode" name="Barcode" id="Barcode" />*@
+                @Html.EditorFor(model => model.Barcode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Barcode, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-info">Save</button>
+    </div>
+
+
+    @*<div class="form-horizontal">
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Update" class="btn btn-default" />
+                </div>
+            </div>
+        </div>*@
+}
+

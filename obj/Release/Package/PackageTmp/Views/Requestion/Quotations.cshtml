@@ -1,0 +1,391 @@
+﻿@model SCS_Inventory.Models.RequisitionDetails
+
+@{
+    ViewBag.Title = "Quotations";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+    //int masterId = @ViewBag.ID;
+}
+
+<style>
+    .table {
+        /*width: 18.5cm;
+        margin-left: 1.25cm;
+        border: 1px solid #ccc;*/
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .report td, .report th {
+        border-right: 1px solid #ccc;
+        border-bottom: inherit;
+        border-top: inherit;
+    }
+
+    .report > tbody > tr > td {
+        border-top: inherit;
+    }
+
+    .report tr {
+        border: inherit;
+    }
+
+    .report th {
+        border: 1px solid #ccc;
+        background-color: #ccc;
+        color: #000;
+    }
+
+    .companyInformation {
+        position: relative;
+        padding-top: 20px;
+    }
+
+        .companyInformation img {
+            position: absolute;
+            left: 50px;
+        }
+
+        .companyInformation p {
+            margin-bottom: 0px;
+        }
+
+        .companyInformation .invoiceNum {
+            position: absolute;
+            right: 100px;
+        }
+
+    .tblAmountInfo, .tblAmountInfo > tbody > tr > td {
+        border: inherit;
+        padding: 0px;
+    }
+
+        .tblAmountInfo > tbody > tr > td label {
+            font-weight: bold !important;
+        }
+
+    .d-none-p a {
+        color: #000;
+    }
+
+    .d-none-p .btn:hover a {
+        color: #fff;
+    }
+
+    table tr {
+        font-size: 12px;
+    }
+
+        table tr td, table tr th {
+            padding: 3px !important;
+        }
+
+    p {
+        margin-bottom: 0px !important;
+    }
+</style>
+<div class="container" style="padding: 10px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+    <page size="A4">
+        <div style="padding: 15px 0px;">
+            <table class="table table-borderless tblAmountInfo">
+                <tr>
+                    <td class="col-md-4">
+                        <img src="~/Picture/839448blob.png" class="avatar" alt="avatar" style="height: auto; width: 200px; margin-bottom: 20px;">
+                    </td>
+                    <td class="col-md-8">
+                        <div class="">
+                            <h3 style="padding: 0px!important; margin: 0px!important">
+                                Sundorbon Courier Service
+                            </h3>
+                            <div class="col-xs-12">
+                                <p>Address:XYZ</p>
+                                <p>Phone:01124578235</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" id="someName" value="@ViewBag.ID" />
+            @*<input type="hidden" class="masterId2" value="@ViewBag.ID" />*@
+            @*<table class="table tblAmountInfo">
+            <tbody>
+                <tr><td><br /></td></tr>
+                <tr>
+                    <td width="270px">
+                        <strong>
+                            <strong>458923 - </strong>    Abdul Halim<br />
+                        </strong>
+                        Test <br />
+                        test <br />
+                        <br />
+                        Address, Address<br />
+                    </td>
+                    <td style="width:150px">
+                        <div class="invoiceNum text-center" style="margin-bottom: 10px;">
+                            <p>
+                                Quortation No: 0147896325
+                            </p>
+                            <p class="barcode">
+                                123654
+                            </p>
+                            <code style="">
+                                123654
+                            </code>
+                        </div>
+                    </td>
+
+
+
+                    <td style="" width="">
+                        <table style="width:100%">
+                            <tr>
+                                <td class="text-left" style="width: 100px;"><strong>Date:</strong></td>
+                                <td class="text-right">
+                                    <script>document.write(new Date().toLocaleDateString());</script>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td class="text-left" style="width: 100px;"><strong>Prepeared by:</strong></td>
+                                <td class="text-right">Nadim</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr></tr>
+
+            </tbody>
+        </table>*@
+            <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                    From
+                    <address>
+                        <strong>Admin, Inc.</strong><br>
+                        795 Folsom Ave, Suite 600<br>
+                        San Francisco, CA 94107<br>
+                        Phone: (804) 123-5432<br>
+                        Email: info@almasaeedstudio.com
+                    </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                    To
+                    <address>
+                        <strong>John Doe</strong><br>
+                        795 Folsom Ave, Suite 600<br>
+                        San Francisco, CA 94107<br>
+                        Phone: (555) 539-1037<br>
+                        Email: john.doe@example.com
+                    </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col" style="text-decoration:underline;">
+                    <b>Invoice #007612</b><br>
+                    <br>
+                    <b>Order ID:</b>4F3S8J<br>
+                    <b>Payment Due:</b> 2/22/2014<br>
+                    <b>Account:</b>968-34567
+                </div>
+                <!-- /.col -->
+            </div>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>
+                        <label> Serial </label>
+                    </th>
+                    <th>
+                        <label> Product Name </label>
+                    </th>
+                    <th>
+                        <label> Description </label>
+                    </th>
+                    <th>
+                        <label> Quantity </label>
+                    </th>
+                </tr>
+                @{var i = 1; }
+                @foreach (var item in ViewBag.RequisitionDetail)
+                {
+                    <tr>
+                        <td>
+                            @(i++)
+                        </td>
+                        <td>
+                            @item.SP_List.ProductModel
+                        </td>
+                        <td>
+                            @item.R_Details.Description
+                        </td>
+                        <td>
+                            @item.R_Details.Qty
+                        </td>
+                    </tr>
+                }
+            </table>
+
+        </div>
+        <div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Name</th>
+                    <th>Signature</th>
+                    <th>Date</th>
+                </tr>
+                <tr>
+                    <td>Abdul hakim</td>
+                    <td>Abdul hakim </td>
+                    <td class="text-right">
+                        <script>document.write(new Date().toLocaleDateString());</script>
+                    </td>
+                </tr>
+
+                <tr><td style="margin-bottom:2cm;" colspan="5"><small>** This is a system generated invoice/bill, and it does not  required any seal or singnature.</small></td></tr>
+            </table>
+        </div>
+        <div>
+        </div>
+        @*<div class="d-none-p">*@
+        <div class="row no-print">
+            <div class="card-style-footer">
+                <div class="btn-group right">
+                    @*<button type="submit" class="btn btn-outline-primary button"> @Html.ActionLink("Back to List", "SalesInvoiceReport")</button>
+                        <button type="button" class="btn btn-sm btn-primary  button" data-toggle="modal" data-target="#mdlEmail">Email Quatation</button>*@
+                    <button type="button" onclick="print()" class="btn btn-outline-primary button button4"> Print </button>
+                </div>
+                <div class="btn-group left">
+                    <button type="submit" class="btn btn-outline-primary button"> @Html.ActionLink("Back to List", "SalesInvoiceReport")</button>
+                    <button type="button" class="btn btn-sm btn-primary button" data-toggle="modal" data-target="#mdlEmail">Email Quotation</button>
+                    @*<input type="button" class="btn btn-sm btn-primary button" value="Email Quotation" onclick="OpenCMDC_Authorozation(@ViewBag.ID)" />*@
+                </div>
+                <div class="clearfix">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bd-example-modal-lg" id="mdlEmail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <iv class="modal-content">
+                    <div class="modal-header bg-info">
+                        <h3 class="modal-title" id="exampleModalLabel">Email Requisition</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    @*<div class="card-header bg-info">
+            <h3 class="card-title">Requisition List</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>*@
+                    @*<form action="SendEmail" method="post">
+        </form>*@
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <!-- /.col -->
+                            <div class="select2-cyan">
+                                <div class="form-group row">
+
+                                    <label class="col-sm-2 col-form-label">Vendor Email</label>
+                                    <div class="col-sm-10">
+                                        <select class="select2 emails" multiple="multiple" data-placeholder="Select Vendor" data-dropdown-css-class="select2-cyan" style="width: 100%;">
+                                            @if (ViewBag.VendorEmail != null)
+                                            {
+                                                foreach (var item in ViewBag.VendorEmail)
+                                                {
+                                                    <option value="@item.Text">@item.Value</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                @*</div>*@
+                                <!-- /.form-group -->
+                            </div>
+                            <!-- /.col -->
+                            <!-- /.row -->
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 col-form-label">Subject</label>
+                            @*<label for="message-text" class="col-form-label">Subject</label>*@
+                            <div class="col-sm-12">
+                                <input type="text" id="Subject" class="form-control" name="Subject" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 col-form-label">Message</label>
+                            @*<label for="message-text" class="col-form-label">Message</label>*@
+                            <div class="col-sm-12">
+                                <textarea class="form-control" id="Body" name="Body"></textarea>
+                            </div>
+                        </div>
+                        <input style="visibility: hidden" type="text" class="form-control" name="masterId" value="@ViewBag.ID" />
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-info sendEmail">Send</button>
+                        </div>
+                    </div>
+</div>
+        </div>
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".sendEmail").click(function () {
+            var emails = [];
+            $.each($(".emails option:selected"), function () {
+                emails.push($(this).val());
+            });
+            var subject = $('#Subject').val();
+            if (subject.length < 1) {
+                alert("Subject Required");
+                return;
+            }
+            var body = $("#Body").val();
+            if (body.length < 1) {
+                alert("Message Required");
+                return;
+            }
+            var value = $("#someName").val();
+            //var x = document.getElementsByClassName("masterId");
+
+            var obj = { subject: subject, body: body, email: emails, masterId: value };
+
+            //console.log(obj);
+            $.ajax({
+                url: "../Requestion/SendEmail",
+                traditional: true,
+                data: obj,
+                type: 'get',
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (response) {
+                    console.log("error");
+                    console.log(response);
+                }
+            });
+
+
+
+
+        });
+    });
+</script>
+
+<script type="text/jscript">
+    function OpenEditDepartment(id) {
+        $.ajax({
+            url: "../Department/EditDepartment/" + id,
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#editDepartment').modal('toggle');
+            }
+        });
+    }
+</script>

@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "Permission";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="container">
+            <table id="table_id" class="cell-border" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>HR ID</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Branch</th>
+                        <th>Create Date</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.UserList)
+                    {
+                        <tr>
+                            <td>@item.HRId</td>
+                            <td>@item.Name</td>
+                            <td>@item.Department</td>
+                            <td>@item.Branch</td>
+                            <td>@item.Create_Date</td>
+                            <td>@item.Role</td>
+                            <td><a href="javascript:void(0)" onclick="OpenEditDepartment(@item.Id)" class="mr-2"><i title="edit" class="fa fa-pencil-alt  text-secondary"></i></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editDepartment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="editDiv">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/jscript">
+    function OpenEditDepartment(Id) {
+            $.ajax({
+                url: "../Setings/EditPermission/" + Id,
+                success: function (result) {
+                    $('#editDiv').html(result);
+                    $('#editDepartment').modal('toggle');
+                }
+            });
+        }
+</script>
+
+<script>
+        $(document).ready(function () {
+            var table = $('#table_id').DataTable({
+                rowReorder: {
+                    selector: 'td:nth-child(2)'
+                },
+                responsive: true
+            });
+        });
+
+</script>
+

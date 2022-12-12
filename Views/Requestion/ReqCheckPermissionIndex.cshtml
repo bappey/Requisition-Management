@@ -1,0 +1,175 @@
+﻿
+@{
+    ViewBag.Title = "Requestion Check Permission";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Requestion Check Permission</h2>
+        </div>
+        <div class="card-body">
+            <div class="panel-body">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">User Name</label>
+                    <div class="col-md-3">
+                        @Html.DropDownList("UserName", (IEnumerable<SelectListItem>)ViewBag.UserList, " --Select User-- ", new { @class = "form-control extra-class UserName", @Id= "UserName" })
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover ListTable">
+                    <tr>
+                        <th>CheckID</th>
+                        <th>Check Option Name</th>
+                        <th></th>
+                    </tr>
+                    <tbody>
+
+                    </tbody>
+                    @*@foreach (var item in ViewBag.ReqCheckList)
+                    {
+                        <tr>
+                            <td style="display:none;">@item.CheckId</td>
+                            <td>@item.CheckName</td>
+                            <td><input class="Row_Status" type="checkbox" onclick="checkFluency()" /></td>
+                        </tr>
+                    }*@
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+</div>
+@*<div class="container">
+    <div class="card">
+        <div class="card-header">
+        </div>
+        <div class="card-body">
+            <div class="guide-section">
+                <table id="table_id" class="cell-border" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Check Name</th>
+                            <th>Authorized User Name</th>
+                            <th>Authorize Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.ReqCheckPermissionList)
+                        {
+                            <tr>
+                                <td>@item.Req_Check_P.UserName</td>
+                                <td>@item.Req_Check_L.CheckName</td>
+                                <td>@item.U_info.AuthorizedUserName</td>
+                                <td>@item.Req_Check_P.AuthorizeDate</td>
+                            </tr>
+                        }
+                    <tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+</div>*@
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#ListTable').on('change', '.Row_Status:checked', function (e) {
+        //    alert();
+        //});
+
+        //checkboxes = document.getElementsByTagName("input");
+        //var userId = $('#UserName option:selected').html()
+
+        ////alert($('select[name="platform"] :selected').attr('class')); 
+
+        //for (var i = 0; i < checkboxes.length; i++) {
+        //    var checkbox = checkboxes[i];
+        //    checkbox.onclick = function () {
+        //        var currentRow = this.parentNode.parentNode;
+        //        var secondColumn = currentRow.getElementsByTagName("td")[0];                
+        //        alert("My text is: " + secondColumn.textContent + " " + userId);
+        //    };
+        //} 
+
+        $('#UserName').change(function () {
+            //var selectedText = $(this).find('option:selected').text();
+            //$('.ListTable td').empty();
+            $(".ListTable td").parent().remove();
+            $.ajax({
+                type: "GET",
+                url: "../Setings/GetReqCheckList",
+                data: { UserID: $(this).find('option:selected').val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {                    
+                    $.each(r, function (i, item) {
+                        var $tr = $('<tr/>');
+                        $tr.append($('<td/>').html(item.CheckId));
+                        $tr.append($('<td/>').html(item.CheckName));  
+                        if (item.Status == 1) {
+                            $tr.append($('<input type="checkbox" class="form-control " onclick="checkFluency('+ item.CheckId +')" checked /><td/>'));
+                        }
+                        else {
+                            $tr.append($('<input type="checkbox" onclick="checkFluency('+ item.CheckId +')" class="Row_Status form-control"/><td/>'));
+                        }                        
+                        $('.ListTable tr:last').after($tr);
+                    });
+                }
+            });
+        });
+    });
+    function checkFluency(CheckId) {
+        checkboxes = document.getElementsByTagName("input");
+        var ddlViewBy = document.getElementById('UserName');
+        var value = ddlViewBy.options[ddlViewBy.selectedIndex].text;
+        //var getValue = document.getElementById('UserName').text();
+        //var userId = $('.UserName :selected').text();
+        //var userId1 = document.getElementByClassName('UserName').selectedOptions[0].Text;
+        //alert($('select[name="platform"] :selected').attr('class')); 
+        //alert("My text is: " + CheckId + " " + value);
+        var peramiter = {
+            "CheckId": CheckId, "UserName": value, "ApprovedBy" : "Uttam"
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: "../Setings/GiveReqCheckPermission",
+            data: JSON.stringify(peramiter),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+
+                alert(r);
+                //$.each(r, function (i, item) {
+                //    var $tr = $('<tr/>');
+                //    $tr.append($('<td/>').html(item.CheckId));
+                //    $tr.append($('<td/>').html(item.CheckName));
+                //    if (item.UserName != '') {
+                //        $tr.append($('<input type="checkbox" class="form-control " onclick="checkFluency(' + item.CheckId + ')" checked /><td/>'));
+                //    }
+                //    else {
+                //        $tr.append($('<input type="checkbox" onclick="checkFluency(' + item.CheckId + ')" class="Row_Status form-control"/><td/>'));
+                //    }
+                //    $('.ListTable tr:last').after($tr);
+                //});
+            }
+        });
+
+
+        //for (var i = 0; i < checkboxes.length; i++) {            
+        //    var checkbox = checkboxes[i];
+        //    checkbox.onclick = function () {
+        //        var currentRow = this.parentNode.parentNode;
+        //        var secondColumn = currentRow.getElementsByTagName("td")[0];
+        //        alert("My text is: " + secondColumn.textContent + " " + value);
+        //    };
+        //} 
+    }
+</script>
+

@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "OtherRequestionReport";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Application Requisition Pending Report</h3>
+        </div>
+        <div class="card-body">
+                        
+            <div class="table">
+                <table id="table_id" class="cell-border" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="center">Requisition No</th>
+                            <th class="center">Date</th>
+                            <th class="center">Branch Name</th>
+                            <th class="center">Department Name</th>
+                            <th class="center">Requisition Type</th>
+                            <th class="center">Requested by</th>
+                            <th class="center">Status</th>
+                            <th class="center">View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r_List in ViewBag.OthersRequisition)
+                        {
+                        <tr>
+                            <td>@r_List.App_Req_ID</td>
+                            <td>@r_List.RequestedDate</td>
+                            <td>@r_List.BranchName</td>
+                            <td>@r_List.DepartmentName</td>
+                            <td>@r_List.TypeName</td>
+                            <td>@r_List.UserName</td>
+                            @if (r_List.CaptionStatus == "Complete")
+                            {
+                                <td style="color: green">@r_List.CaptionStatus</td>
+                            }
+                            else if (r_List.CaptionStatus == "Approved")
+                            {
+                                <td style="color: blue">@r_List.CaptionStatus</td>
+                            }
+                            else
+                            {
+                                <td style="color:red">@r_List.CaptionStatus</td>
+                            }
+                            <td>
+                                <a class="btn btn-primary" href="@Url.Action("requestionReport", "Requestion", new { detailsId = r_List.App_Req_ID  })" role="button">View Report</a>
+                                @*<a type="button" class="btn-floating btn-dribbble" href="@Url.Action("requestionReport", "Requestion", new { detailsId = r_List.App_Req_ID  })"><i title="Details" class="fab fa-dribbble"></i></a>*@
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+        $(document).ready(function () {
+            var table = $('#table_id').DataTable({
+                rowReorder: {
+                    selector: 'td:nth-child(2)'
+                },
+                responsive: true
+            });
+        });
+
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+
+        });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        let d1 = new Date();
+        let d2 = new Date();
+
+        var today = new Date();
+        var dd = today.getDate() - 1;
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("fromDate").setAttribute("max", today);
+        document.getElementById("toDate").setAttribute("max", today);
+        //document.getElementById('fromDate').valueAsDate = new Date(d1.setDate(d1.getDate() - 7));
+        //document.getElementById('toDate').valueAsDate = new Date(d2.setDate(d2.getDate() - 1));
+
+        document.getElementById('fromDate').valueAsDate = new Date(d1.setDate(d1.getDate()));
+        document.getElementById('toDate').valueAsDate = new Date(d2.setDate(d2.getDate()));
+    });
+</script>

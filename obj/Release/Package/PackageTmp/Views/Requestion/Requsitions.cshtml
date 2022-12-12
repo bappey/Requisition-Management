@@ -1,0 +1,708 @@
+﻿@model SCS_Inventory.Models.RequisitionMaster
+
+@{
+    ViewBag.Title = "Requsition";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+    <link href="~/Content/bootstrap-select.min.css" rel="stylesheet" />
+    var array = @Html.Raw(Json.Encode(@ViewBag.ReqType));
+
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header bg-info">
+            <h3 class="card-title">Requisition</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label for="message-text" class="col-form-label">Branch Name</label>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.DropDownList("Branch_Id", (IEnumerable<SelectListItem>)ViewBag.Branch, " --Select Branch-- ", new { @class = "form-control extra-class BranchId" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label for="message-text" class="col-form-label">Requsition Type</label>
+                        </div>
+                        <div class="col-md-4">
+                            @*@Html.DropDownList("Requsition_Type", new SelectList(new List<SelectListItem> { new SelectListItem { Text = "Replacement",
+                                Value = "Replacement", Selected = true }, new SelectListItem { Text = "Servicing", Value = "Servicing" }, new SelectListItem { Text = "New", Value = "New" } }, "Value", "Text"), new { @class = "form-control" })*@
+                            @Html.DropDownList("Requsition_Type", (IEnumerable<SelectListItem>)ViewBag.ReqType, new { @class = "form-control extra-class", @id = "Requsition_Type" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label for="message-text" class="col-form-label">Department</label>
+                        </div>
+                        <div class="col-md-4">
+                            @Html.DropDownList("Department_Id", Enumerable.Empty<SelectListItem>(), new { @class = "form-control extra-class DepartmentId" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group row">
+                        <div class="col-md-2">
+                            <label for="message-text" class="col-form-label">Upload File</label>
+                        </div>
+                        @*@using (Html.BeginForm("UploadFile", "Requestion", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {*@
+                        <div>
+                            @*@Html.TextBox("file", "", new { type = "file", @class = "uploadFile" }) <br />
+                                <input type="hidden" class="UploadFileLocation" value=@ViewBag.Path />
+                                <input type="submit" value="Add" class="addUploadFile" />
+                                @ViewBag.Message*@
+                            <input type="file" id="fileToUpload" class="form-control" /> <br />
+                            <button id="upload" class="btn btn-primary">Upload</button>
+                            <input type="hidden" id="fileID" />
+
+                        </div>
+                        @* } *@
+
+                    </div>
+                </div>
+            </div>
+            @*<div class="col-6-md">
+                </div>
+                <div class="col-6-md">
+                </div>*@
+
+            <div class="table Purchage">
+                <table id="tablecus" class="table ">
+                    <tbody>
+                        <tr>
+                            @*@Html.DropDownList("productlist", ViewBag.ItemList as SelectList, "Select Product", htmlAttributes: new { @class = "form-control productlist", @id = "barcode" })*@
+                            <td>
+                                @*<form class="form-inline">
+                                        <i class="fas fa-search active" aria-hidden="true"></i>
+                                        <input class="form-control form-control ml-3 w-75" type="text" placeholder="Search" aria-label="Search">
+                                    </form>*@
+                                @Html.DropDownList("productlist", ViewBag.SubProductList as SelectList, "Select Product", new { @id = "Items", @class = "form-control" })
+
+                            </td>
+                            <td><input type="text" name="Qty" id="Qty" class="form-control" placeholder="Quantity"></td>
+                            <td><input type="text" name="Unit" id="Unit" class="form-control" placeholder="Unit"></td>
+                            <td><input type="text" name="Description" id="Description" class="form-control" placeholder="Description"></td>
+                            <td><input type="hidden" id="SubProductId" name="SubProductId"></td>
+                            <td><button id="addToList" type="button" class="btn btn-info add-row">Add</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                @*<div>
+                        @Html.DropDownList("productlist", ViewBag.ItemList as SelectList, "Select Product", htmlAttributes: new { @class = "form-control productlist", @id = "barcode" })
+                    </div>
+                    <div><input type="text" name="Qty" id="Qty" class="form-control" placeholder="Quantity"></div>
+                    <div><input type="text" name="Unit" id="Unit" class="form-control" placeholder="Unit"><input type="hidden" id="SubProductId" name="SubProductId"></div>
+                    <div><input type="text" name="Description" id="Description" class="form-control" placeholder="Description"></div>
+                    <div><button id="addToList" type="button" class="btn btn-info add-row">Add</button></div>*@
+                <table id="detailsTable" class="table table-bordered table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name of Sub Product</th>
+                            <th style="display:none;">SubProductId</th>
+                            <th scope="col">Qty</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <input type="button" id="btnSave" value="Send Requisition" class="btn btn-info" />
+            </div>
+            <div class="table Other">
+                <div class="form-group row">
+                    <div class="col-md-2">
+                        <label for="message-text" class="col-form-label">Category</label>
+                    </div>
+                    <div class="col-md-2">
+                        @*<select class="form-control extra-class Category">
+                                <option>New ID Open</option>
+                                <option>ID Close</option>
+                                <option>Menu Permission</option>
+                            </select>*@
+                        @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewBag.ReqCategoryList, new { @class = "form-control extra-class Category" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-2">
+                        <label for="message-text" class="col-form-label">Contacted With</label>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="ItContactPerson" id="ItContactPerson" placeholder="Name & phone" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="input-group col-md-4">
+                        <textarea class="form-control" name="OtherDescription" id="OtherDescription" aria-label="With textarea" placeholder="Description"></textarea>
+                    </div>
+                    <div>
+                        <button id="addToOtherList" type="button" class="btn btn-info add_other_row">Add</button>
+                    </div>
+                </div>
+                <table id="OtherDetailsTable" class="table table-bordered table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th class="center">Name of Requirements</th>
+                            <th class="center">Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <input type="button" id="btnOtherSave" value="Save" class="btn btn-info" />
+            </div>
+        </div>
+        <div class="card-footer">
+
+        </div>
+    </div>
+    <div class="card PurchageReq">
+        <div class="card-header">
+            <h3 class="card-title">Requisition List</h3>
+        </div>
+        <div class="card-body">
+            <div class="table">
+                <table id="table_id" class="cell-border" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="center">Requisition No</th>
+                            <th class="center">Branch</th>
+                            <th class="center">Requested by</th>
+                            <th class="center">Requisition Date</th>
+                            <th class="center">Last Update</th>
+                            <th class="center">Type</th>
+                            <th class="center">Status</th>
+                            <th class="center">Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r_List in ViewBag.RequestionList)
+                        {
+                            <tr>
+                                <td>@r_List.ReqId</td>
+                                <td>@r_List.BranchName</td>
+                                <td>@r_List.Name</td>
+                                <td>@r_List.Requisition_Date</td>
+                                <td>@r_List.Edit_Date</td>
+                                <td>@r_List.Requsition_Type</td>
+                                <td>@r_List.Req_Status</td>
+                                <td>@r_List.Description</td>
+                                <td>
+                                    @if (r_List.Requisition_Status == "Waiting For CMDC")
+                                    {
+                                        <button type="button" class="btn btn-sm btn-default" onclick="OpenCMDC_Authorozation(@r_List.MasterId)">CMDC Accept</button>
+                                    }
+                                    else if (r_List.Requisition_Status == "CMDC Accept >> Waiting For Procurement")
+                                    {
+                                        @Html.ActionLink("Procurement Accept", "Procurement_Authorization", new { id = r_List.MasterId })
+                                    }
+                                    else if (r_List.Requisition_Status == "Procurement Accept >> Waiting For Price Qurtation")
+                                    {
+                                        @Html.ActionLink("Generate Quotation", "Quotations", new { id = r_List.MasterId })
+                                    }
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" onclick="EditRequesition(@r_List.ReqId)" class="mr-2"><i title="Edit" class="fa fa-pencil-alt text-secondary"></i></a>
+                                    <a href="@Url.Action("RequsitionDetails", "Requestion", new { id = r_List.ReqId  })"><i title="Details" class="fa fa-eye"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal fade bd-example-modal-xl" id="EditReq" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card OthersReq">
+        <div class="card-header">
+            <h3 class="card-title">Other Requisition List</h3>
+        </div>
+        <div class="card-body">
+            <div class="table">
+                <table id="table_id1" class="table-bordered table-hover table-sm table-striped" style="width: 100%; overflow: auto; position: relative;">
+                    <thead>
+                        <tr>
+                            <th class="center">Requisition No</th>
+                            <th class="center">Branch Name</th>
+                            <th class="center">Department Name</th>
+                            <th class="center">Requisition Type</th>
+                            <th class="center">Requested by</th>
+                            <th class="center">View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r_List in ViewBag.OtherRequestionList)
+                        {
+                            <tr>
+                                <td>@r_List.App_Req_ID</td>
+                                <td>@r_List.BranchName</td>
+                                <td>@r_List.DepartmentName</td>
+                                <td>@r_List.TypeName</td>
+                                <td>@r_List.Requested_by</td>
+                                <td><a class="btn btn-primary" onclick="OpenCS(@r_List.App_Req_ID)" role="button">View</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade bd-example-modal-xl" id="ViewOtherReq" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade bd-example-modal-xl" id="EditOtherReq" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    if ($("#Requsition_Type").find("option:selected").text() == "IT Related Requisition") {
+        $(".Purchage").hide(1000);
+        $(".Other").show(1000);
+        $(".OthersReq").show(1000);
+        $(".PurchageReq").hide(1000);
+    }
+    else {
+        $(".Purchage").show(1000);
+        $(".Other").hide(1000);
+        $(".OthersReq").hide(1000);
+        $(".PurchageReq").show(1000);
+    }
+        $("#Requsition_Type").change(function () {
+            var selectedText = $(this).find("option:selected").text();
+            var selectedValue = $(this).val();
+            var array=@Html.Raw(Json.Encode(@ViewBag.Req));
+            for (var i = 0; i < array.length; i++) {
+                if (array[i].TypeName == selectedText) {
+                    if (array[i].Category == "Other") {
+                        $(".Other").show(1000);
+                        $(".Purchage").hide(1000);
+                        $(".OthersReq").show(1000);
+                        $(".PurchageReq").hide(1000);
+                    }
+                    else {
+                        $(".Purchage").show(1000);
+                        $(".Other").hide(1000);
+                        $(".OthersReq").hide(1000);
+                        $(".PurchageReq").show(1000);
+                    }
+                }
+            }
+        });
+</script>
+<script type="text/javascript">
+    function OpenCS(App_Req_ID) {
+        $.ajax({
+            url: "../Requestion/ViewRequestionDetails/",
+            data: { AppReqID: App_Req_ID },
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#ViewOtherReq').modal('toggle');
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    function EditRequesition(ReqId) {
+        $.ajax({
+            url: "../Requestion/RequsitionEdit/",
+            data: { ReqId: ReqId },
+            success: function (result) {
+                $('#editDiv2').html(result);
+                $('#EditReq').modal('toggle');
+            }
+        });
+    }
+</script>
+@*<script src="~/Scripts/jquery-3.6.0.min.js"></script>*@
+@*<script src="~/Scripts/bootstrap.min.js"></script>*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.0.4/popper.js"></script>
+
+<script src="~/Scripts/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#table_id').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            responsive: true
+        });
+        var table = $('#table_id1').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            responsive: true
+        });
+    });
+
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+        $('#table_id1').DataTable();
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$("#orderdate").datepicker({
+        //    dateFormat: 'dd/mm/yyyy'
+        //}).val(todayDate);
+        //$(function () {
+        //    $('#datetimepicker1').datetimepicker();
+        //});
+        $("#upload").click(function () {
+
+            if (window.FormData == undefined)
+                alert("Error: FormData is undefined");
+            else {
+                 var session = @Html.Raw(Json.Encode(@HttpContext.Current.Session["UserProfile"]));
+                //var R_Master = [{ "BranchID": $("#Branch_Id").val(), "Requested_by": session.UserName, "Requsition_Type": $('#Requsition_Type').val(), "DepartmentId": $('#Department_Id').val() }];
+                var fileUpload = $("#fileToUpload").get(0);
+                var files = fileUpload.files;
+                var fileData = new FormData();
+                fileData.append(files[0].name, files[0]);
+                fileData.append('Requested_by', session.UserName);
+                if (files[0].size >= 1048576) // 1 MiB for bytes.
+                {
+                    //alert(files[0].size / 1048576);
+                    alert("Large File!!! \nFile size must under 1 MB!");
+                    return;
+                }
+                $.ajax({
+                    url: '/Requestion/uploadFile',
+                    type: 'post',
+                    datatype: 'json',
+                    contentType: false,
+                    processData: false,
+                    async: false,
+                    data: fileData,
+                    success: function (response) {
+
+                        if (~response.indexOf("+")) {
+                            var strArr = response.split('+');
+                            var previousVal = document.getElementById('fileID');
+                            alert(strArr[0]);
+                            if (previousVal.value != "") {
+                                previousVal.value += "+" + strArr[1];
+                            }
+                            else {
+                                previousVal.value += strArr[1];
+                            }
+                            $('#fileID').val(previousVal.value);
+                            $('#fileToUpload').text();
+                            //alert(document.getElementById("fileID").value);
+                        }
+                        else {
+                            alert(response);
+                            }
+                    }
+                });
+            }
+        });       
+
+        $('.BranchId').change(function () {
+            $('.DepartmentId').find('option').remove().end();
+            $.ajax({
+                type: "GET",
+                url: "../Requestion/GetDepartmentNameByBranch",
+                data: { BranchId: $(".BranchId :selected").val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $.each(r, function (i, item) {
+                        var opt = $('<option></option>');
+                        opt.attr('value', item.DepartmentId).text(item.DepartmentName);
+                        $(".DepartmentId").append(opt);
+                    });
+                }
+            });
+        });
+        $('.addUploadFile').click(function () {
+            if ($('.uploadFile').text() != "") {
+                alert($('.uploadFile').text());
+                var markup = '<tr><td>' + $('.uploadFile').text() + '</td><td style=display:none;>' + $('.UploadFileLocation').text() + '</td><td> <i class="fa fa-trash text-danger delete"></i></td></tr>'
+                $(".tableUS").append(markup);
+                $('uploadFile').text("");
+                $('.UploadFileLocation').text("");
+                }
+        });
+        $(".add-row").click(function () {
+
+            if ($('.DepartmentId').val() == "") {
+                alert("Please select Department or change branch for Department");
+                return;
+            }
+
+            if ($('#SubProductId').val() != "" && $('#Unit').val() != "" && $('#Description').val() != "" && $('#Qty').val() != "") {
+                var flag = false;
+                $('#detailsTable tbody').find('tr').each(function () {
+                    var $this = $(this);
+                    if ($('#Items option:selected').text() == $('td:eq(0)', $this).text()) {
+                        flag = true;
+                        return false;
+                    }
+                });
+                if (flag) {
+                    alert("This Item Already in List");
+                    return;
+                }
+                else {
+                    var markup = '<tr><td>' + $('#Items option:selected').text() + '</td><td style=display:none;>' + $('#Items').val() +
+                        '</td><td>' + $('#Qty').val() + '</td><td>' + $('#Unit').val() + '</td><td>' + $('#Description').val() +
+                        '</td><td> <i class="fa fa-trash text-danger delete"></i></td></tr>'
+                    //<a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons" style="color: #E34724">&#xE872;</i></a>
+                    $("#detailsTable").append(markup);
+                    $('#SubProductId').val("");
+                    $('#Unit').val("");
+                    $('#Description').val("");
+                    $('#Qty').val("");
+                    $('#Barcode').val("");
+
+                }
+            }
+        });
+        $('.select2').select2();
+        $("#Items").change(function () {
+            //var datas = JSON.stringify({
+            //    'Id': $('#Items').val()
+            //});
+            //e.preventDefault();
+            //var element = this;
+            //alert(datas);
+
+            $('#SubProductId').val("");
+            $('#Unit').val("");
+            $('#Description').val("");
+            $('#Qty').val("");
+            var selectedIndex = $("#Items").prop("selectedIndex");
+
+            if (selectedIndex > 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "../Requestion/ItemData",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: { id: $('#Items').val() },
+                    success: function (data) {
+                        var item = '';
+                        $.each(data, function (i, item) {
+                            $('#SubProductId').val("");
+                            $('#Unit').val("");
+                            $('#Description').val("");
+                            $('#Qty').val("");
+
+                            $('#SubProductId').val(item.SubProductId);
+                            $('#Unit').val(item.Unit);
+                           //$('.BookingDate').val(dateFormat(new Date(parseInt((item.BookingDate).match(/\d+/)[0]))));
+                        });
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        });
+        $(".add-row").click(function () {
+
+            if ($('.DepartmentId').val() == "") {
+                alert("Please select Department or change branch for Department");
+                return;
+            }
+            if ($('#SubProductId').val() != "" && $('#Unit').val() != "" && $('#Description').val() != "" && $('#Qty').val() != "") {
+                var flag = false;
+                $('#detailsTable tbody').find('tr').each(function () {
+                    var $this = $(this);
+                    if ($('#Items option:selected').text() == $('td:eq(0)', $this).text()) {
+                        flag = true;
+                        return false;
+                    }
+                });
+                if (flag) {
+                    alert("This Item Already in List");
+                    return;
+                }
+                else {
+                    var markup = '<tr><td>' + $('#Items option:selected').text() + '</td><td style=display:none;>' + $('#Items').val() +
+                '</td><td>' + $('#Qty').val() + '</td><td>' + $('#Unit').val() + '</td><td>' + $('#Description').val() +
+                '</td><td> <i class="fa fa-trash text-danger delete"></i></td></tr>'
+                    //<a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons" style="color: #E34724">&#xE872;</i></a>
+                    $("#detailsTable").append(markup);
+                    $('#SubProductId').val("");
+                    $('#Unit').val("");
+                    $('#Description').val("");
+                    $('#Qty').val("");
+                    $('#Barcode').val("");
+
+                }
+            }
+        });
+        $(".add_other_row").click(function () {
+
+            if ($('.Category').text() != "" && $('#OtherDescription').val() != "" ) {
+                var flag = false;
+                $('#OtherDetailsTable tbody').find('tr').each(function () {
+                    var $this = $(this);
+                    if ($('.Category option:selected').text() == $('td:eq(0)', $this).text()) {
+                        flag = true;
+                        return false;
+                    }
+                });
+                if (flag) {
+                    alert("This Item Already in List");
+                    return;
+                }
+                else {
+                    var markup = '<tr><td>' + $('.Category option:selected').text() +'</td><td>' + $('#OtherDescription').val() +
+                        '</td><td> <i class="fa fa-trash text-danger delete"></i></td></tr>'
+                    //<a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons" style="color: #E34724">&#xE872;</i></a>
+                    $("#OtherDetailsTable").append(markup);
+                    $('#OtherDescription').val("");
+                    $(".Category").prop('disabled', true);
+                }
+            }
+        });
+
+        $(document).on("click", ".delete", function () {
+            $(this).parents("tr").remove();
+
+            if ($("#OtherDetailsTable > tbody > tr").length == 0) {
+                $(".Category").removeAttr("disabled");
+            }
+
+
+            //$(".add-new").removeAttr("disabled");
+        });
+        $("body").on("click", "#btnSave", function () {
+            //var masters = {};
+            //var R_Master = new Array(
+            //    masters.Requested_Branch = $('#Requested_Branch').val(),
+            //    masters.Requested_by = 1,
+            //    masters.Requsition_Type = $('#Requsition_Type').val()
+            //);
+           var session = @Html.Raw(Json.Encode(@HttpContext.Current.Session["UserProfile"]));
+
+            var R_Master = [{ "BranchID": $("#Branch_Id").val(), "Requested_by": session.UserName, "Requsition_Type": $('#Requsition_Type').val(), "DepartmentId": $('#Department_Id').val() }];
+
+            var R_Details = new Array();
+            $("#detailsTable TBODY TR").each(function () {
+                var row = $(this);
+                var details = {};
+                details.SubProductId = row.find("TD").eq(1).html();
+                details.Qty = row.find("TD").eq(2).html();
+                details.Unit = row.find("TD").eq(3).html();
+                details.Description = row.find("TD").eq(4).html();
+
+                R_Details.push(details);
+            });
+            var model = {
+                "R_Master": R_Master,
+                "R_Details": R_Details,
+            }
+
+            //console.log(model);
+            $.ajax({
+                type: "POST",
+                url: "../Requestion/SaveRequestion",
+                data: JSON.stringify(model),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " record(s) inserted.");
+                    $('#detailsTable tbody').empty();
+                }
+            });
+        });
+
+        $("body").on("click", "#btnOtherSave", function () {
+
+           var session = @Html.Raw(Json.Encode(@HttpContext.Current.Session["UserProfile"]));
+            //var RFM = [{ "Extention": $("#fileID").val() }];
+           var OtherRequistionDetailsNew = new Array();
+            $("#OtherDetailsTable TBODY TR").each(function () {
+                var row = $(this);
+                var details = {};
+                details.RequestName = row.find("TD").eq(0).html();
+                details.Description = row.find("TD").eq(1).html();
+                details.BranchID = $("#Branch_Id").val();
+                details.Requested_by = session.UserName;
+                details.Requsition_Type = $('#Requsition_Type').val();
+                details.DepartmentId = $('#Department_Id').val();
+                details.ItContactPerson = $('#ItContactPerson').val();
+                OtherRequistionDetailsNew.push(details);
+            });
+            //var model = {
+            //    "O_R_Details": OtherRequistionDetailsNew
+            //}
+            //console.log(model);
+            var datas = JSON.stringify({
+                'OtherRequistionDetailsNew': OtherRequistionDetailsNew,
+                'RFM': $("#fileID").val()
+            });
+            //console.log(datas);
+            $.ajax({
+                type: "POST",
+                url: "../Requestion/SaveOtherRequestion",
+                //data: JSON.stringify(OtherRequistionDetailsNew, RFM),
+                data: datas,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r);
+                    $('#OtherDetailsTable tbody').empty();
+                    $('#fileID').val("");
+                    $('#OtherDescription').val("");
+                    $('#ItContactPerson').val("");
+                    $('#fileToUpload').val("");
+                    $(".Category").prop('disabled', false);
+                }
+            });
+        });
+
+        //$(document).on("click", ".edit", function () {
+        //    $(this).parents("tr").find("td:not(:last-child)").each(function () {
+        //        $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
+        //    });
+        //    $(this).parents("tr").find(".add, .edit").toggle();
+        //    $(".add-new").attr("disabled", "disabled");
+        //});
+
+    });
+</script>
+
+@*<script>
+    $(document).ready(function () {
+        $('.selectpicker').selectpicker({
+            liveSearch: true,
+            showSubtext: true
+        });
+    });
+    </script>*@

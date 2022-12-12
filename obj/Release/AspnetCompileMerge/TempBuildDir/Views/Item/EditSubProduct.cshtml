@@ -1,0 +1,90 @@
+﻿@model scs_Project.Models.SubProductList
+@{
+    Layout = "";
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">Update Sub Product</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="card-body">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Product Name</label>
+                <div class="col-sm-8">
+                    @Html.DropDownList("ProductId", (IEnumerable<SelectListItem>)ViewBag.ParentCategory, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group row" style="display:none">
+                @Html.LabelFor(model => model.SubProductId, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.SubProductId, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.SubProductId, "", new { @class = "text-danger" })
+                </div>
+                @Html.LabelFor(model => model.id, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.id, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.id, "", new { @class = "text-danger" })
+                </div>
+                <input type="hidden" id="Id" name="Id">
+                <input type="hidden" id="Input_User" name="Input_User">
+                <input type="hidden" id="Input_Date" name="Input_Date">
+            </div>
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.SubProductName, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.SubProductName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.SubProductName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(model => model.ProductModel, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.ProductModel, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ProductModel, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Unit, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Unit, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Unit, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Generate Serial?</label>
+                <div class="col-md-2">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Generate_SL)
+                        @Html.ValidationMessageFor(model => model.Generate_SL, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="message-text" class="col-sm-4">Row Status</label>
+                <div class="col-sm-4">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Row_Status)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-info">Save</button>
+    </div>
+}
+
+
+
+

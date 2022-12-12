@@ -1,0 +1,268 @@
+﻿@model IEnumerable<scs_Project.Models.ItemInfo>
+
+@*@using System;
+    @using System.Collections.Generic;
+    @using System.IO;
+    @using System.Security.Cryptography;
+    @using System.Text;*@
+
+@{
+    //string clearTex = "";
+    ViewBag.Title = "ItemIndex";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="card-header bg-info">
+        <h3 class="card-title">Item List</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            @*<button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                <i class="fas fa-times"></i>
+            </button>*@
+        </div>
+    </div>
+    <div class="card-body">
+        @*<p>
+                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#mdlItem">Create</button>
+            </p>*@
+        <div class="text-right mb-2">
+            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdlItem"><i class="fa fa-plus"></i> Add New</button>
+        </div>
+
+        <div class="container">
+            <table id="table_id" class="cell-border" style="width:100%">
+
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Sub Category Name</th>
+                        <th>Model Name</th>
+                        <th>Item Name</th>
+                        <th>Opening Qty</th>
+                        <th>Unit</th>
+                        <th>Barcode</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in (IEnumerable<scs_Project.Models.ItemInfoNV2>)ViewBag.ItemRecord)
+                    {
+                        //string clearText = "";
+                        <tr>
+                            @*@item.I_Info.id*@
+                            <td>@item.CategoryName</td>
+                            <td>@item.SubCategoryName</td>
+                            <td>@item.ModelName</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.Opening_Qty</td>
+                            <td>@item.Unit</td>
+                            <td>@item.Barcode</td>
+                            @*<td>
+                        @{
+
+                    string EncryptionKey = "MAKV2SPBNI99212";
+                    byte[] clearBytes = Encoding.Unicode.GetBytes((@item.I_Info.id).ToString());
+                    using (Aes encryptor = Aes.Create())
+                    {
+                        Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                        encryptor.Key = pdb.GetBytes(32);
+                        encryptor.IV = pdb.GetBytes(16);
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                            {
+                                cs.Write(clearBytes, 0, clearBytes.Length);
+                                cs.Close();
+                            }
+                            clearText = Convert.ToBase64String(ms.ToArray());
+                        }
+                    }
+                            }
+                        <button type="button" class="btn btn-sm btn-default" onclick="OpenEditItem(@item.Id)">Edit</button> |
+                        @Html.ActionLink("Delete", "Delete", new { id = @item.Id })
+                    </td>*@
+                            <td class="text-center">
+                                <a href="javascript:void(0)" onclick="OpenEditItem(@item.Id)" class="mr-2"><i title="edit" class="fa fa-pencil-alt  text-secondary"></i></a>
+                                <a href="@Url.Action("Delete", "Delete", new { id = @item.Id })"><i title="delete" class="fa fa-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+                    }
+                <tbody>
+                <tfoot>
+                    <tr>
+                        <th>
+                            Category Name
+                        </th>
+                        <th>
+                            Sub Category Name
+                        </th>
+                        <th>
+                            Model Name
+                        </th>
+                        <th>
+                            Item Name
+                        </th>
+                        <th>
+                            Opening Qty
+                        </th>
+                        <th>
+                            Unit
+                        </th>
+                        <th>
+                            Barcode
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mdlItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-info">
+                <h4 class="modal-title" id="exampleModalLabel">New Item</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                }
+            </div>
+
+            <form action="AddItem" method="post">
+                <div class="modal-body">
+
+                    <div class="form-group row">
+                        @*<label for="message-text" class="col-form-label">Category Name</label>*@
+                        <label for="message-text" class="col-sm-4 col-form-label">Category Name</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("CategoryInfoid", (IEnumerable<SelectListItem>)ViewBag.Category, new { @class = "form-control extra-class" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @*<label for="message-text" class="col-form-label">Sub Category Name</label>*@
+                        <label for="message-text" class="col-sm-4 col-form-label">Sub Category Name</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("SubCategoryInfoid", (IEnumerable<SelectListItem>)ViewBag.SubCategory, new { @class = "form-control extra-class" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @*<label for="message-text" class="col-form-label">Model Name</label>*@
+                        <label for="message-text" class="col-sm-4 col-form-label">Model Name</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("ModelInfoid", (IEnumerable<SelectListItem>)ViewBag.Model, new { @class = "form-control extra-class" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @*<label for="message-text" class="col-form-label">Item Name</label>*@
+                        <label for="message-text" class="col-sm-4 col-form-label">Item Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="ItemName" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @*<label for="message-text" class="col-form-label">Opening Qty</label>*@
+                        <label for="message-text" class="col-sm-4 col-form-label">Opening Qty</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="Opening_Qty" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @*<label for="message-text" class="col-form-label">Unit</label>*@
+                        <label for="message-text" class="col-sm-4 col-form-label">Unit</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="Unit" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @*<label for="message-text" class="col-form-label">Barcode</label>*@
+                        <label for="message-text" class="col-sm-4 col-form-label">Barcode</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="Barcode" />
+                        </div>
+                    </div>
+                </div>
+                @*<div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>*@
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*<div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>*@
+            <div id="editDiv">
+
+            </div>
+        </div>
+    </div>
+</div>
+       
+
+<div class="card-footer">
+
+</div>
+<script>
+    $(document).ready(function () {
+
+        var table = $('#table_id').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            responsive: true
+        });
+    });
+
+</script>
+
+<script type="text/jscript">
+
+    function OpenEditItem(Id) {
+
+        $.ajax({
+            url: "/item/EditItem/" + Id,
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#editItem').modal('toggle');
+            }
+        });
+    }
+</script>
+

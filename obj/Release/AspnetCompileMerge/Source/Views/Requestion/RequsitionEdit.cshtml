@@ -1,0 +1,390 @@
+﻿
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="modal-header bg-info">
+        <h3 class="modal-title">Edit Requsition</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        @foreach (var item in ViewBag.RequstionMaster)
+        {
+            <input type="hidden" id="ReqId" name="ReqId" value="@item.R_master.ReqId">
+            <input type="hidden" id="id" name="id" value="@item.R_master.id">
+            <input type="hidden" id="Row_Status" name="Row_Status" value="@item.R_master.Row_Status">
+            <input type="hidden" id="Input_User" name="Input_User" value="@item.R_master.Input_User">
+            <input type="hidden" id="Input_Date" name="Input_Date" value="@item.R_master.Input_Date">
+            <input type="hidden" id="Req_Status" name="Req_Status" value="@item.R_master.Req_Status">
+            <input type="hidden" id="Requisition_Date" name="Requisition_Date" value="@item.R_master.Requisition_Date">
+        }
+        <div class="form-group row">
+            <div class="col-md-2">
+                <label for="message-text" class="col-form-label">Branch Name</label>
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("BranchId2", (IEnumerable<SelectListItem>)ViewBag.Branch, new { @class = "form-control extra-class" })
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-2">
+                <label for="message-text" class="col-form-label">Requsition Type</label>
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("Requsition_Type2", (IEnumerable<SelectListItem>)ViewBag.ReqType, new { @class = "form-control extra-class" })
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-2">
+                <label for="message-text" class="col-form-label">Department</label>
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("DepartmentId2", (IEnumerable<SelectListItem>)ViewBag.Departments, new { @class = "form-control extra-class" })
+            </div>
+        </div>
+        <div class="table ">
+            <table id="tablecus" class="table ">
+                <tbody>
+                    <tr>
+                        <td>
+                            @Html.DropDownList("productlist", ViewBag.SubProductList2 as SelectList, "Select Product", new { @id = "Item", @class = "form-control" })
+                        </td>
+                        <td><input type="text" name="Qty2" id="Qty2" class="form-control" placeholder="Quantity"></td>
+                        <td><input type="text" name="Unit2" id="Unit2" class="form-control" placeholder="Unit"></td>
+                        <td><input type="text" name="Description2" id="Description2" class="form-control" placeholder="Description"></td>
+                        <td><input type="hidden" id="SubProductId2" name="SubProductId2"></td>
+                        <td><button id="addToList2" type="button" class="btn btn-info add-row2">Add</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="detailsTable2" class="table table-bordered table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th class="center">Name of Sub Product</th>
+                        <th style="display:none;">SubProductId</th>
+                        <th class="center">Qty</th>
+                        <th class="center">Unit</th>
+                        <th class="center">Description</th>
+                        <th class="center"></th>
+                        <th style="display:none;">Req_Id</th>
+                        <th style="display:none;">Input_User</th>
+                        <th style="display:none;">Input_Date</th>
+                        <th style="display:none;">Row_Status</th>
+                        <th style="display:none;">EntryType</th>
+                        <th style="display:none;">Req_Status</th>
+                        <th style="display:none;">Id</th>
+                        <th style="display:none;">AmendmendId</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.RequisitionDetais)
+                    {
+                    <tr>
+                        <td>@item.SP_List.ProductModel</td>
+                        <td style="display:none;">@item.R_Details.SubProductId</td>
+                        <td><input type="number" class="form-control Qty" name="Qty" placeholder="Qty" value="@item.R_Details.Qty" /></td>
+                        <td>@item.R_Details.Unit</td>
+                        <td><input type="text" class="form-control Description" name="Description" placeholder="Description" value="@item.R_Details.Description" /></td>
+                        <td>
+                            <button type="button" class="btn btn-warning">Update</button> <button type="button" class="btn btn-danger">Delete</button>
+                            @*<i class="fa fa-trash text-danger delete2" title="Delete"></i>
+              <i class="fas fa-edit Update" title="Update"> </i>
+            <a href="javascript:void(0)" onclick="EditRequesition(@r_List.ReqId)" class="mr-2"><i title="Edit" class="fa fa-pencil-alt text-secondary"></i></a>*@
+                        </td>
+                        <td style="display:none;">@item.R_Details.Req_Id</td>
+                        <td style="display:none;">@item.R_Details.Input_User</td>
+                        <td style="display:none;">@item.R_Details.Input_Date</td>
+                        <td style="display:none;">@item.R_Details.Row_Status</td>
+                        <td style="display:none;">@item.R_Details.EntryType</td>
+                        <td style="display:none;">@item.R_Details.Req_Status</td>
+                        <td style="display:none;">@item.R_Details.id</td>
+                        <td style="display:none;">@item.R_Details.AmendmendId</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            @*<input type="button" id="btnSave2" value="Update Requisition" class="btn btn-info" />*@
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {  
+        $("#Item").change(function () {
+            $('#SubProductId2').val("");
+            $('#Unit2').val("");
+            $('#Description2').val("");
+            $('#Qty2').val("");
+            var selectedIndex = $("#Item").prop("selectedIndex");
+            if (selectedIndex > 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "/Requestion/ItemData",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: { id: $('#Item').val() },
+                    success: function (data) {
+                        var item = '';
+                        $.each(data, function (i, item) {
+                            $('#SubProductId2').val("");
+                            $('#Unit2').val("");
+                            $('#Description2').val("");
+                            $('#Qty2').val("");
+                            $('#SubProductId2').val(item.SubProductId);
+                            $('#Unit2').val(item.Unit);
+                           //$('.BookingDate').val(dateFormat(new Date(parseInt((item.BookingDate).match(/\d+/)[0]))));
+                        });
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+        });
+        $(".add-row2").click(function () {
+            if ($('#SubProductId2').val() != "" && $('#Unit2').val() != ""  && $('#Description2').val() != "" && $('#Qty2').val() != "") {
+                var flag = false;
+                $('#detailsTable2 tbody').find('tr').each(function () {
+                    var $this = $(this);
+                    if ($('#Item option:selected').text() == $('td:eq(0)', $this).text()) {
+                        flag = true;
+                        return false;
+                    }
+                });
+                if (flag) {
+                    alert("This Item Already in List");
+                    return;
+                }
+                else {
+                    var markup = '<tr><td>' + $('#Item option:selected').text() + '</td><td style=display:none;>' + $('#Item').val() +
+                '</td><td>' + $('#Qty2').val() + '</td><td>' + $('#Unit2').val() + '</td><td>' + $('#Description2').val() +
+                        '</td><td><input type="button" class="btn btn-success btnSuccess" value = "Add"/></td><td style="display:none;">' +
+                        $('#ReqId').val() + '</td><td style="display:none;"></td><td style="display:none;"></td><td style="display:none;"></td><td style="display:none;">' + $('#Requsition_Type2').val() +'</td></tr>'
+                    //'</td><td><button type="button" class="btn btn-success btnSuccess">Add</button></td></tr>'
+
+                        //< input  type = "button" id = "2" value = "+ Add More"  onclick = "addExp()" />
+                    //<a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons" style="color: #E34724">&#xE872;</i></a>
+                    $("#detailsTable2").append(markup);
+                    $('#SubProductId2').val("");
+                    $('#Unit2').val("");
+                    $('#Description2').val("");
+                    $('#Qty2').val("");
+                    $('#Barcode2').val("");
+                }
+            }
+        });               
+        $(document).on("click", ".delete2", function () {
+            //$(this).parents("tr").remove();
+            //$(".add-new").removeAttr("disabled");
+        });
+        //$(document).on("click", ".btnSuccess", function () {           
+        //});
+        $('#detailsTable2').on('click', '.btnSuccess', function () {
+           var R_Master3 = [{ "Row_Status": $('#Row_Status').val(), "Input_User": $('#Input_User').val(), "Input_Date": $('#Input_Date').val(), "Req_Status": $('#Req_Status').val(), "Requisition_Date": $('#Requisition_Date').val(), "id": $('#id').val(), "ReqId": $('#ReqId').val(), "BranchId": $('#BranchId2').val(), "Requested_by": 1, "Requsition_Type": $('#Requsition_Type2').val(), "DepartmentId": $('#DepartmentId2').val() }];
+            var R_Details3 = new Array();
+            var details = {};
+            details.SubProductId = $(this).closest('tr').find("TD").eq(1).html();
+            details.Unit = $(this).closest('tr').find("TD").eq(3).html();            
+            details.Qty = $(this).closest('tr').find("TD").eq(2).html();
+            details.Description = $(this).closest('tr').find("TD").eq(4).html();            
+            details.Req_Id = $(this).closest('tr').find("TD").eq(6).html();
+            details.EntryType = $(this).closest('tr').find("TD").eq(10).html();            
+            R_Details3.push(details);
+            var model3 = {
+                "R_Master": R_Master3,
+                "R_Details": R_Details3
+            }
+            //console.log(model3)
+            $.ajax({
+                type: "POST",
+                url: "/Requestion/AmendmendEditRequestion",
+                data: JSON.stringify(model3),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " Added Successfully.");
+                    //$('#detailsTable2 tbody').empty();
+                    //window.location.href = '/Requestion/Requsitions/';
+                }
+            });
+        });
+        $('#detailsTable2 tbody .btn-danger').on('click', function (e) {
+
+            var R_Master3 = [{ "Row_Status": $('#Row_Status').val(), "Input_User": $('#Input_User').val(), "Input_Date": $('#Input_Date').val(), "Req_Status": $('#Req_Status').val(), "Requisition_Date": $('#Requisition_Date').val(), "id": $('#id').val(), "ReqId": $('#ReqId').val(), "BranchId": $('#BranchId2').val(), "Requested_by": 1, "Requsition_Type": $('#Requsition_Type2').val(), "DepartmentId": $('#DepartmentId2').val() }];
+            var R_Details3 = new Array();
+
+            var details = {};
+            details.SubProductId = $(this).closest('tr').find("TD").eq(1).html();
+            details.Unit = $(this).closest('tr').find("TD").eq(3).html();
+            if ($(this).closest('tr').find("TD input").length == 0) {
+                details.Qty = $(this).closest('tr').find("TD").eq(2).html();
+                details.Description = $(this).closest('tr').find("TD").eq(4).html();
+            }
+            else {
+                details.Qty = $(this).closest('tr').find("TD:eq(2) input[type='number']").val();
+                details.Description = $(this).closest('tr').find("TD:eq(4) input[type='text']").val();
+            }
+            details.Req_Id = $(this).closest('tr').find("TD").eq(6).html();
+            details.Input_User = $(this).closest('tr').find("TD").eq(7).html();
+            details.Input_Date = $(this).closest('tr').find("TD").eq(8).html();
+            details.Row_Status = $(this).closest('tr').find("TD").eq(9).html();
+            details.EntryType = $(this).closest('tr').find("TD").eq(10).html();
+            details.Req_Status = $(this).closest('tr').find("TD").eq(11).html();  
+            details.id = $(this).closest('tr').find("TD").eq(12).html(); 
+            details.AmendmendId = $(this).closest('tr').find("TD").eq(13).html();  
+            R_Details3.push(details);
+            var model3 = {
+                "R_Master": R_Master3,
+                "R_Details": R_Details3
+            }            
+            $.ajax({
+                type: "POST",
+                url: "/Requestion/AmendmendDeleteItem",
+                data: JSON.stringify(model3),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " Delete Successfully.");
+                    
+                    //$('#detailsTable2 tbody').empty();
+                    //window.location.href = '/Requestion/Requsitions/';
+                }
+            });
+            $(this).closest('tr').remove();
+        });          
+        $('#detailsTable2 tbody button.btn.btn-warning').on('click', function (e) {
+            //    var Qty, Description;
+            //    if ($(this).closest('tr').find("TD input").length == 0) {
+            //        Qty = $(this).closest('tr').find("TD").eq(2).html();
+            //        Description = $(this).closest('tr').find("TD").eq(4).html();
+            //    }
+            //    else {
+            //        Qty = $(this).closest('tr').find("TD:eq(2) input[type='number']").val();
+            //        Description = $(this).closest('tr').find("TD:eq(4) input[type='text']").val();
+            //    }
+            //    //R_Details2.push(details);
+            //    var model2 = {                
+            //        "Row_Status": $('#Row_Status').val(), "Input_User": $('#Input_User').val(), "Input_Date": $('#Input_Date').val(), "Req_Status": $('#Req_Status').val(), "Requisition_Date": $('#Requisition_Date').val(), "id": $('#id').val(), "ReqId": $('#ReqId').val(), "BranchId": $('#BranchId2').val(), "Requested_by": 1, "Requsition_Type": $('#Requsition_Type2').val(), "DepartmentId": $('#DepartmentId2').val(),
+            //        "SubProductId": $(this).closest('tr').find('td').eq(1).text(), "Unit": $(this).closest('tr').find('td').eq(3).text(),
+            //        "Qty": Qty, "Description": Description,"Req_Id": $(this).closest('tr').find("TD").eq(6).html(),
+            //        "Input_User": $(this).closest('tr').find("TD").eq(7).html(), "Input_Date": $(this).closest('tr').find("TD").eq(8).html(),
+            //        "Row_Status": $(this).closest('tr').find("TD").eq(9).html(),
+            //        "EntryType":$(this).closest('tr').find("TD").eq(10).html(),
+            //        "Req_Status": $(this).closest('tr').find("TD").eq(11).html()
+            //}
+
+
+            var R_Master2 = [{ "Row_Status": $('#Row_Status').val(), "Input_User": $('#Input_User').val(), "Input_Date": $('#Input_Date').val(), "Req_Status": $('#Req_Status').val(), "Requisition_Date": $('#Requisition_Date').val(), "id": $('#id').val(), "ReqId": $('#ReqId').val(), "BranchId": $('#BranchId2').val(), "Requested_by": 1, "Requsition_Type": $('#Requsition_Type2').val(), "DepartmentId": $('#DepartmentId2').val() }];
+            var R_Details2 = new Array();
+            //$("#detailsTable2 TBODY TR").each(function () {
+            //    var row = $(this);
+            var details = {};
+            details.SubProductId = $(this).closest('tr').find("TD").eq(1).html();
+            details.Unit = $(this).closest('tr').find("TD").eq(3).html();
+            if ($(this).closest('tr').find("TD input").length == 0) {
+                details.Qty = $(this).closest('tr').find("TD").eq(2).html();
+                details.Description = $(this).closest('tr').find("TD").eq(4).html();
+            }
+            else {
+                details.Qty = $(this).closest('tr').find("TD:eq(2) input[type='number']").val();
+                details.Description = $(this).closest('tr').find("TD:eq(4) input[type='text']").val();
+            }
+            details.Req_Id = $(this).closest('tr').find("TD").eq(6).html();
+            details.Input_User = $(this).closest('tr').find("TD").eq(7).html();
+            details.Input_Date = $(this).closest('tr').find("TD").eq(8).html();
+            details.Row_Status = $(this).closest('tr').find("TD").eq(9).html();
+            details.EntryType = $(this).closest('tr').find("TD").eq(10).html();
+            details.Req_Status = $(this).closest('tr').find("TD").eq(11).html();
+            R_Details2.push(details);
+            //});
+            var model2 = {
+                "R_Master": R_Master2,
+                "R_Details": R_Details2
+            }
+            //console.log(model2)
+            $.ajax({
+                type: "POST",
+                url: "/Requestion/EditRequestion",
+                data: JSON.stringify(model2),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " Updated Successfully.");
+                    //$('#detailsTable2 tbody').empty();
+                    //window.location.href = '/Requestion/Requsitions/';
+                }
+            });
+        });
+        //{
+        //    "Row_Status": $('#Row_Status').val(),
+        //        "Input_User": $('#Input_User').val(),
+        //            "Input_Date": $('#Input_Date').val(),
+        //                "Req_Status": $('#Req_Status').val(),
+        //                    "Requisition_Date": $('#Requisition_Date').val(),
+        //                        "id": $('#id').val(), "ReqId": $('#ReqId').val(),
+        //                            "BranchId": $('#BranchId2').val(), "Requested_by": 1,
+        //                                "Requsition_Type": $('#Requsition_Type2').val(), "DepartmentId": $('#DepartmentId2').val(),
+        //                                    "SubProductId": $(this).closest('tr').find('td').eq(1).text(),
+        //                                        "Unit": $(this).closest('tr').find('td').eq(3).text(),
+        //                                            "Qty": Qty, "Description": Description,
+        //                                                "Req_Id": $(this).closest('tr').find("TD").eq(6).html(),
+        //                                                    "Input_UserDet": $(this).closest('tr').find("TD").eq(7).html(), "Input_Date": $(this).closest('tr').find("TD").eq(8).html(),
+        //                                                        "Row_StatusDet": $(this).closest('tr').find("TD").eq(9).html(),
+        //                                                            "EntryType": $(this).closest('tr').find("TD").eq(10).html(),
+        //                                                                "Req_StatusDet": $(this).closest('tr').find("TD").eq(11).html()
+        //}
+
+        //$("body").on("click", "#btnSave2", function () {            
+        //    var R_Master2 = [{ "Row_Status": $('#Row_Status').val(), "Input_User": $('#Input_User').val(), "Input_Date": $('#Input_Date').val(), "Req_Status": $('#Req_Status').val(), "Requisition_Date": $('#Requisition_Date').val(),"id": $('#id').val(), "ReqId": $('#ReqId').val(), "BranchId": $('#BranchId2').val(), "Requested_by": 1, "Requsition_Type": $('#Requsition_Type2').val(), "DepartmentId": $('#DepartmentId2').val() }];
+        //    var R_Details2 = new Array();
+        //    $("#detailsTable2 TBODY TR").each(function () {
+        //        var row = $(this);
+        //        var details = {};
+        //        details.SubProductId = row.find("TD").eq(1).html();
+        //        details.Unit = row.find("TD").eq(3).html();
+        //        if (row.find("TD input").length == 0) {
+        //            details.Qty = row.find("TD").eq(2).html();
+        //            details.Description = row.find("TD").eq(4).html();
+        //        }
+        //        else {
+        //            details.Qty = row.find("TD:eq(2) input[type='number']").val();    
+        //            details.Description = row.find("TD:eq(4) input[type='text']").val();
+        //        }
+        //        details.Req_Id = row.find("TD").eq(6).html();
+        //        details.Input_User = row.find("TD").eq(7).html();
+        //        details.Input_Date = row.find("TD").eq(8).html();
+        //        details.Row_Status = row.find("TD").eq(9).html();
+        //        details.EntryType = row.find("TD").eq(10).html();
+        //        details.Req_Status = row.find("TD").eq(11).html();
+        //        R_Details2.push(details);
+        //    });
+        //    var model2 = {
+        //        "R_Master": R_Master2,
+        //        "R_Details": R_Details2
+        //    }
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Requestion/EditRequestion",
+        //        data: JSON.stringify(model2),
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (r) {
+        //            alert(r + " record(s) updated.");
+        //            $('#detailsTable2 tbody').empty();
+        //            window.location.href = '/Requestion/Requsitions/';
+        //        }
+        //    });
+        //});  
+
+    });
+</script>

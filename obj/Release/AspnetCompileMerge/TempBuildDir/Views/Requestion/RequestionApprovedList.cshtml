@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewBag.Title = "RequestionApprovedList";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Requestion Approved List</h3>
+        </div>
+        <div class="card-body">
+
+            <div class="table">
+                <table id="table_id" class="table-bordered table-hover table-sm table-striped" style="width: 98%; overflow: auto; position: relative;">
+                    <thead>
+                        <tr>
+                            <th class="center">Requisition No</th>
+                            <th class="center">Branch Name</th>
+                            <th class="center">Department Name</th>
+                            <th class="center">Requisition Type</th>
+                            <th class="center"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r_List in ViewBag.OthersRequisition)
+                        {
+                            <tr>
+                                <td>@r_List.App_Req_ID</td>
+                                <td>@r_List.BranchName</td>
+                                <td>@r_List.DepartmentName</td>
+                                <td>@r_List.TypeName</td>
+                                <td><a class="btn btn-primary" onclick="OpenCS(@r_List.App_Req_ID)" role="button">View</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade bd-example-modal-xl" id="ViewOtherReq" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        var table = $('#table_id').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            "fnInitComplete": function (oSettings) {
+                $('.tblBroker_head').hide();
+            },
+            responsive: true
+        });
+    });
+    $(document).ready(function () {
+        $('#table_id').DataTable();
+    });
+</script>
+<script type="text/javascript">
+    function OpenCS(App_Req_ID) {
+        $.ajax({
+            url: "/Requestion/ViewRequestionApprovedDetails/",
+            data: { AppReqID: App_Req_ID },
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#ViewOtherReq').modal('toggle');
+            }
+        });
+    }
+</script>
+

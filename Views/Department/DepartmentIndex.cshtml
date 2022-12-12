@@ -1,0 +1,181 @@
+﻿@model IEnumerable<scs_Project.Models.DepartmentEntry>
+
+@{
+    ViewBag.Title = "DepartmentIndex";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="card-header bg-info">
+        <h3 class="card-title">Department List</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            @*<button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                <i class="fas fa-times"></i>
+            </button>*@
+        </div>
+    </div>
+    <div class="card-body">
+
+        <div class="text-right mb-2">
+            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdlDepartment"><i class="fa fa-plus"></i> Add New</button>
+        </div>
+   
+
+        <div class="container">
+            <table id="table_id" class="cell-border" style="width:100%">
+
+                <thead>
+                    <tr>
+
+                        <th>Department Name</th>
+                        <th>Row Status</th>
+                        <th class="text-center">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DepartmentName)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Row_Status)
+                            </td>
+                            @*<td>
+                        <button type="button" class="btn btn-sm btn-default" onclick="OpenEditDepartment(@item.id)">Edit</button> |
+                        @Html.ActionLink("Delete", "DepartmentDelete", new { id = @item.id })
+                    </td>*@
+
+                            <td class="text-center">
+                                <a href="javascript:void(0)" onclick="OpenEditDepartment(@item.id)" class="mr-2"><i title="edit" class="fa fa-pencil-alt text-secondary"></i></a>
+                                <a href="@Url.Action("DepartmentDelete","Department", new { id = item.id })"><i title="delete" class="fa fa-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+                    }
+                <tbody>
+                
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="mdlDepartment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            @*<div class="modal-header bg-info">
+            <h5 class="modal-title" id="exampleModalLabel">New Department</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>*@
+
+            <div class="modal-header bg-info">
+                <h4 class="modal-title">New Department</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                }
+            </div>
+            @using (Html.BeginForm("EntryDepartment", "Department"))
+            {
+                <div class="modal-body">
+
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Department Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="DepartmentName" />
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4">Row Status</label>
+                        <div class="col-sm-4">
+                            @Html.CheckBox("Row_Status")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info">Save</button>
+                </div>
+            }
+            @*<form action="EntryDepartment" method="post">
+            </form>*@
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editDepartment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*<div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Department</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>*@
+            <div id="editDiv">
+
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+@*<div class="card-footer">
+
+</div>
+
+</div>*@
+<script>
+    $(document).ready(function () {
+
+        var table = $('#table_id').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            responsive: true
+        });
+    });
+
+</script>
+
+<script type="text/jscript">
+
+    function OpenEditDepartment(id) {
+        //alert(clearText);
+        $.ajax({
+            url: "../Department/DepartmentEdit/" + id,
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#editDepartment').modal('toggle');
+            }
+        });
+    }
+</script>

@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewBag.Title = "Approved List";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Approved List</h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group row justify-content-center align-items-center h-100">
+                <div class="col-md-2">
+                    <input type="date" class="form-control" id="fromDate">
+                </div>
+                <label class="col-form-label">To</label>
+                <div class="col-md-2">
+                    <input type="date" class="form-control" id="toDate">
+                </div>
+                <div class="col-md-1">
+                    <input type="button" id="btnSearch" value="Search" class="btn btn-info" />
+                </div>
+            </div>
+            <div class="border-top  my-3"></div>
+            <div class="table">
+                <table id="table_id" class="cell-border" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="center">Requisition No</th>
+                            <th class="center">Branch Name</th>
+                            <th class="center">Department Name</th>
+                            <th class="center">Requisition Type</th>
+                            <th class="center">Requested by</th>
+                            <th class="center">View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var r_List in ViewBag.OthersRequisition)
+                    {
+                        <tr>
+                            <td>@r_List.App_Req_ID</td>
+                            <td>@r_List.BranchName</td>
+                            <td>@r_List.DepartmentName</td>
+                            <td>@r_List.TypeName</td>
+                            <td>@r_List.UserName</td>
+                            <td><a class="btn btn-primary" onclick="OpenCS(@r_List.App_Req_ID)" role="button">View</a></td>
+                        </tr>
+                    }
+                </tbody>
+                </table>
+            </div>
+
+            <div class="modal fade bd-example-modal-xl" id="CS" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+        $(document).ready(function () {
+            var table = $('#table_id').DataTable({
+                rowReorder: {
+                    selector: 'td:nth-child(2)'
+                },
+                responsive: true
+            });
+        });
+
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+
+        });
+</script>
+<script type="text/javascript">
+    function OpenCS(MasterID) {
+        $.ajax({
+            url: "../Requestion/RequestionApprovedByID/",
+            data: { AppReqID: MasterID },
+            success: function (result) {
+                $('#editDiv2').html(result);
+                $('#CS').modal('toggle');
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let d1 = new Date();
+        let d2 = new Date();
+        
+        var today = new Date();
+        var dd = today.getDate() - 1;
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        document.getElementById("fromDate").setAttribute("max", today);
+        document.getElementById("toDate").setAttribute("max", today);
+        //document.getElementById('fromDate').valueAsDate = new Date(d1.setDate(d1.getDate() - 7));
+        //document.getElementById('toDate').valueAsDate = new Date(d2.setDate(d2.getDate() - 1));
+
+        document.getElementById('fromDate').valueAsDate = new Date(d1.setDate(d1.getDate()));
+        document.getElementById('toDate').valueAsDate = new Date(d2.setDate(d2.getDate()));
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#btnSearch').click(function () {
+            var fdate = document.getElementById("fromDate").value/*("#fromDate").text()*/;
+            var tdate = document.getElementById("toDate").value /*("#toDate").text()*/;
+            //var data = {'fDate': fdate,'tDate': tdate};
+
+            $.ajax({
+                type: "GET",
+                url: "../Requestion/ApplicationRequestionApprovedData",
+                //data: JSON.stringify(data),
+                data: 'fDate=' + fdate + '&tDate=' + tdate,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    var employeeTable = $('#table_id tbody');
+                    $("#table_id > tbody").html("");
+
+                    $.each(data, function (i, emp) {
+                        employeeTable.append('<tr><td>' + emp.App_Req_ID + '</td><td>'
+                            + emp.BranchName + '</td><td>' + emp.DepartmentName + '</td><td>'
+                            + emp.TypeName + '</td><td>' + emp.UserName + '</td><td><a class="btn btn-primary" onclick="OpenCS( ' + emp.App_Req_ID + ')" role="button">View</a></td></tr>');
+                    });
+                }
+            });
+        });
+    });
+</script>
+

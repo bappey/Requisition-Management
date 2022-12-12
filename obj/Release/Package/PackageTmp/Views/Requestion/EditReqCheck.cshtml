@@ -1,0 +1,48 @@
+﻿@model SCS_Inventory.Models.ReqCheckList
+
+@{
+    Layout = "";
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+    @Html.HiddenFor(model => model.CheckId)
+    @Html.HiddenFor(model => model.Input_User)
+    @Html.HiddenFor(model => model.Input_Date)
+    @Html.HiddenFor(model => model.ShowName)
+    @Html.HiddenFor(model => model.Types)
+
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">Update Requisition Check List</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="card-body">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Check Name</label>
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.CheckName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CheckName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="message-text" class="col-sm-4">Row Status</label>
+                <div class="col-sm-4">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Row_Status)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-info">Update</button>
+    </div>
+}

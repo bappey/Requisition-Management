@@ -1,0 +1,136 @@
+﻿@model IEnumerable<SCS_Inventory.Models.RoleSetting>
+
+@{
+    ViewBag.Title = "MenuEntry";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+<div class="card">
+    <div class="card-header bg-info">
+        <h3 class="card-title">Menu List</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>            
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="text-right mb-2">
+            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdlMenu"><i class="fa fa-plus"></i>Add New</button>
+        </div>
+        <div class="container">
+            <table id="table_id" class="cell-border" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Menu Name</th>
+                        <th>Sub Menu Name</th>
+                        <th>Path</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.MenuName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SubMenuName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Path)</td>
+                        <td>@Html.DisplayFor(modelItem => item.RoleCaption)</td>
+                        <td class="text-center">
+                            <a href="javascript:void(0)" onclick="OpenEditMenuDeclare(@item.Id)" class="mr-2"><i title="edit" class="fa fa-pencil-alt  text-secondary"></i></a>
+                            @*<a href="@Url.Action("DeleteMenu","Setings", new { id = item.Id})"><i title="delete" class="fa fa-trash text-danger"></i></a>*@
+                        </td>
+                    </tr>
+                    }
+                <tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mdlMenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title" id="exampleModalLabel">New Menu</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                }
+            </div>
+            <form action="AddMenu" method="post">
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Menu Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="MenuName" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Sub Menu Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="SubMenuName" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Path</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="Path" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Role</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("RoleCaption", (IEnumerable<SelectListItem>)ViewBag.RoleName, "Select Role", htmlAttributes: new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editMenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="editDiv">
+            </div>
+        </div>       
+    </div>    
+</div>
+
+<script>
+    $(document).ready(function () {
+        var table = $('#table_id').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            responsive: true
+        });
+    });
+
+</script>
+
+<script type="text/jscript">
+
+    function OpenEditMenuDeclare(Id) {
+       $.ajax({
+           url: "/Setings/EditMenu/" + Id,
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#editMenu').modal('toggle');
+            }
+        });
+    }
+</script>

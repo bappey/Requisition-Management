@@ -1,0 +1,95 @@
+﻿@model scs_Project.Models.VendorInfo
+
+@{
+    Layout = "";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+
+
+
+
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">Update Vendor</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+
+    ///////////////////////////////
+    <div class="modal-body">
+        <div class="card-body">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Vendor Name</label>
+                @*@Html.LabelFor(model => model.Vendor_Name, htmlAttributes: new { @class = "col-sm-4 col-form-label" })*@
+                <div class="col-sm-8">
+                    @*<input type="text" class="form-control" value="@Model.Vendor_Name" name="Vendor_Name" id="Vendor_Name" />*@
+                    @Html.EditorFor(model => model.Vendor_Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Vendor_Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Contact No</label>
+                @*@Html.LabelFor(model => model.Contact_No, htmlAttributes: new { @class = "col-sm-4 col-form-label" })*@
+                <div class="col-sm-8">
+                    @*<input type="text" class="form-control" value="@Model.Contact_No" name="Vendor_Name" id="Vendor_Name" />*@
+                    @Html.EditorFor(model => model.Contact_No, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Contact_No, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Email</label>
+                @*@Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "col-sm-4 col-form-label" })*@
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    @*<input type="text" class="form-control" value="@Model.Email" name="Vendor_Name" id="Vendor_Name" />*@
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Address</label>
+                @*@Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "col-sm-4 col-form-label" })*@
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    @*<input type="text" class="form-control" value="@Model.Address" name="Vendor_Name" id="Vendor_Name" />*@
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Dealing Person</label>
+                @*@Html.LabelFor(model => model.Dealing_Person, htmlAttributes: new { @class = "col-sm-4 col-form-label" })*@
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.Dealing_Person, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Dealing_Person, "", new { @class = "text-danger" })
+                    @*<input type="text" class="form-control" value="@Model.Dealing_Person" name="Vendor_Name" id="Vendor_Name" />*@
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-4">
+                    <label class="col-sm-4 col-form-label">Vendor Status</label>
+                    @*@Html.LabelFor(model => model.Vendor_Status, htmlAttributes: new { @class = "control-label" })*@
+                </div>
+                <div class="col-sm-4">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Vendor_Status)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-info">Submit</button>
+    </div>
+
+
+
+}
+

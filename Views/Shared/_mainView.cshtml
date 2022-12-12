@@ -1,0 +1,520 @@
+﻿@using SCS_Inventory.Models;
+
+@{
+    Layout = null;
+    HttpCookie useridCookie = Request.Cookies["um_apps_userid"];
+    HttpCookie rolesCookie = Request.Cookies["um_apps_roles"];
+    string appsuser = useridCookie == null ? "nouser" : useridCookie.Value.ToString();
+    string appsrole = rolesCookie == null ? "noroles" : rolesCookie.Value.ToString();
+    appsrole = appsrole.Replace("%20", " ");
+
+    scs_Project.Models.DataContext db = new scs_Project.Models.DataContext();
+
+    ViewBag.MenuLst=db.Database.SqlQuery<RoleSetting>("select * from RoleSettings where RoleCaption='" + appsrole + "' order by MenuName").ToList();
+
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inventory</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="~/FrontEnd/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/FrontEnd/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="~/FrontEnd/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="~/FrontEnd/plugins/jqvmap/jqvmap.min.css">
+    <link rel="stylesheet" href="~/FrontEnd/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/FrontEnd/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="~/FrontEnd/plugins/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="~/FrontEnd/plugins/summernote/summernote-bs4.min.css">
+
+    <link href="~/FrontEnd/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/FrontEnd/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link href="~/FrontEnd/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <script src="~/FrontEnd/plugins/jquery/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+    <link href="https://cdn.datatables.net/rowreorder/1.2.7/css/rowReorder.dataTables.min.css">
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+
+
+    <link href="~/FrontEnd/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/FrontEnd/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" rel="stylesheet" />
+
+    <link href="~/FrontEnd/plugins/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet" />
+    <link href="~/FrontEnd/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet" />
+    <link href="~/FrontEnd/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+
+    <link href="~/FrontEnd/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css" rel="stylesheet" />
+
+    <style>
+        .card-body {
+            padding: 6px 10px;
+        }
+    </style>
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        @*<div class="preloader flex-column justify-content-center align-items-center">
+                <img class="animation__shake" src="~/FrontEnd/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+            </div>*@
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="~/Home/Index" class="nav-link">Home</a>
+
+                </li>
+            </ul>
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-user" style="color:black"></i>
+                        <span class="badge badge-warning navbar-badge"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header"></span>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user mr-2"></i> User : @appsuser
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-users mr-2"></i> Role : @appsrole
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        @*<a href="@Url.Action("LogOut", "Setings")" class="btn btn-sm btn-info">Sign Out</a>*@
+
+                        <form id="logoutForm" method="post" action="~/Setings/LogOut">
+                            <a class="dropdown-item font-weight-bold" href="javascript:document.getElementById('logoutForm').submit()"><span class="fas fa-sign-out-alt text-danger"></span>Sign Out</a>
+                            <input name="__RequestVerificationToken" type="hidden" value="CfDJ8D5oY2NjEb5OuypDzxG0rzyqY6kCOWPcx4QxXGUR7jDHAmTlYazawS9PfayIvQpU6wLIR99hr6FeC7mbYUsZcvUFVVtYvFqDICKRmFfnTN_6AecRxgSaCLvtS-h9f-RJLxNi254cAop0WLQUSTo5_iE5xewLysDb48v-_5VB-iaD6ZLgP0JR8lWm4Xc-AUInkA">
+                        </form>
+
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer"></a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    @*<div class="image">
+                <img src="~/FrontEnd/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+            </div>*@
+                    <div class="info">
+                        <a href="#" class="d-block">SCS Inventory</a>
+                    </div>
+                </div>
+
+                <!-- SidebarSearch Form -->
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column menunav" id="menunav" data-widget="treeview" role="menu" data-accordion="false">
+                        
+                        @{
+                        String obstracle = "";
+                        }
+                        @for (int i = 0; i < ViewBag.MenuLst.Count; i++)
+                        {
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-th"></i>
+                                <p>@ViewBag.MenuLst[i].MenuName<i class="right fas fa-angle-left"></i></p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                @for (int j = i; j < ViewBag.MenuLst.Count; j++)
+                                {
+                                    if (j == 0)
+                                    {
+                                        <li class="nav-item">
+                                            <a href="~/@ViewBag.MenuLst[j].Path  " class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>@ViewBag.MenuLst[j].SubMenuName<i class="right fas"></i></p>
+                                            </a>
+                                        </li>
+                                        i++;
+                                        obstracle = "";
+                                    }
+                                    else if (ViewBag.MenuLst[i].MenuName == ViewBag.MenuLst[j - 1].MenuName)
+                                    {
+                                        <li class="nav-item">
+                                            <a href="~/@ViewBag.MenuLst[j].Path  " class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>@ViewBag.MenuLst[j].SubMenuName<i class="right fas"></i></p>
+                                            </a>
+                                        </li>
+                                        i++;
+                                        obstracle = "";
+                                    }
+                                    else if (ViewBag.MenuLst[i].MenuName != ViewBag.MenuLst[j - 1].MenuName && obstracle == ".")
+                                    {
+                                        <li class="nav-item">
+                                            <a href="~/@ViewBag.MenuLst[j].Path  " class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>@ViewBag.MenuLst[j].SubMenuName<i class="right fas"></i></p>
+                                            </a>
+                                        </li>
+                                        i++;
+                                        obstracle = "";
+                                    }
+                                    else if (ViewBag.MenuLst[i].MenuName != ViewBag.MenuLst[j - 1].MenuName)
+                                    {
+                                        i--;
+                                        obstracle = ".";
+                                        break;
+                                    }
+                                }
+                            </ul>
+                        </li>
+
+                        }
+                                           
+
+                   
+
+
+                        @*<li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-th"></i>
+                <p>Requisition<i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="/Requestion/Requsitions" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Create Requisition<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Requestion/BranchApprovalPending" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Branch Approval Pending<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Requestion/ApplicationRequestionPending" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Application Req Pending<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Requestion/ApplicationRequestionApprovedList" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Approved List<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Requestion/OtherRequestionReport" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>My Requisition<i class="right fas"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-tools"></i>
+                <p>
+                    Settings
+                    <i class="fas fa-angle-left right"></i>
+                    <span class="badge badge-info right"></span>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="/Setings/CreteUser" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Create User<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Requestion/ReqCheckPermissionIndex" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Req Check Permission<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Setings/ReqSequence" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Requisition Sequence<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Setings/MenuEntry" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Declare Menu<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Setings/RolePermission" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Role Permission<i class="right fas"></i></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Setings/ApprovalPermission" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Approval Permission<i class="right fas"></i></p>
+                    </a>
+                </li>
+            </ul>
+        </li>*@
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid" style="padding: 15px 3px 3px 3px;">
+                    @RenderBody()
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2022 <a href="https://www.sundarbancourierltd.com">SCSIT</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 1.1.0
+            </div>
+        </footer>
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    @RenderSection("scripts", false)
+    @RenderSection("scripts2", false)
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    @*<script src="~/FrontEnd/plugins/jquery/jquery.min.js"></script>*@
+    <script src="~/FrontEnd/plugins/jquery-ui/jquery-ui.min.js"></script>
+    <script src="~/FrontEnd/plugins/select2/js/select2.full.min.js"></script>
+    <script src="~/FrontEnd/plugins/inputmask/jquery.inputmask.js"></script>
+    <script>$.widget.bridge('uibutton', $.ui.button)</script>
+    <script src="~/FrontEnd/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/FrontEnd/plugins/chart.js/Chart.min.js"></script>
+    <script src="~/FrontEnd/plugins/jqvmap/jquery.vmap.min.js"></script>
+    <script src="~/FrontEnd/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+    <script src="~/FrontEnd/plugins/jquery-knob/jquery.knob.min.js"></script>
+    <script src="~/FrontEnd/plugins/moment/moment.min.js"></script>
+    <script src="~/FrontEnd/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/FrontEnd/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="~/FrontEnd/plugins/summernote/summernote-bs4.min.js"></script>
+    <script src="~/FrontEnd/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="~/FrontEnd/dist/js/adminlte.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.js"></script>
+    @*<script src="~/FrontEnd/dist/js/demo.js"></script>*@
+    @*@RenderSection("scripts", required: false)*@
+
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+            //Datemask dd/mm/yyyy
+            $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+            //Datemask2 mm/dd/yyyy
+            $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+            //Money Euro
+            $('[data-mask]').inputmask()
+
+            //Date range picker
+            $('#reservationdate').datetimepicker({
+                format: 'L'
+            });
+            //Date range picker
+            $('#reservation').daterangepicker()
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({
+                timePicker: true,
+                timePickerIncrement: 30,
+                locale: {
+                    format: 'MM/DD/YYYY hh:mm A'
+                }
+            })
+            //Date range as a button
+            $('#daterange-btn').daterangepicker(
+                {
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(29, 'days'),
+                    endDate: moment()
+                },
+                function (start, end) {
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+                }
+            )
+
+            //Timepicker
+            $('#timepicker').datetimepicker({
+                format: 'LT'
+            })
+
+            //Bootstrap Duallistbox
+            //$('.duallistbox').bootstrapDualListbox()
+
+            //Colorpicker
+            //$('.my-colorpicker1').colorpicker()
+            ////color picker with addon
+            //$('.my-colorpicker2').colorpicker()
+
+            $('.my-colorpicker2').on('colorpickerChange', function (event) {
+                $('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+            });
+
+
+            $("input[data-bootstrap-switch]").each(function () {
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            });
+
+        })
+
+    </script>
+
+    @*<script type="text/javascript">
+                $(document).ready(function () {
+                        $.ajax({
+                            type: "GET",
+                            url: "/Setings/GetMenuList",
+                            data: { RoleCaption: '@appsrole' },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (r) {
+                                
+                                var j = 0;
+                                for (i = 0; i < r.length; i++) {
+                                    var path = r[i].Path;
+                                    var ArrNames = path.split("/");
+                                    var ControllerName = ArrNames[0];
+                                    var ActionName = ArrNames[1];
+
+                                    j++;
+                                    if (i == 0) {
+                                        //$('#menunav').prepend('<li><a href=\"#\"><img src=\"' + img.toString() + '\" alt=\"image03\"/></a></li>');
+                                        ////$('ul.tabs').append('<li>An element</li>');
+                                        //$("#menunav ul").append('<li><a href="/user/messages"><span class="tab">Message Center</span></a></li>');
+                                        //$("#menunav ul li").last().html('<li> Menu 5 </li>');
+                                        $(".menunav").append('<li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-th"></i><p>' + r[i].MenuName
+                                            + '<i class="right fas fa-angle-left"></i></p></a><ul class="nav nav-treeview"><li class="nav-item"><a href="/' + ControllerName + '/' + ActionName
+                                            + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>' + r[i].SubMenuName + '<i class="right fas"></i></p></a></li></ul></li>');
+                                        j = j - 2;
+                                    }
+                                    else if (r[i].MenuName == r[j].MenuName) {
+                                        $(".menunav ul").append('<li class="nav-item"><a href="/' + ControllerName + '/' + ActionName
+                                            + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>' + r[i].SubMenuName + '<i class="right fas"></i></p></a></li>');
+                                        //$(".menunav").append('<li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-th"></i><p>'
+                                        //    + '</p></a><ul class="nav nav-treeview"><li class="nav-item"><a href="/' + ControllerName + '/' + ActionName
+                                        //    + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>' + r[i].SubMenuName + '<i class="right fas"></i></p></a></li></ul></li>');
+                                        //$(".menunav").append('<ul class="nav nav-treeview"><li class="nav-item"><a href="/' + ControllerName + '/' + ActionName
+                                        //    + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>' + r[i].SubMenuName + '<i class="right fas"></i></p></a></li></ul>');
+                                    }
+                                    else if (r[i].MenuName != r[j].MenuName) {
+                                        $(".menunav ul").append('</ul>');
+                                        $(".menunav").append('<li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-th"></i><p>' + r[i].MenuName
+                                            + '<i class="right fas fa-angle-left"></i></p></a><ul class="nav nav-treeview"><li class="nav-item"><a href="/' + ControllerName + '/' + ActionName
+                                            + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>' + r[i].SubMenuName + '<i class="right fas"></i></p></a></li></ul></li>');
+
+                                        
+                                    }
+
+
+
+                                    //var ul = "<ul>";
+                                    //for (var i = 0; i < arr.length; i++) {
+                                    //    ul += "<li><a href=\"#\">" + arr[i] + "</a></li>";
+                                    //}
+                                    //ul += "</ul>";
+                                    //var ulElem = $(ul);                                    
+
+                                //$.each(r, function (i, item) {
+                                //    for (int j = 0; j >= i; j++ ){
+                                //}
+
+                                //alert(r[i].class_id);
+                                    //$(".menunav ul li:last").after('<li>Item num ' + MenuName + ' </li>');
+                                    //$(".menunav ul").append('<li class="nav-item has-treeview">' + item.MenuName +'</li>');
+                                    //var $tr = $('<tr/>');
+                                    //$tr.append($('<td/>').html(item.MenuName));
+                                    //$tr.append($('<td/>').html(item.SubMenuName));
+                                    //$tr.append($('<td/>').html(item.Path));
+                                    //if (item.RoleCaption != null) {
+                                    //    $tr.append($('<input type="checkbox" class="form-control " onclick="checkFluency(\'' + item.MenuName + ',' + item.SubMenuName + ',' + item.Path + '\')" checked /><td/>'));
+                                    //}
+                                    //else {
+                                    //    $tr.append($('<input type="checkbox" onclick="checkFluency(\'' + item.MenuName + ',' + item.SubMenuName + ',' + item.Path + '\')" class="Row_Status form-control"/><td/>'));
+                                    //}
+
+                                }
+
+                                //for (i = 0; i < r.length; i++) {                                    
+                                //    if (i == 0) {
+                                //        $(".menunav").append('<li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-th"></i><p>' + r[i].MenuName + '<i class="right fas fa-angle-left"></i></p></a><ul class="nav nav-treeview"><li class="nav-item"><a href="/' + ControllerName + '/' + ActionName + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>' + r[i].SubMenuName + '<i class="right fas"></i></p></a></li></ul></li>');
+                                //    }
+                                //    else if (r[i].MenuName == r[i-1].MenuName) {
+                                //        $(".menunav ul").append('<li class="nav-item"><a href="/' + ControllerName + '/' + ActionName + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>' + r[i].SubMenuName + '<i class="right fas"></i></p></a></li>');
+                                //    }
+                                //    else if (r[i].MenuName != r[j].MenuName) {
+                                //        $(".menunav").append('<li class="nav-item"><a href="#" class="nav-link"><i class="nav-icon fas fa-th"></i><p>' + r[i].MenuName + '<i class="right fas fa-angle-left"></i></p></a><ul class="nav nav-treeview"><li class="nav-item"><a href="/' + ControllerName + '/' + ActionName + '" class="nav-link"><i class="far fa-circle nav-icon"></i><p>' + r[i].SubMenuName + '<i class="right fas"></i></p></a></li></ul></li>');
+                                //    }
+                                //}                                
+                            }
+                        });
+                });
+        </script>*@
+
+</body>
+
+</html>

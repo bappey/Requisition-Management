@@ -1,0 +1,102 @@
+﻿@model SCS_Inventory.Models.UserInfo
+
+@{
+    Layout = null;
+}
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+@*@using (Html.BeginForm())
+    {*@
+@*@Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Id)*@
+@Html.Hidden("UserName")
+@Html.Hidden("Branch_Id")
+@Html.Hidden("Department_Id")
+<div class="modal-header bg-info">
+    <h4 class="modal-title">Assign Role</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <div class="card-body">
+        @foreach (var item in ViewBag.UserData)
+        {
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">HRID</label>
+                <div class="col-sm-8">
+                    <label id="HRId" class="col-form-label ">@item.HRId</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Branch Name</label>
+                <div class="col-sm-8">
+                    <label class="col-form-label">@item.Branch</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Department Name</label>
+                <div class="col-sm-8">
+                    <label class="col-form-label">@item.Department</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Name</label>
+                <div class="col-sm-8">
+                    <label class="col-form-label">@item.Name</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Create Date</label>
+                <div class="col-sm-8">
+                    <label class="col-form-label">@item.Create_Date</label>
+                </div>
+            </div>
+        }
+
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Role</label>
+            <div class="col-sm-8">
+                @Html.DropDownList("RoleId", (IEnumerable<SelectListItem>)ViewBag.Rolse, "--select--",  new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer justify-content-between">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" id="btnDone" value="Done" class="btn btn-info">Update</button>
+</div>
+@*}*@
+
+<script type="text/javascript">
+    $("#btnDone").click(function () {
+        var ReqPending_Details = new Array();
+        //$("#ReqPendingListByID TBODY TR:not(:first)").each(function () {
+        //    var row = $(this);
+        //    var details = {};
+        //    details.App_Req_ID = $("#AppReqId").val();
+        //    details.RequestName = row.find("TD").eq(0).html();
+        //    ReqPending_Details.push(details);
+        //});
+        var RoleID = $("#RoleId").val();
+        var HRId = $("#UserName").val();
+        var Branch_Id = $("#Branch_Id").val();
+        var Department_Id = $("#Department_Id").val();
+        //console.log(RoleID + "," + HRId + "," + Branch_Id + "," + Department_Id);
+        $.ajax({
+            type: "POST",
+            url: "/Setings/EditPermis",
+            //data: { checkId: checkId /*, UserName: username*/ },
+            //data: JSON.stringify(model),
+            data: JSON.stringify({ "RoleID": RoleID, "HRId": HRId, "Branch_Id": Branch_Id, "Department_Id": Department_Id }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                alert(r + " record(s) Updated.");
+                window.location.href = "/Setings/Permission";
+            }
+        });
+    });
+</script>

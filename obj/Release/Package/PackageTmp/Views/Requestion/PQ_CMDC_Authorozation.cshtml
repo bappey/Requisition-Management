@@ -1,0 +1,158 @@
+﻿@model IEnumerable<SCS_Inventory.Models.PriceQuotation>
+
+@{
+    Layout = null;
+    int masterId = 0; int vendorId = 0; int qurtationId = 0;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @*@Html.HiddenFor(model => model.DetailsId)*@
+
+    <div class="card-header bg-info">
+        <h3 class="card-title">Price Quartation Authorization</h3>
+    </div>
+    <div class="modal-body">
+        @*@foreach (var items in ViewBag.RequstionMaster)
+        {
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">Branch Name</label>
+                </div>
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">@items.B_info.BranchName</label>
+                </div>
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">Requsition Date</label>
+                </div>
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">@items.R_master.Requisition_Date</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">Procurement Department Status</label>
+                </div>
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">@items.R_master.Procurement_department_Status</label>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">CMDC Othorization Status</label>
+                </div>
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">@items.R_master.CMDC_Othorize_Status</label>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">Requsition Type</label>
+                </div>
+                <div class="col-md-3">
+                    <label for="message-text" class="col-form-label">@items.R_master.Requsition_Type</label>
+                    <input type="hidden" id="MasterId" name="masterId" value="@items.R_master.MasterId">
+                </div>
+            </div>
+        }*@
+        <table id="detailsTable2" class="table table-bordered">
+            <tr>
+                <th>
+                    Product Name
+                </th>
+                <th>
+                    Qty
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Unit
+                </th>                
+            </tr>
+            @foreach (var item in ViewBag.Quartations)
+            {
+                masterId = @item.PQ_Info.MasterID;
+                vendorId = @item.PQ_Info.vendorID;
+                qurtationId = @item.PQ_Info.QuotationID;
+                <tr>
+                    <td>
+                        @item.I_info.ItemName
+                    </td>                    
+                    <td>
+                        @item.PQ_Info.Qty
+                    </td>                    
+                    <td>
+                        @item.PQ_Info.price
+                    </td>
+                    <td>
+                        @item.PQ_Info.Unit
+                    </td>                    
+                </tr>
+            }
+        </table>
+    </div>
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Accept" class="btn btn-primary" onclick="location.href='@Url.Action("PQ_CMDC_Accept", "Requestion")?MasterID=' + @masterId +'&QuotationID='+ @vendorId +'&vendorID='+  @qurtationId " />
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        //$("#btnSave").click(function () {
+        //    var text = "";
+        //    $("#detailsTable2 TBODY TR:not(:first)").each(function () {
+        //        row = $(this).find("TD");
+        //        var status;
+        //        var Qty = parseInt(row.eq(3).text());
+        //        var cngQty = row.eq(4).find("input").val();
+        //        var commends = row.eq(7).find("input").val();
+        //        if (cngQty != '' && Qty != cngQty && commends == '') {
+        //            row.eq(7).find("input").css('border-color', 'red');
+        //            text += 0;
+        //        } else {
+        //            row.eq(7).find("input").css('border-color', '');
+        //            text += 1;
+        //        }
+        //    });
+
+        //    if (text.indexOf("0") > -1) {
+        //    } else {
+        //        var R_Master = [{ "MasterId": $('#MasterId').val() }];
+
+        //        var R_Details = new Array();
+        //        $("#detailsTable2 TBODY TR:not(:first)").each(function () {
+        //            row = $(this);
+        //            var details = {};
+        //            details.DetailsId = row.find("TD").eq(1).find("input").val();
+        //            details.ItemId = row.find("TD").eq(2).find("input").val();
+        //            details.CMDC_Qty = row.find("TD").eq(4).find("input").val();
+        //            details.CMDC_Command = row.find("TD").eq(7).find("input").val();
+        //            R_Details.push(details);
+        //        });
+        //        var model = {
+        //            "R_Master": R_Master,
+        //            "R_Details": R_Details
+        //        }
+        //            $.ajax({
+        //                type: "POST",
+        //                url: "/Requestion/CCMDC_AuthorazationUpdate",
+        //                data: JSON.stringify(model),
+        //                contentType: "application/json; charset=utf-8",
+        //                dataType: "json",
+        //                success: function (r) {
+        //                    alert(r + " record(s) Accepted.");
+        //                    $('#detailsTable tbody').empty();
+        //                }
+        //            });
+        //    }
+        //});
+    });
+</script>

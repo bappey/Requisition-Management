@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "Role Permission";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Role Permission</h2>
+            </div>
+            <div class="card-body">
+                <div class="panel-body">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">Role Name</label>
+                        <div class="col-md-3">
+                            @Html.DropDownList("RoleCaption", (IEnumerable<SelectListItem>)ViewBag.RoleList, " --Select Role-- ", new { @class = "form-control extra-class RoleCaption", @Id = "RoleCaption" })
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover ListTable">
+                        <tr>
+                            <th>Menu ID</th>
+                            <th>Menu Name</th>
+                            <th>Sub Menu Name</th>
+                            <th></th>
+                        </tr>
+                        <tbody>
+                        </tbody>                        
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {            
+            $('#RoleCaption').change(function () {                
+                $(".ListTable td").parent().remove();
+                $.ajax({
+                    type: "GET",
+                    url: "../Setings/GetRoleList",
+                    data: { RoleCaption: $(this).find('option:selected').html() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (r) {
+                        $.each(r, function (i, item) {
+                            var $tr = $('<tr/>');
+                            $tr.append($('<td/>').html(item.MenuName));
+                            $tr.append($('<td/>').html(item.SubMenuName));
+                            $tr.append($('<td/>').html(item.Path));
+                            if (item.RoleCaption != null) {
+                                $tr.append($('<input type="checkbox" class="form-control " onclick="checkFluency(\'' + item.MenuName + ',' + item.SubMenuName + ',' + item.Path +'\')" checked /><td/>'));
+                            } 
+                            else {
+                                $tr.append($('<input type="checkbox" onclick="checkFluency(\'' + item.MenuName + ',' + item.SubMenuName + ',' + item.Path +'\')" class="Row_Status form-control"/><td/>'));
+                            }
+                            $('.ListTable tr:last').after($tr);
+                        });
+                    }
+                });
+            });
+        });
+
+        
+
+        function checkFluency(MenuName, SubMenuName, Path) {
+
+            var names = MenuName;
+            var nameArr = names.split(',');
+            MenuName = nameArr[0];
+            SubMenuName = nameArr[1];
+            Path = nameArr[2];
+            checkboxes = document.getElementsByTagName("input");
+            var ddlViewBy = document.getElementById('RoleCaption');
+            var value = ddlViewBy.options[ddlViewBy.selectedIndex].text;              
+            var peramiter = { "MenuName": MenuName, "SubMenuName": SubMenuName, "Path":Path, "RoleName": value };
+            
+            $.ajax({
+                type: "POST",
+                url: "../Setings/GiveRolePermission",
+                data: JSON.stringify(peramiter),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r);                    
+                }
+            });
+        }
+    </script>

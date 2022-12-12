@@ -1,0 +1,235 @@
+﻿@{
+    ViewBag.Title = "Approval Permission";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+
+
+@*<div class="container">
+        <div class="card">
+            <div class="card-header ">
+                <h2 class="card-title">Approval Permission</h2>
+            </div>
+            <div class="card-body">
+                <div class="panel-body">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Requestion Type</label>
+                        <div class="col-sm-3">
+                            @Html.DropDownList("typeId", (IEnumerable<SelectListItem>)ViewBag.TypeList, " --Select Type-- ", new { @class = "form-control extra-class typeId", @Id = "typeId" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+<style>
+    .dataTables_length label {
+        margin-top: 15px;
+        color: #000080;
+    }
+
+    .Button {
+        padding: 5px 10px;
+        margin: 5px;
+        background-color: white;
+        border: 1px solid #ccc;
+    }
+
+        .Button:hover {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: white;
+            border: 1px solid black;
+        }
+
+    .table-1 {
+        color: #00008b;
+        font-weight: bold;
+        float: left;
+    }
+
+        .table-1 tr {
+            float: left;
+        }
+
+    .dataTables_filter input {
+        padding: 5px 2px;
+        border: 1px solid #ccc;
+        width: 300px;
+    }
+
+    .dt-buttons {
+        float: left;
+    }
+
+    #my_table th {
+        background-color: White;
+        color: black;
+    }
+
+    #my_table tr td {
+        background-color: white !important;
+    }
+
+    span a {
+        background: #ffffff !important;
+    }
+
+    .dataTables_length label {
+        margin-top: 5px;
+        color: #000080;
+    }
+
+    .button, input, select, textarea {
+        padding: 5px;
+    }
+</style>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Requestion Sequence</h2>
+        </div>
+        <div class="card-body">
+            <div class="panel-body">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Requestion Type</label>
+                    <div class="col-sm-3">
+                        @*@Html.DropDownList("typeId", (IEnumerable<SelectListItem>)ViewBag.TypeList, " --Select Type-- ", new { @class = "form-control extra-class", @onchange = "FillType()", @Id = "typeId" })*@
+                        @Html.DropDownList("typeId", (IEnumerable<SelectListItem>)ViewBag.TypeList, " --Select Type-- ", new { @class = "form-control extra-class", @Id = "typeId" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">User Name</label>
+                    <div class="col-md-3">
+                        @Html.DropDownList("UserName", (IEnumerable<SelectListItem>)ViewBag.UserList, " --Select User-- ", new { @class = "form-control extra-class UserName", @Id = "UserName" })
+                    </div>
+                </div>
+                @*<div class="form-group row">
+                <label class="col-sm-3 col-form-label">Requestion Check List</label>
+                <div class="col-sm-3">
+                    @Html.DropDownList("types",new SelectList(Enumerable.Empty<SelectListItem>(), "ID", "Symbol"),"types",new { @class = "form-control" })
+                </div>
+            </div>*@
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover ListTable">
+                    <tr>
+                        <th>CheckID</th>                        
+                        <th>Check Option Name</th>
+                        <th></th>
+                    </tr>
+                    <tbody>
+                    </tbody>                    
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#UserName').change(function () {
+            $(".ListTable td").parent().remove();
+            var typeId = $('#typeId').val();
+            var userId = $('#UserName').val();
+            //$(this).find('option:selected').val()
+            //alert("TypeId: " + $('#typeId').val() + " UserId: " + $('#UserName').val());
+            $.ajax({
+                type: "GET",
+                url: "/Setings/GetApprovalSeq",
+                data: { TypeId: typeId, UserId: userId },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $.each(r, function (i, item) {
+                        var $tr = $('<tr/>');
+                        $tr.append($('<td/>').html(item.CheckId));
+                        $tr.append($('<td/>').html(item.CheckName));
+                        if (item.Status != 0) {
+                            $tr.append($('<input type="checkbox" class="form-control " onclick="checkFluency(' + item.CheckId + ')" checked /><td/>'));
+                        }
+                        else {
+                            $tr.append($('<input type="checkbox" onclick="checkFluency(' + item.CheckId + ')" class="Row_Status form-control"/><td/>'));
+                        }
+                        $('.ListTable tr:last').after($tr);
+                    });
+                }
+            });
+        });
+        $('#typeId').change(function () {
+            $(".ListTable td").parent().remove();
+            var typeId = $('#typeId').val();
+            var userId = $('#UserName').val();
+            //$(this).find('option:selected').val()
+            //alert("TypeId: " + $('#typeId').val() + " UserId: " + $('#UserName').val());
+            $.ajax({
+                type: "GET",
+                url: "/Setings/GetApprovalSeq",
+                data: { TypeId: typeId, UserId: userId },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $.each(r, function (i, item) {
+                        var $tr = $('<tr/>');
+                        $tr.append($('<td/>').html(item.CheckId));
+                        $tr.append($('<td/>').html(item.CheckName));
+                        if (item.Status != 0 ) {
+                            $tr.append($('<input type="checkbox" class="form-control " onclick="checkFluency(' + item.CheckId + ')" checked /><td/>'));
+                        }
+                        else {
+                            $tr.append($('<input type="checkbox" onclick="checkFluency(' + item.CheckId + ')" class="Row_Status form-control"/><td/>'));
+                        }
+                        $('.ListTable tr:last').after($tr);
+                    });
+                }
+            });
+        });
+    });
+    function checkFluency(CheckId) {
+        
+        //checkboxes = document.getElementsByTagName("input");
+        //var ddlViewBy = document.getElementById('UserName');
+        //var typeIdOf = document.getElementById('typeId');
+        //var typeIdvalue = typeIdOf.options[typeIdOf.selectedIndex].val();    
+        //var value = ddlViewBy.options[ddlViewBy.selectedIndex].val();        
+        var peramiter = {
+            "CheckId": CheckId, "UserId": $("#UserName :selected").val(), "TypeId": $("#typeId :selected").val()
+        }
+       
+        $.ajax({
+            type: "POST",
+            url: "/Setings/GiveReqApprovedPermission",
+            data: JSON.stringify(peramiter),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                alert(r);
+            }
+        });
+    }
+</script>
+
+
+@*<script>
+    function FillType() {
+        var typeId = $('#typeId').val();
+        $("#types").empty();
+        $.ajax({
+            url: "/Setings/GetReqType",
+            type: "GET",
+            dataType: "JSON",
+            data: { TypeId: typeId },
+            success: function (r) {
+                $("#types").html("");
+                $.each(r, function (i, item) {
+                    $("#types").append(
+                        $('<option></option>').val(item.CheckId).html(item.CheckName));
+                });
+            }
+        });
+    }
+</script>*@
+
+
+    
+
+

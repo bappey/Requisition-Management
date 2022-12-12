@@ -1,0 +1,201 @@
+﻿@model SCS_Inventory.Models.ReceiptMaster
+
+@{
+    ViewBag.Title = "Product Receipt Entry";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+<section class="content">
+    <style>
+        .dataTables_length label {
+            margin-top: 15px;
+            color: #000080;
+        }
+
+        .Button {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: white;
+            border: 1px solid #ccc;
+        }
+
+            .Button:hover {
+                padding: 5px 10px;
+                margin: 5px;
+                background-color: white;
+                border: 1px solid black;
+            }
+
+        .table-1 {
+            color: #00008b;
+            font-weight: bold;
+            float: left;
+        }
+
+            .table-1 tr {
+                float: left;
+            }
+
+        .dataTables_filter input {
+            padding: 5px 2px;
+            border: 1px solid #ccc;
+            width: 300px;
+        }
+
+        .dt-buttons {
+            float: left;
+        }
+
+        #my_table th {
+            background-color: White;
+            color: black;
+        }
+
+        #my_table tr td {
+            background-color: white !important;
+        }
+
+        span a {
+            background: #ffffff !important;
+        }
+
+        .dataTables_length label {
+            margin-top: 5px;
+            color: #000080;
+        }
+
+        .button, input, select, textarea {
+            padding: 5px;
+        }
+    </style>
+    <div class="card ">
+        <div class="card-header bg-info">
+            <h3 class="card-title">Product Receipt</h3>
+            @*<div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>*@
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sl-3"></div>
+                <div class="col-lg-2 col-md-2 col-sl-2">
+                    <label for="message-text" class="col-form-label ">Search Requestion Number</label>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sl-2">
+                    <input type="text" name="RequestionNumber" id="RequestionNumber" class="form-control" placeholder="Requestion Number">
+                </div>
+                <div class="col-lg-1 col-md-1 col-sl-1">
+                    <button type="button" class="btn btn-sm btn-success searchRequestion" onclick="OpenPriceRequestion()"><i class="fa fa-search"></i> Search</button>
+                </div>
+            </div>
+            <div class="border-top my-3"></div>
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sl-2">
+                    <label for="message-text" class="col-form-label">Pending Receipt List</label>
+                </div>
+            </div>
+            <div style="padding: 10px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+                <table id="ShowDetailsInfo" class="cell-border">
+                    <thead>
+                        <tr>
+                            <th class="center">Vendor Name</th>
+                            <th class="center">Requestion No</th>
+                            <th class="center">Total Quantity</th>
+                            <th class="center">Receipt Date</th>
+                            <th class="center"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.ReceiptPendingList)
+                    {
+                        <tr>
+                            <td>@item.Vendor_Name</td>
+                            <td>@item.RequeisitionID</td>
+                            <td>@item.Qty</td>
+                            <td>@item.ReceiveDate.ToString("dd/MM/yyyy")</td>
+                            <td><a href="@Url.Action("ReceiptDetails", "Price_Quotation", new { id = item.RequeisitionID  })"><i title="Details" class="fa fa-eye"></i></a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal fade bd-example-modal-xl" id="SelectedVendorPriceList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Receipt List</h3>            
+        </div>
+        <div class="card-body">
+            <div style="padding: 10px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+                <table id="ShowDetailsInfo2" class="cell-border">
+                    <thead>
+                        <tr>
+                            <th class="center">Vendor</th>
+                            <th class="center">Requestion No</th>
+                            <th class="center">Receive Date</th>
+                            <th class="center">Total Qty</th>
+                            <th class="center">Total Price</th>
+                            <th class="center">Purchage Date</th>
+                            <th class="center">Received By</th>
+                            <th class="center">Status</th>
+                            <th class="center"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.ReceiveList)
+                        {
+                        <tr>
+                            <td>@item.Vendor_Name</td>
+                            <td>@item.RequeisitionID</td>
+                            <td>@item.ReceiveDate.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Qty</td>
+                            <td>@item.TotalPrice</td>
+                            <td>@item.PurchageDate.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Name</td>
+                            <td>@item.Status</td>
+                            <td><a href="@Url.Action("ReceiptDetails", "Price_Quotation", new { id = item.RequeisitionID  })"><i title="Details" class="fa fa-eye"></i></a></td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer"> 
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    function OpenPriceRequestion() {
+        if ($('#RequestionNumber').val() != "") {
+            $.ajax({
+                url: "/Price_Quotation/RequestionProductPrice/" + $('#RequestionNumber').val(),
+                success: function (result) {
+                    $('#editDiv').html(result);
+                    $('#SelectedVendorPriceList').modal('toggle');
+                }
+            });
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#ShowDetailsInfo').DataTable();
+        $('#ShowDetailsInfo2').DataTable();
+    });
+</script>

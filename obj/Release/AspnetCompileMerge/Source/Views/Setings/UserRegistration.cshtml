@@ -1,0 +1,273 @@
+﻿@model SCS_Inventory.Models.UserInfo
+
+@{
+    Layout = null;
+}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en" />
+    <style>
+
+        html, body {
+            background-image: url('http://getwallpapers.com/wallpaper/full/a/5/d/544750.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100%;
+            font-family: 'Numans', sans-serif;
+        }
+
+        .container {
+            height: 100%;
+            align-content: center;
+        }
+
+        .card {
+            height: 650px;
+            margin-top: auto;
+            margin-bottom: auto;
+            width: 650px;
+            background-color: rgba(0,0,0,0.5) !important;
+        }
+
+        .card-header h3 {
+            color: white;
+        }
+
+        .input-group-prepend span {
+            width: 50px;
+            background-color: #FFC312;
+            color: black;
+            border: 0 !important;
+        }
+
+        input:focus {
+            outline: 0 0 0 0 !important;
+            box-shadow: 0 0 0 0 !important;
+        }
+
+        .remember {
+            color: white;
+        }
+
+            .remember input {
+                width: 20px;
+                height: 20px;
+                margin-left: 15px;
+                margin-right: 5px;
+            }
+
+        .login_btn {
+            color: black;
+            background-color: #FFC312;
+            width: 100px;
+        }
+
+            .login_btn:hover {
+                color: black;
+                background-color: white;
+            }
+
+        .links {
+            color: white;
+        }
+
+            .links a {
+                margin-left: 4px;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-center h-100">
+            <div class="card">
+                <div class="card-header">
+                    <h3>User Registration</h3>
+                </div>
+                <div class="card-body">
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    }
+
+                    <form action="UserRegistration" method="post">
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-building-o"></i></span>
+                            </div>
+                            @Html.DropDownList("Branch_Id", (IEnumerable<SelectListItem>)ViewBag.BranchName, "Select Branch", htmlAttributes: new { @class = "form-control", })
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-archive"></i></span>
+                            </div>
+                            @Html.DropDownList("Department_Id", (IEnumerable<SelectListItem>)ViewBag.DepartmentName, "Select Department", htmlAttributes: new { @class = "form-control" })
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            <input type="text" class="form-control" name="UserName" id="UserName" placeholder="User Name">
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            <input type="text" class="form-control" name="Name" id="Name" placeholder="Full Name">
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            </div>
+                            <input type="text" class="form-control" name="Email" id="Email" placeholder="Email">
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            </div>
+                            <input type="text" class="form-control" name="Phone" id="Phone" placeholder="Phone">
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-genderless"></i></span>
+                            </div>
+                            @Html.DropDownList("Gender", new SelectList(new List<SelectListItem> { new SelectListItem { Text = "Male", Value = "Male", Selected = true }, new SelectListItem { Text = "Female", Value = "Female" } }, "Value", "Text"), new { @class = "form-control" })
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-deaf"></i></span>
+                            </div>
+                             @Html.DropDownList("Designation", (IEnumerable<SelectListItem>)ViewBag.Designation, "Select Designation", htmlAttributes: new { @class = "form-control" })
+                        </div>
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span> 
+                            </div>
+                            <input type="password" class="form-control" name="Password" id="Password" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn float-right login_btn">
+                            @if (TempData["Message"] != null)
+                            {
+                                <strong style="color: white;">@TempData["Message"]</strong>
+                            }
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-center links">
+                        Already have an account? @Html.ActionLink("Log In", "SmartLogins")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="container">
+        <div class="d-flex justify-content-center h-100">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>User Registration</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-building-o"></i></span>
+                                </div>
+                                @Html.DropDownList("BranchCode", (IEnumerable<SelectListItem>)ViewBag.BranchName, "Select Branch", htmlAttributes: new { @class = "form-control BranchCode", })
+                            </div>
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-archive"></i></span>
+                                </div>
+                                @Html.DropDownList("Id", (IEnumerable<SelectListItem>)ViewBag.DepartmentName, "Select Department", htmlAttributes: new { @class = "form-control Id" })
+                            </div>
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                </div>
+                                <input type="text" class="form-control" name="UserName" id="UserName" placeholder="User Name">
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                </div>
+                                <input type="text" class="form-control" name="Name" id="Name" placeholder="Full Name">
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                </div>
+                                <input type="text" class="form-control" name="Email" id="Email" placeholder="Email">
+                            </div>
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                </div>
+                                <input type="text" class="form-control" name="Phone" id="Phone" placeholder="Phone">
+                            </div>
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-genderless"></i></span>
+                                </div>
+                                @Html.DropDownList("Gender", new SelectList(new List<SelectListItem> { new SelectListItem { Text = "Male", Value = "Male", Selected = true }, new SelectListItem { Text = "Female", Value = "Female" } }, "Value", "Text"), new { @class = "form-control" })
+                            </div>
+                            <div class="input-group form-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                </div>
+                                <input type="password" class="form-control" name="Password" id="Password" placeholder="Password">
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-9">
+                                    @if (TempData["Message"] != null)
+                                    {
+                                        <strong style="color: white;">@TempData["Message"]</strong>
+                                    }
+                                </div>
+                                <div class="col-md-offset-2 col-md-3">
+                                    <input type="submit" value="Save" class="btn btn-default" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-center links">
+                                <div class="col-md-offset-2 col-md-9">
+                                    @if (TempData["Message"] != null)
+                                    {
+                                        <strong style="color: white;">@TempData["Message"]</strong>
+                                    }
+                                </div>
+                                <div class="col-md-offset-2 col-md-3">
+                                    <input type="submit" value="Save" class="btn btn-default" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            </div>
+    </div>*@
+</body>
+</html>
+

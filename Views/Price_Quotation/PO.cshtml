@@ -1,0 +1,147 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+@foreach (var item in ViewBag.VendorNameList)
+    {  float totalPrice = 0;
+
+<div class="container" style="padding: 10px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+        <page size="A4">
+            <div style="padding: 15px 70px;">
+                <header>
+                    <div class="container clearfix row">
+                        <div class="col-md-2">
+                            <img src="~/Picture/839448blob.png" class="avatar" alt="avatar ">
+                        </div>
+                        <div class="col-md-10">
+                            <h3 style="padding: 0px!important; margin: 0px!important">
+                                Sundorbon Courier Service (Pvt.) Ltd.
+                            </h3>
+                            <p style="font-size:11px;">
+                                (Domestic & International)<br />HEAD OFFICE: 24-25 DILKUSHA C/A, SADHARAN BIMA SADAN, DHAKA-1000. BANGLADESH PHONE: 9551954, 9551656, 9556952, 9559635, 9551656, FAX: 880-2-9563995, e-mail: mail@sundarbancourier.com.bd CORPORATE OFFICE: 7, DILKUSHA COMMERCIAL AREA, DHAKA-1000, BANGLADESH, PHONE: 955028, 9570177.  FAX: 880-2-7171208, CENTRAL SERVICE CONTROL CELL: 4 KALLAYAPUR, PHONE: 880-2-8035009, 8035396, 8035481-4.
+                            </p>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="document active">
+                    <div class="spreadSheetGroup" style="color:#333; background-color:#fff; padding:1em;">
+                        <table class="shipToFrom">
+                            <thead style="font-weight:bold">
+                                <tr>
+                                    <th>TO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td contenteditable="true" style="width:50%">
+                                        Date:
+                                        <script>document.write(new Date().toLocaleDateString());</script><br />
+                                        @item.Vendor_Name <br />
+                                        @item.Address<br />
+                                        @item.Contact_No<br />                                                        
+                                        <br /> @Html.Raw((String)ViewBag.Subject)
+                                        <br />@Html.Raw(ViewBag.Body)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>
+                                    <label> Product Description </label>
+                                </th>
+                                <th>
+                                    <label> Unit Price </label>
+                                </th>
+                                <th>
+                                    <label> Qty </label>
+                                </th>
+                                <th>
+                                    <label> Total Price </label>
+                                </th>
+                            </tr>
+                            <tbody>
+                                @foreach (var items in ViewBag.PriceDetails)
+                                {
+                                    if (item.id == items.vendorID)
+                                    {
+                                        totalPrice = totalPrice + (items.Qty * items.price);
+                                        <tr>
+                                            <td>@items.ItemName<br /><spen>@items.Description</spen></td>
+                                            <td>@items.price</td>
+                                            <td>@items.Qty</td>
+                                            <td>@(items.Qty * items.price) </td>
+                                        </tr>
+                                    }
+                                }
+                                <tr>
+                                    <td colspan="3" align="right">Grand Total =</td>
+                                    <td>@totalPrice</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table width="100%">
+                            <tbody>
+                                <tr>
+                                    <td style="vertical-align: top;text-align: left">
+                                        <h6>Terms & Conditions:</h6>
+                                        <p>1. Payment will be made within 30 days after delivery of the goods.</p>
+                                        <p>2. VAT & TAX: The above-mentioned price is excluding VAT & Tax.</p>
+                                        <p>3. Uttara 06  Sectore ,H# 3,R# 13D</p>
+                                        <p>Regards</p>
+                                        <p>Md.Ashraful alam<br />Manager Procurement (IT)<br />IT-DEPT. Sundarban Courier Service Ltd.<br />Cell-01912774425<br />E-mail-ashraful.scs@gmail.com</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <footer class="row">
+                    <small>
+                        Branch office: Barisal, Benaple, B-Baria, Bagerhat, Chamelibag, Chandpur, Chatak, Chapainawabgonj, Chittagong, Chownahani, Chuadanga, Comilla,
+                        Cox’s Bazar, Dinajpur, Faridpur, Feni,   Gazipur, Gaibandha, Jatarabari, Janalpur, Jessore, Jhenaidah, Jhalakati, Joypurhat, Karwan Bazar, Khulna, Laxmipur,
+                        Moulvibazar, Mymensingh, Motaleb Plaza, Narayangonj, Nilphamari, Nawabpur-1, National University,   Natore,  Naogaon,  Pabna,  Patuakhali,  Rajshahi, Rangpur,
+                        Syedpur, Sirajgonj,  Sreemongal, Sylhet, Satkhira,   Shyamoli, Saver, Shariatpur, Takerhat, Tangail, Uttara, Victoriapark
+                    </small>
+
+                    <div class="row no-print">
+                        <div class="card-style-footer" style="padding: 15px 70px;">
+                            <div class="btn-group right">
+                                <button type="button" onclick="print()" class="btn btn-outline-primary button button4"> Print </button>
+                            </div>
+
+                            <div class="btn-group left">
+                                <button type="submit" class="btn btn-outline-primary button"> @Html.ActionLink("Back to List", "SalesInvoiceReport")</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </footer>
+
+
+
+                @*<div class="row">
+                    <footer class="main-footer">
+                        <small>
+                            Branch office: Barisal, Benaple, B-Baria, Bagerhat, Chamelibag, Chandpur, Chatak, Chapainawabgonj, Chittagong, Chownahani, Chuadanga, Comilla,
+                            Cox’s Bazar, Dinajpur, Faridpur, Feni,   Gazipur, Gaibandha, Jatarabari, Janalpur, Jessore, Jhenaidah, Jhalakati, Joypurhat, Karwan Bazar, Khulna, Laxmipur,
+                            Moulvibazar, Mymensingh, Motaleb Plaza, Narayangonj, Nilphamari, Nawabpur-1, National University,   Natore,  Naogaon,  Pabna,  Patuakhali,  Rajshahi, Rangpur,
+                            Syedpur, Sirajgonj,  Sreemongal, Sylhet, Satkhira,   Shyamoli, Saver, Shariatpur, Takerhat, Tangail, Uttara, Victoriapark
+                        </small>
+                    </footer>
+                </div>*@
+                
+            </div>
+        </page>
+        
+    </div>
+}
+
+
+

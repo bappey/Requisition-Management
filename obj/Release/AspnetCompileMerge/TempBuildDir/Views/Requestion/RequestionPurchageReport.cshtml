@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Purchage Requestion Report";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Requisition List</h3>
+        </div>
+        <div class="card-body">
+            <div class="table">
+                <table id="table_id" class="cell-border" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="center">Requisition No</th>
+                            <th class="center">Branch</th>
+                            <th class="center">Requested by</th>
+                            <th class="center">Requisition Date</th>
+                            <th class="center">Last Update</th>
+                            <th class="center">Type</th>
+                            <th class="center">Status</th>
+                            <th class="center">Description</th>
+                            <th class="center">View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r_List in ViewBag.RequestionList)
+                        {
+                            <tr>
+                                <td>@r_List.ReqId</td>
+                                <td>@r_List.BranchName</td>
+                                <td>@r_List.Name</td>
+                                <td>@r_List.Requisition_Date</td>
+                                <td>@r_List.Edit_Date</td>
+                                <td>@r_List.Requsition_Type</td>
+                                <td>@r_List.Req_Status</td>
+                                <td>@r_List.Description</td>    
+                                @*<td>
+                                    @if (r_List.Requisition_Status == "Waiting For CMDC")
+                                    {
+                                        <button type="button" class="btn btn-sm btn-default" onclick="OpenCMDC_Authorozation(@r_List.MasterId)">CMDC Accept</button>
+                                    }
+                                    else if (r_List.Requisition_Status == "CMDC Accept >> Waiting For Procurement")
+                                    {
+                                        @Html.ActionLink("Procurement Accept", "Procurement_Authorization", new { id = r_List.MasterId })
+                                    }
+                                    else if (r_List.Requisition_Status == "Procurement Accept >> Waiting For Price Qurtation")
+                                    {
+                                        @Html.ActionLink("Generate Quotation", "Quotations", new { id = r_List.MasterId })
+                                    }
+                                </td>*@
+                            <td>
+                                <a class="btn btn-primary" href="@Url.Action("PurchageRequestionReport", "Requestion", new { id = r_List.ReqId  })" role="button">Details</a>
+                                @*<a href="javascript:void(0)" onclick="EditRequesition(@r_List.ReqId)" class="mr-2"><i title="Edit" class="fa fa-pencil-alt text-secondary"></i></a>*@
+                                @*<a href="@Url.Action("PurchageRequestionReport", "Requestion", new { id = r_List.ReqId  })"><i title="Details" class="fa fa-eye"></i></a>*@
+                            </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+
+<script>
+        $(document).ready(function () {
+            var table = $('#table_id').DataTable({
+                rowReorder: {
+                    selector: 'td:nth-child(2)'
+                },
+                responsive: true
+            });
+        });
+
+        $(document).ready(function () {
+            $('#table_id').DataTable();
+
+        });
+</script>
+

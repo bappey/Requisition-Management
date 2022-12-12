@@ -1,0 +1,70 @@
+﻿@model scs_Project.Models.DepartmentInfo
+
+@{
+    Layout = null;
+} 
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">Update Department</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="card-body">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Branch Name</label>
+                @*@Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "col-sm-4 col-form-label" })*@
+                <div class="col-sm-8">
+                    @Html.DropDownList("BranchId", (IEnumerable<SelectListItem>)ViewBag.BranchName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Department Name</label>
+                <div class="col-sm-8">
+                    @Html.DropDownList("DepartmentId", (IEnumerable<SelectListItem>)ViewBag.DepartmentName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Focal Person</label>
+                @*@Html.LabelFor(model => model.Focal_Person, htmlAttributes: new { @class = "col-sm-4 col-form-label" })*@
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.Focal_Person, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Focal_Person, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Contact</label>
+                @*@Html.LabelFor(model => model.Contact, htmlAttributes: new { @class = "col-sm-4 col-form-label" })*@
+                <div class="col-sm-8">
+                    @Html.EditorFor(model => model.Contact, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Contact, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Active (Yes/No)</label>
+                <div class="col-sm-4">
+                    <div class="checkbox">
+                        @Html.CheckBox("Row_Status")
+                        @Html.Hidden("Input_User")
+                        @Html.Hidden("Input_Date")
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-info">Update</button>
+    </div>
+}
+

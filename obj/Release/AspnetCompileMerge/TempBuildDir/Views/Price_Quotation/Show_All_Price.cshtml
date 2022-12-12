@@ -1,0 +1,164 @@
+﻿@model IEnumerable<SCS_Inventory.Models.PriceQuotation>
+
+@{
+    Layout = "";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">All Price List</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <table class="table table-bordered table-sm table-striped" id="priceList">
+            <tr class="table-info">
+                <th style="text-align:center" rowspan="2">Item Name</th>
+                <th style="text-align:center" rowspan="2">Qty</th>
+                @foreach (var VendorNameList in ViewBag.VendorNameList)
+                {
+                    <th colspan="3" style="text-align: center">
+                        @VendorNameList.Vendor_Name
+                        @*<span style="float: right"><input type="checkbox" id="allcb" name="allcb" /></span>*@
+                    </th>
+                }
+                <th style="text-align:center" rowspan="2">Commands</th>
+            </tr>
+            <tr class="table-info">
+                @foreach (var VendorNameList in ViewBag.VendorNameList)
+                {
+                    <td>Price</td>
+                    <td>Warranty</td>
+                    <td>Country of Orgin</td>
+                }
+            </tr>
+            @foreach (var item in ViewBag.ItemNameList)
+            {
+        <tr>
+            <td>@item.ItemName</td>
+            <td>@item.Qty</td>
+            @foreach (var price in ViewBag.PriceDetails)
+            {
+                foreach (var VendorNameList in ViewBag.VendorNameList)
+                {
+                    if (price.ItemName == item.ItemName && price.Vendor_Name == VendorNameList.Vendor_Name)
+                    {
+                        <td style="text-align: center">@price.price</td>
+                        <td style="text-align: center">@price.Warienty</td>
+                        <td style="text-align: center">@price.MadeBy<span style="float: right"><input type="checkbox" id="cb" name="cb" /></span></td>
+                        <td style="display: none">@price.vendorID</td>
+                        <td style="display: none">@price.MasterID</td>
+                        <td style="display: none">@price.ItemId</td>
+                    }
+                }
+            }
+            <td><input type="text" class="form-control Commands" name="Commands" placeholder="Commands"/></td>
+            @*<td>
+            <img src="~/Content/Image/Plus2.png" />
+            <div style="display:none">
+                <table cellpadding="0" cellspacing="0" class="ChildGrid" style="width:100%">
+                    <tr>
+                        @foreach (var price in ViewBag.PriceDetails)
+                        {
+                            foreach (var VendorNameList in ViewBag.VendorNameList)
+                            {
+
+                                if (price.ItemName == item.ItemName && price.Vendor_Name == VendorNameList.Vendor_Name)
+                                {
+                                    <td>
+                                        Warranty : @price.Warienty Month
+                                        <br />
+                                        Country of Orgin :@price.MadeBy
+                                    </td>
+
+                                }
+                            }
+                        }
+                    </tr>
+                    <tr></tr>
+                </table>
+            </div>
+        </td>*@
+
+        </tr>
+            }
+        </table>
+
+
+    </div>
+    <div class="modal-footer">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" id="btnSave" value="Make CS" class="btn btn-info" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $("body").on("click", "img[src*='Plus2.png']", function () {
+        $(this).closest("tr").after("<tr><td></td><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+        $(this).attr("src", "/Content/Image/Minus2.png");
+    });
+    $("body").on("click", "img[src*='Minus2.png']", function () {
+        $(this).attr("src", "/Content/Image/Plus2.png");
+        $(this).closest("tr").next().remove();
+    });
+    $(function () {
+        $("#allcb").click(function () {
+            var chkBoxes = $("input[id^=cb]");
+            chkBoxes.prop("checked", !chkBoxes.prop("checked"));
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    $("#btnSave").click(function () {
+        var CSAccept_Details = new Array();
+        var table = document.getElementById('priceList');
+        var rowLength = table.rows.length;
+        for (var i = 2; i < rowLength; i++) {
+            var row = table.rows[i]; 
+            for (var y = 2; y < row.cells.length; y++) {
+                var cell = row.cells[y];
+                if ($(cell).find('input[type=checkbox]').prop('checked'))
+                {
+                    var details = {};
+                    y++;
+                    details.vendorID = row.cells[y].innerHTML;
+                    y++;
+                    details.MasterID = row.cells[y].innerHTML;
+                    y++;
+                    details.ItemId = row.cells[y].innerHTML;
+                    y = row.cells.length - 1;
+                    details.CS_Command = row.cells[y].firstChild.value;
+                    CSAccept_Details.push(details);
+                }
+            }
+        }
+
+        var model = {
+            "model": CSAccept_Details
+        }
+        $.ajax({
+            type: "POST",
+            url: "/Price_Quotation/CSAccept",
+            data: JSON.stringify(model),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                alert(r + " record(s) Updated.");
+                $('#priceList tbody').empty();
+            }
+        }); 
+
+    });
+        
+</script>

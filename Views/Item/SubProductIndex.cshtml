@@ -1,0 +1,178 @@
+﻿@model IEnumerable<scs_Project.Models.SubProductList>
+
+@{
+    ViewBag.Title = "Sub Product Index";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+
+<div class="card">
+
+    <div class="card-header bg-info">
+        <h3 class="card-title">Sub Product List</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="text-right mb-2">
+            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdlSubProduct"><i class="fa fa-plus"></i> Add New</button>
+        </div>
+        <div class="container">
+            <table id="table_id" class="cell-border" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>
+                            Product Name
+                        </th>                        
+                        <th>
+                            Sub Product Name
+                        </th>
+                        <th>
+                            Product Model
+                        </th>
+                        <th>
+                            Unit
+                        </th>
+                        <th>
+                            Generate Serial?
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.SubProductRecord)
+                    {
+                    <tr>
+                        <td>
+                            @item.P_List.ProductName
+                        </td>
+                        <td>
+                            @item.S_P_List.SubProductName
+                        </td>
+                        <td>
+                            @item.S_P_List.ProductModel
+                        </td>
+                        <td>
+                            @item.S_P_List.Unit
+                        </td>
+                        <td>
+                            @item.S_P_List.Generate_SL
+                        </td>
+                        <td class="text-center">
+                            <a href="javascript:void(0)" onclick="OpenEditSubProducts(@item.S_P_List.SubProductId)" class="mr-2"><i title="edit" class="fa fa-pencil-alt  text-secondary"></i></a>
+                        </td>
+                    </tr>
+                    }
+                <tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mdlSubProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h4 class="modal-title" id="exampleModalLabel">New Sub Product</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                }
+            </div>
+
+            <form action="AddSubProducts" method="post">
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Products</label>
+                        <div class="col-sm-8">
+                            @Html.DropDownList("ProductId", (IEnumerable<SelectListItem>)ViewBag.ProductList, new { @class = "form-control extra-class" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Sub Product Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="SubProductName" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Product Model</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="ProductModel" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4 col-form-label">Unit</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="Unit" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4">Row Status</label>
+                        <div class="col-sm-2">
+                            @*<input type="checkbox" class="control-label" name="Row_Status" id="Row_Status" />*@
+                            @Html.CheckBox("Row_Status")
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="message-text" class="col-sm-4">Generate Serial?</label>
+                        <div class="col-sm-2">
+                            @*<input type="checkbox" class="control-label" name="Generate_SL" id="Generate_SL" />*@
+                            @Html.CheckBox("Generate_SL")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editSubProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+           
+            <div id="editDiv">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var table = $('#table_id').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            responsive: true
+        });
+    });
+</script>
+
+<script type="text/jscript">
+    function OpenEditSubProducts(id) {
+        $.ajax({
+            url: "../item/EditSubProduct/" + id,
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#editSubProduct').modal('toggle');
+            }
+        });
+    }
+</script>

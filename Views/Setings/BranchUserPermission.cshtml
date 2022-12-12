@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewBag.Title = "BranchUserPermission";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+
+<div class="container">
+    <div class="card">
+        <div class="alert alert-success" style="display: none;">
+            <p class="message"></p>
+        </div>
+        <div class="card-header">
+            <h2 class="card-title">User Permission</h2>
+        </div>
+        <div class="card-body">
+            <div class="panel-body">
+                <div class="form-group row">
+                    <label class="col-form-label">Branch Name</label>
+                    <div class="col-md-2">
+                        @Html.DropDownList("BranchName", (IEnumerable<SelectListItem>)ViewBag.BranchList, " --Select Branch-- ", new { @class = "form-control extra-class BranchName", @Id = "BranchName" })
+                    </div>
+                    <label class="col-form-label">Designation Name</label>
+                    <div class="col-md-2">
+                        @Html.DropDownList("DesignationName", (IEnumerable<SelectListItem>)ViewBag.Designation, " --Select-- ", new { @class = "form-control extra-class DesignationId", @Id = "Id" })
+                    </div>
+                    <label class="col-form-label">Check List</label>
+                    <div class="col-md-2">
+                        @Html.DropDownList("CheckName", Enumerable.Empty<SelectListItem>() ," --Select-- ", new { @class = "form-control extra-class CheckId", @Id = "CheckId" })
+                    </div>
+                    <div class="col-md-2">
+                        <button id="addToOtherList" type="button" class="btn btn-info add_other_row">Give Permission</button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover ListTable">
+                    <tr>
+                        <th>User Name</th>
+                        <th></th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('#BranchName').change(function () {
+                $('#CheckId').find('option').remove().end();
+                //var BranchID = ;
+                $.ajax({
+                    type: "GET",
+                    url: "../Setings/GetApprovalSequence",
+                    data: { BranchID: $("#BranchName :selected").val() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (r) {
+                        $.each(r, function (i, item) {
+                            var opt = $('<option></option>');
+                            opt.attr('value', item.CheckID).text(item.CheckName);
+                            $("#CheckId").append(opt);
+                        });
+                        $('.ListTable td').parent().remove();
+                    }
+                });
+            });
+            $('.DesignationId').change(function () {
+                $(".ListTable td").parent().remove();
+                //var BranchID = ;
+                $.ajax({
+                    type: "GET",
+                    url: "../Setings/GetUserByBranchAndDesignation",
+                    data: { BranchID: $("#BranchName :selected").val(), DesignationID: $(".DesignationId :selected").val() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (r) {
+                        $.each(r, function (i, item) {
+                            var $tr = $('<tr/>');
+                            $tr.append($('<td/>').html(item.UserName));
+                            $tr.append($('<input type="checkbox" onclick="checkFluency(\'' + item.UserName + '\')" class="Row_Status form-control"/><td/>'));
+                            $('.ListTable tr:last').after($tr);
+                        });
+                    }
+                });
+            });
+        });
+    function checkFluency(UserName) {
+            @*checkboxes = document.getElementsByTagName("input");
+            var ddlViewBy = document.getElementById('UserName');
+            var value = ddlViewBy.options[ddlViewBy.selectedIndex].value;
+            var authorizedUserName = '@Session["Id"]';*@
+
+        var peramiter = { BranchID : $("#BranchName :selected").val(), "UserId": UserName, CheckId: $(".CheckId :selected").val()}
+        //console.log(peramiter);
+        $.ajax({
+                type: "POST",
+            url: "../Setings/GiveBranchUserPermission",
+                data: JSON.stringify(peramiter),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r);
+                }
+            });
+        }
+</script>

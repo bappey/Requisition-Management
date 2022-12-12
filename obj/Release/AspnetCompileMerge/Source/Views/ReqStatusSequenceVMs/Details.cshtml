@@ -1,0 +1,51 @@
+﻿@model SCS_Inventory.Models.ReqStatusSequenceVM
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ReqStatusSequenceVM</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TypeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TypeName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CheckName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CheckName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AuthorizedUserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AuthorizedUserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AuthorizeDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AuthorizeDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

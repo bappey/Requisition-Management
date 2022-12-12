@@ -1,0 +1,235 @@
+﻿
+@{
+    ViewBag.Title = "requestionReport";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+
+<style>
+    .table {
+        /*width: 18.5cm;
+        margin-left: 1.25cm;
+        border: 1px solid #ccc;*/
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .report td, .report th {
+        border-right: 1px solid #ccc;
+        border-bottom: inherit;
+        border-top: inherit;
+    }
+
+    .report > tbody > tr > td {
+        border-top: inherit;
+    }
+
+    .report tr {
+        border: inherit;
+    }
+
+    .report th {
+        border: 1px solid #ccc;
+        background-color: #ccc;
+        color: #000;
+    }
+
+    .companyInformation {
+        position: relative;
+        padding-top: 20px;
+    }
+
+        .companyInformation img {
+            position: absolute;
+            left: 50px;
+        }
+
+        .companyInformation p {
+            margin-bottom: 0px;
+        }
+
+        .companyInformation .invoiceNum {
+            position: absolute;
+            right: 100px;
+        }
+
+    .tblAmountInfo, .tblAmountInfo > tbody > tr > td {
+        border: inherit;
+        padding: 0px;
+    }
+
+        .tblAmountInfo > tbody > tr > td label {
+            font-weight: bold !important;
+        }
+
+    .d-none-p a {
+        color: #000;
+    }
+
+    .d-none-p .btn:hover a {
+        color: #fff;
+    }
+
+    table tr {
+        font-size: 12px;
+    }
+
+        table tr td, table tr th {
+            padding: 3px !important;
+        }
+
+    p {
+        margin-bottom: 0px !important;
+    }
+</style>
+<div class="container" style="padding: 12px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+    <page size="A4">
+        <div style="padding: 15px 0px;">
+            @*<table class="table table-borderless tblAmountInfo">
+                <tr>
+                    <td class="col-md-4">
+                        <img src="~/Picture/839448blob.png" class="avatar" alt="avatar" style="height: auto; width: 100px; margin-bottom: 10px;">
+                    </td>
+                    <td class="col-md-8">
+                            <h3 style="padding: 0px!important; margin: 0px!important">
+                                Sundorbon Courier Service
+                            </h3>
+                            <div class="col-xs-12">
+                                <p>Address:XYZ</p>
+                                <p>Phone:01124578235</p>
+                            </div>
+                    </td>
+                </tr>
+            </table>*@
+            <div class="row">
+                <div class="col-4 text-left">
+                    <img src="~/Picture/839448blob.png" class="avatar" alt="avatar" style="height: auto; width: 100px; margin-bottom: 10px;">
+                </div>
+                <div class="col-8 text-left">
+                    <h3 style="padding: 0px!important; margin: 0px!important">
+                        Sundarban Courier Service
+                    </h3>
+                    <div>
+                        <p>Address: Uttara, Dhaka</p>
+                        <p>Phone: </p>
+                    </div>
+                </div>
+            </div>
+        <div class="row ">
+            <div class="col-6 text-left">
+                From
+                <address>
+                    <strong>Branch: @ViewBag.OthersRequisition[0].BranchName</strong><br>
+                    <strong>User: @ViewBag.OthersRequisition[0].UserName</strong><br>
+                    <strong>Department: @ViewBag.OthersRequisition[0].DepartmentName</strong><br>
+                    <strong>Req Type: @ViewBag.OthersRequisition[0].TypeName</strong>
+                </address>
+            </div>
+            
+            <div class="text-right col-6">
+                To
+                <address>
+                    <strong>Destination: @ViewBag.OthersRequisition[0].Destination</strong><br>
+                    <strong>Designation: @ViewBag.OthersRequisition[0].Designation</strong><br>
+                    <strong>Address: @ViewBag.OthersRequisition[0].Address</strong>
+                </address>
+            </div>
+        </div>
+        </div>
+
+        <div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                <tbody>
+                    @foreach (var r_List in ViewBag.OthersRequisition)
+                    {
+                        <tr>
+                            <td>@r_List.RequestName</td>
+                            <td>@r_List.Description</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group row">
+            <div class="col-2 text-left">
+                <label for="message-text" class="col-form-label">IT Contact Person</label>
+            </div>
+            <div class="col-4 text-left">
+                <label for="message-text" class="col-form-label">@ViewBag.OthersRequisition[0].ItContactPerson</label>
+            </div>
+        </div>
+
+        @*<div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Branch Approval</th>
+                    <th>Approved By</th>
+                    <th>IT Authorization</th>
+                </tr>
+                <tr>
+                    <td>Abdul hakim</td>
+                    <td>Abdul hakim </td>
+                    <td class="text-right">
+                        <script>document.write(new Date().toLocaleDateString());</script>
+                    </td>
+                </tr>
+            </table>
+        </div>*@
+            <div class="row">
+                <div class="col-4 text-left">
+                    <h5 style=" padding: 0px !important; text-decoration: underline; margin: 0px !important">
+                        Requested By
+                    </h5>
+                </div>
+                <div class="col-4 text-left">
+                    <h5 style=" padding: 0px !important; text-decoration: underline; margin: 0px !important">
+                        Approved By
+                    </h5>
+                </div>
+                <div class="col-4 text-left">
+                    <h5 style=" padding: 0px !important; text-decoration: underline; margin: 0px !important">
+                        IT Authorized By
+                    </h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 text-left">
+                    <p>@ViewBag.OthersRequisition[0].Requested_by</p>
+                </div>
+                <div class="col-4 text-left">
+                    <p>@ViewBag.OthersRequisition[0].ApprovedBy</p>
+                </div>
+                <div class="col-4 text-left">
+                    <p>@ViewBag.OthersRequisition[0].CompleteBy</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4 text-left">
+                    <p>Date:@ViewBag.OthersRequisition[0].RequestedDate</p>
+                </div>
+                <div class="col-4 text-left">
+                    <p>Date:@ViewBag.OthersRequisition[0].ApprovedDate</p>
+                </div>
+                <div class="col-4 text-left">
+                    <p>Date:@ViewBag.OthersRequisition[0].CompleteDate</p>
+                </div>
+            </div>
+            <div class="row no-print">
+                <div class="card-style-footer">
+                    <div class="btn-group right">
+                        <button type="button" onclick="print()" class="btn btn-outline-primary button button4"> Print </button>
+                    </div>
+                    <div class="clearfix">
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+

@@ -1,0 +1,375 @@
+﻿@model SCS_Inventory.Models.PriceQuotation
+@{
+    ViewBag.Title = "Price Quertation";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    string reqNo = "100000000";
+}
+
+<section class="content">
+    <style>
+        .dataTables_length label {
+            margin-top: 15px;
+            color: #000080;
+        }
+
+        .Button {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: white;
+            border: 1px solid #ccc;
+        }
+
+            .Button:hover {
+                padding: 5px 10px;
+                margin: 5px;
+                background-color: white;
+                border: 1px solid black;
+            }
+
+        .table-1 {
+            color: #00008b;
+            font-weight: bold;
+            float: left;
+        }
+
+            .table-1 tr {
+                float: left;
+            }
+
+        .dataTables_filter input {
+            padding: 5px 2px;
+            border: 1px solid #ccc;
+            width: 300px;
+        }
+
+        .dt-buttons {
+            float: left;
+        }
+
+        #my_table th {
+            background-color: White;
+            color: black;
+        }
+
+        #my_table tr td {
+            background-color: white !important;
+        }
+
+        span a {
+            background: #ffffff !important;
+        }
+
+        .dataTables_length label {
+            margin-top: 5px;
+            color: #000080;
+        }
+
+        .button, input, select, textarea {
+            padding: 5px;
+        }
+    </style>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Price Quertation List</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            @*<div class="text-right mb-2">
+            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdlPriceQuertation"><i class="fa fa-plus"></i> Add New</button>
+        </div>*@
+
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sl-2">
+                    <label for="message-text" class="col-form-label ">Search Requestion Number</label>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sl-3">
+                    <input type="text" name="RequestionNumber" id="RequestionNumber" class="form-control" placeholder="Requestion Number">
+                </div>
+                <div class="col-lg-1 col-md-1 col-sl-1">
+                    <button type="button" class="btn btn-sm btn-success searchRequestion" onclick="OpenPriceRequestion()"><i class="fa fa-search"></i> Search</button>
+                </div>
+            </div>
+            <div style="padding: 10px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+                <table id="ShowDetailsInfo" class="cell-border">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="center">Requsiton Date</th>
+                            <th class="center">Requestion No</th>
+                            <th class="center">Requsitor Name</th>
+                            <th class="center">Branch Name</th>
+                            <th class="center">Total Approved Amt</th>
+                            <th class="center">CS Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.PriceQuertationList)
+                        {
+                            //reqNo = reqNo  @item.MasterID;
+                            <tr>
+                                <td>
+                                    <img src="~/Content/Image/Plus.png" />
+                                    <div style="display:none">
+                                        <table cellpadding="0" cellspacing="0" class="ChildGrid" style="width:100%">
+                                            <tr class="bg-primary">
+                                                <th>Item Name</th>
+                                                <th>Unit</th>
+                                                <th>Qty</th>
+                                                <th>Description</th>
+                                            </tr>
+                                            @foreach (var Detail in ViewBag.RequestionDetailsList)
+                                            {
+                                                if (Detail.MasterID == item.MasterID)
+                                                {
+                                                    <tr>
+                                                        <td>@Detail.ItemName</td>
+                                                        <td>@Detail.Unit</td>
+                                                        <td>@Detail.Qty</td>
+                                                        <td>@Detail.Description</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </table>
+                                    </div>
+                                </td>
+                                <td>@item.Requisition_Date.ToString("dd/MM/yyyy")</td>
+                                <td>R<span>@reqNo</span> @item.MasterID </td>
+                                <td>@item.Requsitor_Name</td>
+                                <td>@item.BranchName</td>
+                                <td>0</td>
+                                <td>Ok</td>
+                                <td>
+                                    <button id="getCS" type="button" class="btn btn-info add-row" onclick="OpenCS(@item.MasterID)">CS</button>
+                                    <button id="getCMDC" type="button" class="btn btn-info add-row" onclick="CMDC_Accept(@item.MasterID)">CMDC</button>
+                                    <button id="getProqurement" type="button" class="btn btn-info add-row" onclick="Proqurement_Accept(@item.MasterID)">Proqurement</button>
+                                    <button type="button" class="btn btn-info add-row" onclick="location.href='@Url.Action("Initial_Requires", "Price_Quotation")?MasterID=' + @item.MasterID">PO</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade bd-example-modal-xl" id="CMDC_Authorozation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade bd-example-modal-xl" id="CS" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade bd-example-modal-xl" id="CMDC" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade bd-example-modal-xl" id="Proqurement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade bd-example-modal-md" id="GetInitial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div id="editDiv5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="card-footer">
+            </div>
+        </div>
+</section>
+<script type="text/javascript">
+    function OpenPriceRequestion() {
+        if ($('#RequestionNumber').val() != "") {
+            //var text = $('#RequestionNumber').val();
+            $.ajax({
+                url: "../Price_Quotation/RequestionForPriceQuertation/" + $('#RequestionNumber').val(),
+                success: function (result) {
+                    $('#editDiv').html(result);
+                    $('#CMDC_Authorozation').modal('toggle');
+                }
+            });
+        }
+    }
+    function OpenCMDC_Authorozation(MasterID, QuotationID, vendorID) {
+        $.ajax({
+            url: "../Requestion/PQ_CMDC_Authorozation/",
+            data: { MasterID: MasterID, QuotationID: QuotationID, vendorID: vendorID },
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#CMDC_Authorozation').modal('toggle');
+            }
+        });
+    }    
+</script>
+<script type="text/javascript">
+    function CMDC_Accept(MasterID) {
+        $.ajax({
+            url: "../Price_Quotation/Show_Accept_CS_Data/",
+            data: { MasterID: MasterID },
+            success: function (result) {
+                $('#editDiv3').html(result);
+                $('#CMDC').modal('toggle');
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    function OpenCS(MasterID) {
+        $.ajax({
+            url: "../Price_Quotation/Show_All_Price/",
+            data: { MasterID: MasterID },
+            success: function (result) {
+                $('#editDiv2').html(result);
+                $('#CS').modal('toggle');
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    function Proqurement_Accept(MasterID) {
+        $.ajax({
+            url: "../Price_Quotation/Show_Accept_CMDC_Data/",
+            data: { MasterID: MasterID },
+            success: function (result) {
+                $('#editDiv4').html(result);
+                $('#Proqurement').modal('toggle');
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#ShowDetailsInfo').DataTable();
+    });
+</script>
+<script type="text/javascript">
+    $("body").on("click", "img[src*='Plus.png']", function () {
+        $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+        $(this).attr("src", "../Content/Image/Minus.png");
+    });
+    $("body").on("click", "img[src*='Minus.png']", function () {
+        $(this).attr("src", "../Content/Image/Plus.png");
+        $(this).closest("tr").next().remove();
+    });
+</script>
+<script type="text/javascript">
+    function Get_Initial(MasterID) {
+        $.ajax({
+            url: "../Price_Quotation/Initial_Requires/",
+            data: { MasterID: MasterID },
+            success: function (result) {
+                $('#editDiv5').html(result);
+                $('#GetInitial').modal('toggle');
+            }
+        });
+    }
+</script>
+
+
+@*<script >
+    $(document).ready(function () {
+        $("#ShowDetailsInfo").DataTable({
+            rowReorder: {selector: 'td:nth-child(2)'},
+            "responsive": true,
+            "processing": true,
+            "language": {
+                processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+            },
+            "lengthMenu": [[10, 20, 50, 100, -1], [10, 20, 50, 100, "All"]],
+            "ajax": {
+                "url": "/Requestion/GetPriceQuertation",
+                "type": "GET",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "MasterID" },
+                { "data": "Requisition_Date", "type": "date",
+                    "render": function (value) {
+                        if (value === null) return "";
+                        var pattern = /Date\(([^)]+)\)/;
+                        var results = pattern.exec(value);
+                        var dt = new Date(parseFloat(results[1]));
+                        return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                    }},
+                { "data": "Requsitor_Name" },
+                { "data": "BranchName" },
+                { "data": "BranchName" },
+                { "data": "BranchName" }
+                
+            ],
+            "dom": "lrBftip",
+            "buttons": [                
+                {
+                    extend: 'excel',
+                    className: 'btn Button',
+                    text: '<i class="fa fa-file-excel-o" aria-hidden="true"></i> Export to Excel'
+                }
+            ]
+        });
+    });
+
+</script>*@
+
+@*//$(".searchRequestion").click(function () {
+    //    if ($('#RequestionNumber').val() != "") {
+    //        var text = $('#RequestionNumber').val();
+
+    //        $.ajax({
+    //            type: "GET",
+    //            url: "/Requestion/GetRequestionForPriceQuertation",
+    //            contentType: "application/json; charset=utf-8",
+    //            dataType: "json",
+    //            data: { Id: $('#RequestionNumber').val()},
+    //            success: function (r) {
+
+    //                var item = '';
+    //                $('.requestion tbody').empty();
+    //                $.each(r, function (i, item) {
+    //                    var $tr = $('<tr/>');
+    //                    $tr.append($('<td/>').html(item.R_Details.ItemId));
+    //                    $tr.append($('<td/>').html(item.I_info.ItemName));
+    //                    $tr.append($('<td/>').html(item.R_Details.Qty));
+    //                    $tr.append($('<td/>').html(item.R_Details.Unit));
+    //                    $tr.append($('<td/>').html(item.R_Details.Description));
+    //                    $tr.append($('<input type="text" class="form-control"/><td/>'));
+    //                    $('.requestion tr:last').before($tr);
+    //                });
+    //            }
+    //        });
+    //    }
+    //    else {
+    //        $('#RequestionNumber').focus();
+    //        $('#requestion tbody').empty();
+    //    }
+    //});*@
+
+
+
+
+

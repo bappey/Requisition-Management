@@ -1,0 +1,66 @@
+﻿@model SCS_Inventory.Models.ReceiptDetailsVM
+
+@{
+    ViewBag.Title = "Receipt Details";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="card-header bg-info">
+        <h3 class="card-title">Receipt Details</h3>
+        @*<div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>*@
+    </div>
+    <div class="modal-body">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <div class="card-body">
+                        <h6>Vendor Name</h6>
+                        <h6 class="font-weight-bolder">@ViewBag.ReceiptDetailsList[0].Vendor_Name</h6>
+                    </div>
+                </div>
+
+
+                @*<div class="col-12 col-md-4" style="margin-left:auto">
+                    <div class="card-body">
+                        <h6>Requisition Type</h6>
+                        <h6 class="font-weight-bolder">@items.Req_Type.TypeName</h6>
+                    </div>
+                </div>*@
+            </div>
+            
+            <table class="table table-bordered table-sm table-striped">
+                <tr>
+                    <th>Sub Product ID</th>
+                    <th>ReqID</th>
+                    <th>SubProductName</th>
+                    <th>ProductModel</th>
+                    <th>Vendor Name</th>
+                    <th>Qty</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                </tr>
+                @foreach (var item in ViewBag.ReceiptDetailsList)
+                {                    
+                <tr>
+                    <td>@item.SubProductID</td>
+                    <td>@item.ReqId</td>
+                    <td>@item.SubProductName</td>
+                    <td>@item.ProductModel</td>
+                    <td>@item.Vendor_Name</td>
+                    <td>@item.Qty</td>
+                    <td>@item.Total_Price</td>
+                    <td>@item.ReceiveStatus</td>
+                </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+

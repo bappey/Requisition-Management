@@ -1,0 +1,106 @@
+﻿@model SCS_Inventory.Models.PriceQuotation
+
+@{
+    Layout = "";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="card-header bg-info">
+        <h3 class="card-title">Price Quertation</h3>
+    </div>
+    if (Enumerable.Any(ViewBag.RequestionForPriceQuertation))
+    {
+<div class="modal-body">
+    <div class="form-group row">
+        <label for="message-text" class="col-sm-4 col-form-label">Vendor Name</label>
+        <div class="col-md-6">
+            @Html.DropDownList("vendorID", (IEnumerable<SelectListItem>)ViewBag.Vendors, new { @class = "form-control extra-class" })
+        </div>
+    </div>
+    <input type="hidden" id="MasterID" value="@ViewBag.MasterID" name="MasterID">
+
+    <table class="table table-bordered table-sm table-striped requestion">
+        <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Warranty</th>
+            <th>Country Of Orgine</th>
+        </tr>
+        @foreach (var item in ViewBag.RequestionForPriceQuertation)
+        {
+            <tr>
+                <td>@item.R_Details.SubProductId</td>
+                <td>@item.SP_List.ProductModel</td>
+                <td>@item.R_Details.Qty</td>
+                <td>@item.R_Details.Unit</td>
+                <td>@item.R_Details.Description</td>
+                <td><input type="text" class="form-control Price" name="Price" placeholder="Price" /></td>
+                <td><input type="text" class="form-control Warienty" name="Warienty" placeholder="warranty" /></td>
+                <td><input type="text" class="form-control MadeBy" name="MadeBy" placeholder="Country Of Orgine" /></td>
+            </tr>
+        }
+    </table>
+</div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" id="btnSave" value="Save" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Sorry!</strong> No Requestion Found for this requestion number.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnSave").click(function () {
+            var PQ_Details = new Array();
+                $(".requestion TBODY TR:not(:first)").each(function () {
+                    row = $(this);
+                    var details = {};
+                    details.ItemID = row.find("TD").eq(0).text();
+                    details.Qty = row.find("TD").eq(2).text();
+                    details.Unit = row.find("TD").eq(3).text();
+                    details.Description = row.find("TD").eq(4).text();                    
+                    details.price = row.find("TD").eq(5).find("input").val();
+                    details.Warienty = row.find("TD").eq(6).find("input").val();
+                    details.MadeBy = row.find("TD").eq(7).find("input").val();
+                    details.vendorID = $('#vendorID').val();
+                    details.MasterID = $('#MasterID').val();
+                    PQ_Details.push(details);
+                });
+                var model = {
+                    "PQ_Details": PQ_Details
+                }
+                    $.ajax({
+                        type: "POST",
+                        url: "/Requestion/RequestionPriceQuertationUpdate",
+                        data: JSON.stringify(model),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (r) {
+                            alert(r + " record(s) Accepted.");
+                            $('.requestion tbody').empty();
+                            $("#MasterID").empty();
+                            window.location.href = '/Requestion/PriceQuertation/';
+                        }
+                    });
+        });
+    });
+</script>

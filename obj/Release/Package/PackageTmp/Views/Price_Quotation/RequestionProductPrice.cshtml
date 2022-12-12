@@ -1,0 +1,341 @@
+﻿@model SCS_Inventory.Models.ReceiptDetailsVM
+
+@{
+    Layout = "";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="card-header bg-info">
+        <h3 class="card-title">Price Quertation</h3>
+    </div>
+
+    if (Enumerable.Any(ViewBag.PriceQuertationList))
+    {
+        <div class="modal-body">
+            <div class="form-group row">
+                <label for="message-text" class="col-md-2 col-form-label">Vendor Name : </label>
+                <div class="col-md-4">
+                    @ViewBag.PriceQuertationList[0].Vendor_Name
+                </div>
+            </div>
+            <input type="hidden" id="MasterID" value="@ViewBag.MasterID" name="MasterID">
+            <input type="hidden" id="vendorID" value=@ViewBag.PriceQuertationList[0].vendorID name="vendorID">
+            <table class="table table-bordered table-sm table-striped priceQuertation" id="priceQuertation">
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Warranty</th>
+                    <th>Country Of Orgine</th>
+                    <th>ExpireDate</th>
+                    <th>PurchageDate</th>
+                    <th>ReceiveDate</th>
+                    <th>Status</th>
+                </tr>
+                @foreach (var item in ViewBag.PriceQuertationList)
+                {
+            <tr>
+                <td>@item.SubProductID</td>
+                <td>@item.ProductModel</td>
+                <td>@item.Qty</td>
+                <td>@item.Unit</td>
+                <td>@item.Description</td>
+                <td>@item.price</td>
+                <td>@item.Warranty</td>
+                <td>@item.MadeBy</td>
+                @if (item.ExpireDate != null)
+                {
+                    <td><input class="form-control" type="date" id="ExpireDate" value="@item.ExpireDate.ToString("dd-mm-YYYY")" /></td>
+                }
+                else
+                {
+                    <td><input class="form-control" type="date" id="ExpireDate" /></td>
+                }
+                @if (item.PurchageDate != null)
+                {
+                    <td><input class="form-control" type="date" id="PurchageDate" value="@item.PurchageDate.ToString("dd-MM-yyyy")" /></td>
+                }
+                else
+                {
+                    <td><input class="form-control" type="date" id="PurchageDate" /></td>
+                }
+                @if (item.ReceiveDate != null)
+                {
+                    <td><input class="form-control" type="date" id="ReceiveDate" value="@item.ReceiveDate.ToString("dd-MM-yyyy")" /></td>
+                }
+                else
+                {
+                    <td><input class="form-control" type="date" id="ReceiveDate" /></td>
+                }
+                @if (item.ReceiveStatus == true)
+                {
+                    <td style=" text-align:center; vertical-align: middle;"><input type="checkbox" id="cb" name="cb" checked="checked" /></td>
+                }
+                else
+                {
+                    <td style=" text-align:center; vertical-align: middle;"><input type="checkbox" id="cb" name="cb" /></td>
+                }
+                <td style="display:none;">@item.ProductID</td>
+            </tr>
+                }
+            </table>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" id="btnSave" value="Save" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Sorry!</strong> No Price Quertation Found for this requestion number.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+<script type="text/javascript">
+    @*$(document).ready(function () {
+        $("#btnSave").click(function () {
+            var CSAccept_Details = new Array();
+            var table = document.getElementById('priceQuertation');
+            var rowLength = table.rows.length;
+            for (var i = 1; i < rowLength; i++) {
+                var row = table.rows[i];
+                for (var y = 0; y < row.cells.length; y++) {
+                    var cell = row.cells[y];
+                    if ($(cell).find('input[type=checkbox]').prop('checked')) {
+                        var details = {};
+                        j++
+                        details.vendorID = row.cells[y].innerHTML;
+                        j++
+                        details.MasterID = row.cells[y].innerHTML;
+                        j++
+                        details.ItemId = row.cells[y].innerHTML;
+                        y = row.cells.length - 1;
+                        details.CS_Command = row.cells[y].firstChild.value;
+                        CSAccept_Details.push(details);
+
+
+
+
+                    }
+                }
+            }
+
+
+            var Receipt_Details = new Array();
+            var grid = document.getElementById("priceQuertation");
+            var checkBoxes = grid.getElementsByTagName("INPUT");
+            var message = "Id Name                  Country\n";
+
+            for (var i = 0; i < checkBoxes.length; i++) {
+                if (checkBoxes[i].checked) {
+                    var row = checkBoxes[i].parentNode.parentNode;
+                    message += row.cells[1].innerHTML;
+                    message += "   " + row.cells[2].innerHTML;
+                    message += "   " + row.cells[3].innerHTML;
+                    message += "\n";
+
+                    row = $(this);
+                    var details = {};
+                    details.ItemID = row.find("TD").eq(0).text();
+                    details.Unit = row.find("TD").eq(3).text();
+                    details.Description = row.find("TD").eq(4).text();
+                    details.Qty = row.find("TD").eq(2).text();
+                    details.price = row.find("TD").eq(5).text();
+                    details.vendorID = $('#vendorID').val();
+                    details.MasterID = $('#MasterID').val();
+                    details.Warienty = row.find("TD").eq(6).text();
+                    details.MadeBy = row.find("TD").eq(7).text();
+                    Receipt_Details.push(details);
+                }
+            }
+
+            console.log(Receipt_Details);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var session = @Html.Raw(Json.Encode(@HttpContext.Current.Session["UserProfile"]));
+            var Receipt_Master = [{ "Input_User": session.Id, "ReqId": $('#MasterID').val(), "VendorID": $('#vendorID').val() }];
+            var Receipt_Details = new Array();
+            $(".priceQuertation TBODY TR:not(:first)").each(function () {
+                row = $(this);
+                var details = {};
+                details.ItemID = row.find("TD").eq(0).text();
+                details.Unit = row.find("TD").eq(3).text();
+                details.Description = row.find("TD").eq(4).text();
+                details.Qty = row.find("TD").eq(2).text();
+                details.price = row.find("TD").eq(5).text();
+                details.vendorID = $('#vendorID').val();
+                details.MasterID = $('#MasterID').val();
+                details.Warienty = row.find("TD").eq(6).text();
+                details.MadeBy = row.find("TD").eq(7).text();
+                Receipt_Details.push(details);
+            });
+            var model = {
+                "ReceiptMaster": Receipt_Master,
+                "ReceiptDetails": Receipt_Details
+            }
+            $.ajax({
+                type: "POST",
+                url: "/Price_Quotation/SaveReceipt",
+                data: JSON.stringify(model),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " Record(s) Accepted.");
+                    $('.priceQuertation tbody').empty();
+                    $("#MasterID").empty();
+                    $("#vendorID").empty();
+                    window.location.href = '/Price_Quotation/ProductReceipt/';
+                }
+            });
+        });
+    });*@
+</script>
+<script>
+    //$("#toDate").datetimepicker({
+    //    //dateFormat: 'dd/mm/yyyy'
+    //    dateFormat: 'dd-mm-yy'
+    //});
+    $(document).ready(function () {
+        //var date = new Date();
+        //var day = date.getDate();
+        //var month = date.getMonth() + 1;
+        //var year = date.getFullYear();
+        //if (month < 10) month = "0" + month;
+        //if (day < 10) day = "0" + day;
+        //var today = year + "-" + month + "-" + day;
+        //document.getElementById('ExpireDate').value = today;
+        //document.getElementById('PurchageDate').value = today;
+        //document.getElementById('ReceiveDate').value = today;
+
+        //$("#ExpireDate").datetimepicker();
+
+        $("#ExpireDate").datetimepicker({
+            //dateFormat: 'dd/mm/yyyy'
+            dateFormat: 'dd/mm/YYYY'
+        });
+        $("#PurchageDate").datetimepicker({
+            //dateFormat: 'dd/mm/yyyy'
+            dateFormat: 'dd/MM/YYYY'
+        });
+        $("#ReceiveDate").datetimepicker({
+            //dateFormat: 'dd/mm/yyyy'
+            dateFormat: 'dd/MM/YYYY'
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+    $("#btnSave").click(function () {
+        var CSAccept_Details = new Array();
+        var table = document.getElementById('priceQuertation');
+        //var rowLength = table.rows.length;
+        //for (var i = 1; i < rowLength; i++) {
+        //    var row = table.rows[i];
+        //    for (var y = 1; y < row.cells.length; y++) {
+        //        var cell = row.cells[y];
+        //        if ($(cell).find('input[type=checkbox]').prop('checked')) {
+        //            var details = {};
+        //            j++
+        //            details.vendorID = row.cells[y].innerHTML;
+        //            j++
+        //            details.MasterID = row.cells[y].innerHTML;
+        //            j++
+        //            details.ItemId = row.cells[y].innerHTML;
+        //            y = row.cells.length - 1;
+        //            details.CS_Command = row.cells[y].firstChild.value;
+        //            CSAccept_Details.push(details);
+        //        }
+        //    }
+        //}
+
+        for (var k = 1; k < table.rows.length; k++) {
+            var row = table.rows[k]; 
+            for (var l = 0; l < row.cells.length; l++) {
+                //var totalItem = parseInt(row.cells[2].innerHTML);
+               
+                    var details = {};
+                    details.SubProductID = row.cells[l].innerHTML;
+                    l++; l++;
+                    details.Qty = row.cells[l].innerHTML;
+                    l++;
+                    details.Unit = row.cells[l].innerHTML;
+                    l++;
+                    details.Description = row.cells[l].innerHTML;
+                    l++;
+                    details.price = row.cells[l].innerHTML;
+                    l++;
+                    details.Warranty = row.cells[l].innerHTML;
+                    l++;
+                    details.MadeBy = row.cells[l].innerHTML;
+                    l++;
+                    details.ExpireDate = row.cells[l].firstChild.value;
+                    l++;
+                    details.PurchageDate = row.cells[l].firstChild.value;
+                    l++;
+                    details.ReceiveDate = row.cells[l].firstChild.value;
+                    l++;
+                    if ($(row.cells[l]).find('input[type=checkbox]').prop('checked')) {
+                        details.ReceiveStatus = 1;
+                    }
+                    else {
+                        details.ReceiveStatus = 0;
+                    }
+                    l++;
+                    details.ProductID = row.cells[l].innerHTML;
+                    details.vendorID = document.getElementById('vendorID').value;
+                    details.ReqId = document.getElementById('MasterID').value;
+                    
+                for (var m = 0; m < details.Qty; m++) {
+                    CSAccept_Details.push(details);
+                }              
+            }            
+        } 
+
+        var model = {
+            "model": CSAccept_Details
+        }
+        //console.log(model);
+        $.ajax({
+            type: "POST",
+            url: "../Price_Quotation/ReceiptSave",
+            data: JSON.stringify(model),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                alert(r + " record(s) Updated.");
+                $('#priceList tbody').empty();
+            }
+        });
+    });
+</script>
+
+
+

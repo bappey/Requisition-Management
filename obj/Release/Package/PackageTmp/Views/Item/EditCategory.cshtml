@@ -1,0 +1,45 @@
+﻿@model scs_Project.Models.CategoryInfo
+
+@{
+    Layout = "";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.id)
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">Update Category</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="form-group row">
+            <label class="col-sm-4 col-form-label">Category Name</label>
+            @*<label for="message-text" class="col-form-label">Category Name</label>*@
+            @*<input type="text" class="form-control" value="@Model.CategoryName" name="CategoryName" id="CategoryName" />*@
+            <div class="col-sm-8">
+
+                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    @*<div class="form-horizontal">
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Update" class="btn btn-default" />
+                </div>
+            </div>
+        </div>*@
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-info">Submit</button>
+    </div>
+}

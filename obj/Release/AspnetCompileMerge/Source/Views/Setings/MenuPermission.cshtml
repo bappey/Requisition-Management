@@ -1,0 +1,83 @@
+﻿@model SCS_Inventory.Models.UserAuthontication
+
+@{
+    ViewBag.Title = "Menu Permission";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">User Permission</h2>
+            </div>
+            <div class="card-body">
+                <div class="panel-body">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">User Name</label>
+                        <div class="col-md-3">
+                            @Html.DropDownList("UserName", (IEnumerable<SelectListItem>)ViewBag.UseList, " --Select User-- ", new { @class = "form-control extra-class UserName", @Id = "UserName" })
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-bordered table-hover ListTable">
+                        <tr>
+                            <th>Menu</th>
+                            <th>Sub Menu</th>
+                            <th>Path</th>
+                            <th></th>
+                        </tr>                                               
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#UserName').change(function () {
+                $(".ListTable td").parent().remove();
+                $.ajax({
+                    type: "GET",
+                    url: "/Setings/GetAllMenuList",
+                    data: { UserID: $(this).find('option:selected').val() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (r) {
+                        $.each(r, function (i, item) {
+                            var $tr = $('<tr/>');
+                            $tr.append($('<td/>').html(item.MenuName));
+                            $tr.append($('<td/>').html(item.SubMenuName));
+                            $tr.append($('<td/>').html(item.Path));
+                            if (item.Authorizedby != "") {
+                                $tr.append($('<input type="checkbox" class="form-control " onclick="checkFluency(' + item.Id + ')" checked /><td/>'));
+                            }
+                            else {
+                                $tr.append($('<input type="checkbox" onclick="checkFluency(' + item.Id + ')" class="Row_Status form-control"/><td/>'));
+                            }
+                            $('.ListTable tr:last').after($tr);
+                        });
+                    }
+                });
+            });
+        });
+        function checkFluency(Id) {
+            checkboxes = document.getElementsByTagName("input");
+            var ddlViewBy = document.getElementById('UserName');
+            var value = ddlViewBy.options[ddlViewBy.selectedIndex].value;
+            var authorizedUserName = '@Session["Id"]';            
+            var peramiter = {"MenuId": Id, "UserId": value}
+            $.ajax({
+                type: "POST",
+                url: "/Setings/GiveMenuPermission",
+                data: JSON.stringify(peramiter),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r);
+                }
+            });
+        }
+    </script>

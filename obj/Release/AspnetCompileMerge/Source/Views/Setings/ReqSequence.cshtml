@@ -1,0 +1,348 @@
+﻿@model IEnumerable<SCS_Inventory.Models.ReqStatusSequence>
+
+@{
+    ViewBag.Title = "Requestion Sequence";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+    <style>
+        .dataTables_length label {
+            margin-top: 15px;
+            color: #000080;
+        }
+
+        .Button {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: white;
+            border: 1px solid #ccc;
+        }
+
+            .Button:hover {
+                padding: 5px 10px;
+                margin: 5px;
+                background-color: white;
+                border: 1px solid black;
+            }
+
+        .table-1 {
+            color: #00008b;
+            font-weight: bold;
+            float: left;
+        }
+
+            .table-1 tr {
+                float: left;
+            }
+
+        .dataTables_filter input {
+            padding: 5px 2px;
+            border: 1px solid #ccc;
+            width: 300px;
+        }
+
+        .dt-buttons {
+            float: left;
+        }
+
+        #my_table th {
+            background-color: White;
+            color: black;
+        }
+
+        #my_table tr td {
+            background-color: white !important;
+        }
+
+        span a {
+            background: #ffffff !important;
+        }
+
+        .dataTables_length label {
+            margin-top: 5px;
+            color: #000080;
+        }
+
+        .button, input, select, textarea {
+            padding: 5px;
+        }
+    </style>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Requestion Sequence</h2>
+        </div>
+        <div class="card-body">
+            <div class="panel-body">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Requestion Type</label>
+                    <div class="col-sm-3">
+                        @Html.DropDownList("typeId", (IEnumerable<SelectListItem>)ViewBag.ReqType, " --Select Type-- ", new { @class = "form-control extra-class typeId", @Id = "typeId" })
+                    </div>
+                    <label class="col-form-label">Grant Date</label>
+                    <div class="col-md-2">
+                        <input type="date" class="form-control" id="GrantDate">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Check List</label>
+                    <div class="col-sm-3">
+                        @Html.DropDownList("CheckId", (IEnumerable<SelectListItem>)ViewBag.ReqCheckLists, " --Select Type-- ", new { @class = "form-control extra-class CheckId", @Id = "CheckId" })
+                        @*<select class="select2 CheckId" multiple="multiple" data-placeholder="Select Check Name" data-dropdown-css-class="select2-cyan" style="width: 100%;">
+                        @if (ViewBag.ReqCheckLists != null)
+                        {
+                            foreach (var item in ViewBag.ReqCheckLists)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        }
+                        </select>*@
+                    </div>
+                    <div>
+                        <button id="addToSeqList" type="button" class="btn btn-info add_Seq_row">Add</button>
+                    </div>
+                </div>
+                <table id="ReqSeqDeclare" class="table table-bordered table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th class="center">Type ID</th>
+                            <th class="center">Type Name</th>
+                            <th class="center">Check ID</th>
+                            <th class="center">Name of Check</th>
+                            <th class="center">Placement</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="form-group row">
+                    @*<label class="col-sm-3"></label>*@
+                    <div class="col-sm-9">
+                        <button type="submit" class="btn btn-info SaveSequence">Save Sequence</button>
+                        <div class="alert alert-success" style="display: none;">
+                            <p class="message"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+
+<div class="container">
+        <div class="card">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+                <div class="guide-section">
+                    <div class="table">
+                        <table id="table_id" class="cell-border" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Type Name</th>
+                                    <th>Check Sequence</th>
+                                    <th>Last Update</th>
+                                    <th>Authorized By</th>
+                                </tr>
+                            </thead>
+                        </table>
+                        @*@section scripts{
+                            <script>
+                                $(document).ready(function () {
+                                    $("#table_id").DataTable({
+                                        "rowReorder ": { selector: 'td:nth-child(2)' },
+                                        paging: true,
+                                        searching: true,
+                                        "processing": true,
+                                        "language": {
+                                            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+                                        },
+                                        "ajax": {
+                                            "url": "/Setings/GetReqSequence",
+                                            "type": "GET",
+                                            "datatype": "json"
+                                        },
+                                        "columns": [
+                                            { "data": "TypeName" },
+                                            { "data": "CheckName" },
+                                            { "data": "AuthorizeDate" },
+                                            //{
+                                            //    "data": "AuthorizeDate", "type": "date",
+                                            //    "render": function (value) {
+                                            //        if (value === null) return "";
+                                            //        var pattern = /Date\(([^)]+)\)/;
+                                            //        var results = pattern.exec(value);
+                                            //        var dt = new Date(parseFloat(results[1]));
+                                            //        return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                                            //    }
+                                            //},
+                                            { "data": "AuthorizedUserName" }
+                                        ],
+                                        "dom": "f",
+                                    });
+                                });
+                            </script>
+                        }*@
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
+    </div>
+
+@*<script>
+    $(document).ready(function () {
+        var table = $('#table_id').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            responsive: true
+        });
+    });
+</script>*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".add_Seq_row").click(function () {
+            if ($('.typeId').text() != "" && $('.CheckId').val() != "") {
+                var i = 1;
+                var typeIdflag = false;
+                var CheckIdflag = false;
+                
+                $('#ReqSeqDeclare tbody').find('tr').each(function () {                    
+                    var $this = $(this);
+                    i++;
+                    if ($('.typeId option:selected').val() != $('td:eq(0)', $this).text()) {                        
+                        typeIdflag = true;
+                        return false;
+                    }
+                    if ($('.CheckId option:selected').val() == $('td:eq(2)', $this).text()) {
+                        CheckIdflag = true;
+                        return false;
+                    }
+                });
+                if (typeIdflag) {
+                    alert("Same Type Required");
+                    return;        
+                }
+                else if (CheckIdflag) {
+                    alert("Check Name already in list");
+                    return;
+                }
+                else {                    
+                    var markup = '<tr><td>' + $('.typeId option:selected').val() + '</td><td>' + $('.typeId option:selected').text() + '</td><td>' + $('.CheckId option:selected').val() +
+                        '</td><td>' + $('.CheckId option:selected').text() + '</td><td>' + i + '</td><td> <i class="fa fa-trash text-danger delete"></i></td></tr>'
+                    $("#ReqSeqDeclare").append(markup);  
+                    
+                }
+            }
+        });
+        $(document).on("click", ".delete", function () {
+            $(this).parents("tr").remove();
+            var j = 0;
+            $('#ReqSeqDeclare tbody').find('tr').each(function () {                    
+                    var $this = $(this);
+                    j++;
+                    if (j != $('td:eq(4)', $this).text()) {
+                        $('td:eq(4)', $this).text(j);
+                    }
+                });
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".SaveSequence").click(function () {
+            //var checks = [];
+            //$.each($(".CheckId option:selected"), function () {
+            //    checks.push($(this).val());
+            //});
+            var session = @Html.Raw(Json.Encode(@HttpContext.Current.Session["UserProfile"]));
+
+            var Sequence_Details = new Array();
+            $("#ReqSeqDeclare TBODY TR").each(function () {
+                var row = $(this);
+                var details = {};
+                details.TypeId = row.find("TD").eq(0).html();
+                details.CheckId = row.find("TD").eq(2).html();
+                details.Placement = row.find("TD").eq(4).html();
+                details.GrantDate = $('#GrantDate').val();
+                details.AuthorizedUserName = session.UserName;
+                Sequence_Details.push(details);
+            });
+            @*var typeid = $('#typeId').val();
+            var authorizedUserName = '@Session["UserName"]';
+            if (authorizedUserName == "") {
+                authorizedUserName = "Uttam";
+            }
+            var obj = { typeid: typeid, checks: checks, authorizedUserName: authorizedUserName };*@
+            $.ajax({
+                type: 'post',
+                url: "/Setings/SaveReqSequence",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(Sequence_Details),
+                dataType: 'json',
+                success: function (r) {
+                    $('.message').text(r);
+                    window.location.href = '/Setings/ReqSequence/';
+                    $('.alert').show(1000).fadeOut(5000);
+                },
+                error: function (r) {
+                    console.log("error");
+                    console.log(r);
+                }
+            });
+
+        });
+        $("#table_id").DataTable({
+            "rowReorder ": { selector: 'td:nth-child(2)' },
+            paging: true,
+            searching: true,
+            "processing": true,
+            "language": {
+                processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+            },
+            "ajax": {
+                "url": "/Setings/GetReqSequence",
+                "type": "GET",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "TypeName" },
+                { "data": "CheckName" },
+                { "data": "AuthorizeDate" },
+                //{
+                //    "data": "AuthorizeDate", "type": "date",
+                //    "render": function (value) {
+                //        if (value === null) return "";
+                //        var pattern = /Date\(([^)]+)\)/;
+                //        var results = pattern.exec(value);
+                //        var dt = new Date(parseFloat(results[1]));
+                //        return dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear();
+                //    }
+                //},
+                { "data": "AuthorizedUserName" }
+            ],
+            "dom": "f",
+        });
+
+    });
+    
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        var date = new Date();
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        var today = year + "-" + month + "-" + day;
+        document.getElementById('GrantDate').value = today;
+        
+    });
+</script>

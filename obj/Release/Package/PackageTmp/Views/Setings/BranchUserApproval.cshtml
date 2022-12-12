@@ -1,0 +1,314 @@
+﻿@model SCS_Inventory.Models.BranchReqSeqAssignVM
+@{
+    ViewBag.Title = "Branch User Approval";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Branch User Approval</h2>
+        </div>
+        <div class="card-body">
+            <div class="panel-body">
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Branch</label>
+                        @Html.DropDownList("Branchlist", ViewBag.BranchList as SelectList, " --Select Branch-- ", new { @id = "Branch", @class = "form-control extra-class BranchId" })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">Designation</label>
+                        @Html.DropDownList("DesignationName", Enumerable.Empty<SelectListItem>(), " --Select Designation-- ", new { @class = "form-control extra-class DesignationId", @Id = "DesignationId" })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">User List</label>
+                        @Html.DropDownList("UserName", Enumerable.Empty<SelectListItem>(), " --Select-- ", new { @class = "form-control extra-class UserId ", @Id = "UserId" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="inputEmail3" class="col-form-label">Requestion Category</label>
+                        @Html.DropDownList("Category", (IEnumerable<SelectListItem>)ViewBag.ReqCategoryList, " --Select Category-- ", new { @class = "form-control extra-class Category" })
+                    </div> <div class="col-md-6 ">
+                        <label class="col-form-label">Assign User to Branch</label>
+                        @Html.DropDownList("AssignBranchlist", ViewBag.BranchList as SelectList, " --Select Branch-- ", new { @id = "AssignBranch", @class = "form-control extra-class AssignBranchId" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="inputEmail3" class="col-form-label">Previlize Steps</label>
+                        @Html.DropDownList("ReqSeqName", Enumerable.Empty<SelectListItem>(), " --Select Steps-- ", new { @class = "form-control extra-class BranchReqSeqId", @Id = "BranchReqSeqId" })
+                    </div>
+                    <div class="col-md-6 ">
+                        <label class="col-form-label">Department Name</label>
+                        @Html.DropDownList("DepartmentName", Enumerable.Empty<SelectListItem>(), " --Select Department-- ", new { @class = "form-control extra-class DepartmentId", @Id = "DepartmentId" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-1">
+                        <button id="addToList" type="button" class="btn btn-info add_row">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-hover table-sm table-striped ListTable">
+                    <tr>
+                        <th style="display:none;">BranchId</th>
+                        <th>Branch Name</th>
+                        <th style="display:none;">DepartmentID</th>
+                        <th>Department</th>
+                        <th style="display:none;">CheckId</th>
+                        <th>Check Name</th>
+                        <th style="display:none;">UserId</th>
+                        <th>Name</th>
+                        <th style="display:none;">DesignationId</th>
+                        <th>Designation</th>
+                        <th>Category</th>
+                        <th></th>
+                    </tr>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer justify-content-between ">
+            @*<button type="button" id="btnSave" value="Save Approval" class="btn btn-info" />*@
+            <button type="submit" id="btnSave" value="Done" class="btn btn-info">Save Approval</button>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">All Approved User</h2>
+        </div>
+        <div class="card-body">
+            <div class="panel-body">
+                <table id="ShowDetailsInfo" class="table table-striped table-hover dt-responsive" cellspacing="0" width="100%">
+                    @*<table id="ShowDetailsInfo" class="cell-border">*@
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Branch Name</th>
+                                <th>Category</th>
+                                <th>Department</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in ViewBag.CBD)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="~/Content/Plus.png" />
+                                        <div style="display:none">
+                                            <table cellpadding="0" cellspacing="0" class="ChildGrid" style="width:100%">
+                                                <tr class="bg-primary">
+                                                    <th>Check Name</th>
+                                                    <th>User Name</th>
+                                                </tr>
+                                                @foreach (var Detail in ViewBag.CBDCU)
+                                                {
+                                                    if (Detail.CategoryName == item.CategoryName && Detail.BranchName == item.BranchName && Detail.DepartmentName == item.DepartmentName)
+                                                    {
+
+                                                        <tr>
+                                                            <td>@Detail.CheckName</td>
+                                                            <td>@Detail.UserName</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </table>
+                                        </div>
+                                    </td>
+                                    <td>@item.BranchName</td>
+                                    <td>@item.CategoryName </td>
+                                    <td>@item.DepartmentName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.0.4/popper.js"></script>
+
+<script src="~/Scripts/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.BranchId').change(function () {
+            $('#DesignationId').find('option').remove().end();
+            $("#DesignationId").prepend("<option value=''> --Select Designation-- </option>");
+            $.ajax({
+                type: "GET",
+                url: "../Setings/GetDesignationNameByBranch",
+                data: { BranchId: $(".BranchId :selected").val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $.each(r, function (i, item) {
+                        var opt = $('<option></option>');
+                        opt.attr('value', item.Id).text(item.DesignationName);
+                        $("#DesignationId").append(opt);
+                    });
+                }
+            });
+        });
+        $('#DesignationId').change(function () {
+            $('#UserId').find('option').remove().end();
+            $("#UserId").prepend("<option value=''> --Select-- </option>");
+            $.ajax({
+                type: "GET",
+                url: "../Setings/GetUserNameByDesignation",
+                data: { DesignationId: $("#DesignationId :selected").val(), BranchId: $(".BranchId :selected").val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $.each(r, function (i, item) {
+                        var opt = $('<option></option>');
+                        opt.attr('value', item.UserName).text(item.Name);
+                        $("#UserId").append(opt);
+                    });
+                }
+            });
+        });
+        
+        $('.Category').change(function () {
+            $('#BranchReqSeqId').find('option').remove().end();
+            $.ajax({
+                type: "GET",
+                url: "../Setings/GetReqSeqNameCategory",
+                data: { CategoryID: $(".Category :selected").val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $.each(r, function (i, item) {
+                        var opt = $('<option></option>');
+                        opt.attr('value', item.CheckId).text(item.CheckName);
+                        $("#BranchReqSeqId").append(opt);
+                    });
+                }
+            });
+        });
+        $('.AssignBranchId').change(function () {
+            //$('#BranchReqSeqId').find('option').remove().end();
+            //$.ajax({
+            //    type: "GET",
+            //    url: "/Setings/GetReqSeqNameBranch",
+            //    data: { BranchId: $(".AssignBranchId :selected").val() },
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    success: function (r) {
+            //        $.each(r, function (i, item) {
+            //            var opt = $('<option></option>');
+            //            opt.attr('value', item.CheckId).text(item.CheckName);
+            //            $("#BranchReqSeqId").append(opt);
+            //        });
+            //    }
+            //});
+            $('#DepartmentId').find('option').remove().end();
+            $.ajax({
+                type: "GET",
+                url: "../Setings/GetDepartmentNameByBranch",
+                data: { BranchId: $(".AssignBranchId :selected").val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $.each(r, function (i, item) {
+                        var opt = $('<option></option>');
+                        opt.attr('value', item.DepartmentId).text(item.DepartmentName);
+                        $("#DepartmentId").append(opt);
+                    });
+                }
+            });
+        });
+        
+        $(".add_row").click(function () {
+            if ($('#AssignBranch').val() != "" && $('#BranchReqSeqId').val() != "" && $('#UserId').val() != "" && $('#DepartmentId').val() != "") {
+                var flag = false;
+                $('#ListTable tbody').find('tr').each(function () {
+                    var $this = $(this);
+                    if ($('#AssignBranch option:selected').val() + $('#BranchReqSeqId').val() + $('#UserId').val() == $('td:eq(0)', $this).text() + $('td:eq(2)', $this).text()  + $('td:eq(4)', $this).text() + $('td:eq(6)', $this).text()) {
+                        flag = true;
+                        return false;
+                    }
+                });
+
+                if (flag) {
+                    alert("This Row Already in List");
+                    return;
+                }
+                else {
+                    var markup = '<tr><td style=display:none;>' + $('#AssignBranch option:selected').val() + '</td><td>' + $('#AssignBranch option:selected').text() +
+                        '</td><td style=display:none;>' + $('#DepartmentId option:selected').val() + '</td><td>' + $('#DepartmentId option:selected').text() +
+                        '</td><td style=display:none;>' + $('#BranchReqSeqId option:selected').val() + '</td><td>' + $('#BranchReqSeqId option:selected').text() +
+                        '</td><td style=display:none;>' + $('#UserId option:selected').val() + '</td><td>' + $('#UserId option:selected').text() +
+                        '</td><td style=display:none;>' + $('#DesignationId option:selected').val() + '</td><td>' + $('#DesignationId option:selected').text() + '</td><td>' + $('#Category option:selected').text() +'</td><td> <i class="fa fa-trash text-danger delete"></i></td></tr>'
+                    $(".ListTable").append(markup);
+                    //$('#SubProductId').val("");
+                    //$('#Unit').val("");
+                    //$('#Description').val("");
+                    //$('#Qty').val("");
+                    //$('#Barcode').val("");
+                }
+            }
+        });
+        $(document).on("click", ".delete", function () {
+            $(this).parents("tr").remove();
+        });
+         $("body").on("click", "#btnSave", function () {
+            var session = @Html.Raw(Json.Encode(@HttpContext.Current.Session["UserProfile"]));
+
+            //var R_Master = [{ "BranchID": $("#Branch_Id").val(), "Requested_by": session.UserName, "Requsition_Type": $('#Requsition_Type').val(), "DepartmentId": $('#Department_Id').val() }];
+
+             var BranchUserApproval = new Array();
+             $(".ListTable TBODY TR:not(:first)").each(function () {
+                 var row = $(this);
+                var details = {};
+                 details.BranchId = row.find("TD").eq(0).html();
+                 details.DepartmentId = row.find("TD").eq(2).html();
+                 details.CheckId = row.find("TD").eq(4).html();
+                 details.UserId = row.find("TD").eq(6).html();
+                 details.DesignationId = row.find("TD").eq(8).html();
+                 details.Category = row.find("TD").eq(10).html();
+                 details.PrevelizeUserId = session.UserName;
+                 BranchUserApproval.push(details);
+            });
+            //var model = {
+            //    //"R_Master": R_Master,
+            //    "BranchUserApproval": R_Details
+            //}
+             //console.log(BranchUserApproval);
+            $.ajax({
+                type: "POST",
+                url: "../Setings/SaveBranchUserApproval",
+                data: JSON.stringify(BranchUserApproval),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " record(s) inserted.");
+                    $('.ListTable tbody TR:not(:first)').empty();
+                    BranchUserApproval.empty();
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#ShowDetailsInfo').DataTable();
+    });
+</script>
+<script type="text/javascript">
+    $("body").on("click", "img[src*='Plus.png']", function () {
+        $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+        $(this).attr("src", "/Content/Minus.png");
+    });
+    $("body").on("click", "img[src*='Minus.png']", function () {
+        $(this).attr("src", "/Content/Plus.png");
+        $(this).closest("tr").next().remove();
+    });
+</script>

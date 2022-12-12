@@ -1,0 +1,178 @@
+﻿@model SCS_Inventory.Models.RequisitionDetails
+
+@{
+    ViewBag.Title = "Requestion List";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+    //scs_Project.Models.DataContext db = new scs_Project.Models.DataContext();
+    //var details = ViewBag.CMDC_Comand_Detaails;
+}
+
+<div class="card">
+    <div class="card-header ">
+        <h3 class="card-title">Requisition List</h3>        
+    </div>
+    <div class="card-body">
+        <div class="panel-body">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Check Name</label>
+                <div class="col-md-3">
+                    @Html.DropDownList("CheckName", (IEnumerable<SelectListItem>)ViewBag.CheckList, " --Select User-- ", new { @class = "form-control extra-class CheckName", @Id = "CheckName" })
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="table">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="center">Branch</th>
+                            <th class="center">Requested by</th>
+                            <th class="center">Requisition Date</th>
+                            <th class="center">Type</th>
+                            <th class="center">Status</th>
+                            <th class="center">Description</th>
+                            <th>Action</th>
+                            @*<th></th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @*@foreach (var r_List in ViewBag.RequestionList)
+                {
+                    string commands = "";
+                    <tr>
+                        <td>@r_List.BranchName</td>
+                        <td>@r_List.Name</td>
+                        <td>@r_List.Requisition_Date</td>
+                        <td>@r_List.Requsition_Type</td>
+                        <td>
+                            @r_List.Req_Status
+                            @foreach (var details in ((List<model>)r_List.R_Details.Where(i => i.MasterId == r_List.R_master.MasterId)))
+            {
+                <span>details.CMDC_Command</span>
+            }
+            <span>@r_List.R_Details.CMDC_Command</span>
+                        </td>
+                        <td>
+                            @r_List.Description
+                        </td>
+
+                        <td>
+                            @if (r_List.Req_Status == "Waiting For CMDC")
+                            {
+                                <button type="button" class="btn btn-sm btn-default" onclick="OpenCMDC_Authorozation(@r_List.ReqId)">CMDC Accept</button>
+                            }
+                            else if (r_List.Req_Status == "CMDC Accept >> Waiting For Procurement")
+                            {
+                                @Html.ActionLink("Procurement Accept", "Procurement_Authorization", new { id = r_List.ReqId })
+                            }
+                            else if (r_List.Req_Status == "Procurement Accept >> Waiting For Price Qurtation")
+                            {
+                                @Html.ActionLink("Generate Quotation", "Quotations", new { id = r_List.ReqId })
+                            }
+                        </td>
+                        <td>@Html.ActionLink("Details", "RequsitionDetails", new { id = r_List.ReqId })</td>
+                    </tr>
+                }*@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+            @*Extra large modal*@
+            @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-xl">Extra large modal</button>
+
+            <div class="modal fade bd-example-modal-xl"  tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModal">CMDC Authorozation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="editDiv">
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+            <div class="modal fade bd-example-modal-xl" id="CMDC_Authorozation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl" role="document">
+                    <div class="modal-content">
+                        @*<div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">CMDC Authorozation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>*@
+                        <div id="editDiv">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+
+        </div>
+    </div>
+
+
+<script type="text/javascript">
+    function OpenCMDC_Authorozation(id) {
+        $.ajax({
+            url: "/Requestion/CMDC_Authorozation/" + id,
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#CMDC_Authorozation').modal('toggle');
+            }
+        });
+    }
+    function dateFormat(d) {
+        console.log(d);
+        return (
+            (d.getDate() + "").padStart(2, "0")
+            + "/" + (d.getMonth() + 1) + "").padStart(2, "0")            
+            + "/" + d.getFullYear();
+    }
+    $(document).ready(function () {
+        $('#CheckName').change(function () {
+            //var selectedText = $(this).find('option:selected').text();
+            //$('.ListTable td').empty();
+            //var username = '@Session["UserName"]';
+            var checkId = $(this).find('option:selected').val();
+            if (checkId == '') {
+                checkId = 0;
+            }
+            $(".table td").parent().remove();
+            $.ajax({
+                type: "GET",
+                url: "/Requestion/RequestionListData",
+                data: { checkId: checkId /*, UserName: username*/ },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    $.each(r, function (i, item) {
+                        var $tr = $('<tr/>');
+                        $tr.append($('<td/>').html(item.BranchName));
+                        $tr.append($('<td/>').html(item.Name));
+                        var date = new Date(parseInt(item.Requisition_Date.substr(6)));
+                        $tr.append($('<td/>').html(date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()));
+                        $tr.append($('<td/>').html(item.Requsition_Type));
+                        $tr.append($('<td/>').html(item.Req_Status));
+                        $tr.append($('<td/>').html(item.Description));
+                        if (item.Req_Status == "Waiting For CMDC") {
+                            $tr.append($('<input type="button" class="btn btn-sm btn-primary" value="CMDC Accept" onclick="OpenCMDC_Authorozation('+ item.ReqId +')"/><td/>'));
+                        }
+                        else if (item.Req_Status == "CMDC Accept >> Waiting For Procurement"){
+                            $tr.append($('<a href=/Requestion/Procurement_Authorization?id=' + item.ReqId + '>Procurement Accept</a>'));
+                        }
+                        else if(item.Req_Status == "Procurement Accept >> Waiting For Price Qurtation"){
+                            $tr.append($('<a href=/Requestion/Quotations?id=' + item.ReqId + '>Generate Quotation</a>'));
+                        }
+                        $('.table tr:last').after($tr);
+                    });
+                }
+            });
+        });
+    });
+</script>

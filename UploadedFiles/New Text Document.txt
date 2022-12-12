@@ -1,0 +1,140 @@
+
+--select * from OtherRequistionDetailsNews
+--select ISNULL(max(CheckId),0) CheckId from BranchUserApprovals where UserId='amdad_scs' and BranchId=1 and DepartmentId=2
+--select * from ReqCategoryNames
+
+--select * from OtherRequistionDetailsNews
+
+--select ORDN.App_Req_ID,max(ORDN.status)status,ORDN.BranchID,RCN.Id RequestType,BRSA.ReqSeqID 
+--from OtherRequistionDetailsNews ORDN,ReqCategoryNames RCN,BranchReqSeqAssigns BRSA 
+--where RCN.TypeName=ORDN.RequestName and ORDN.BranchID=BRSA.BranchID and ORDN.BranchReqSeqAssignsId=BRSA.ReqSeqID and BRSA.CategoryID=RCN.Id
+--group by ORDN.App_Req_ID,ORDN.RequestName,ORDN.BranchID,RCN.Id,BRSA.ReqSeqID
+
+
+
+select RawData.*,BRSA.CheckID from BranchReqSeqAssigns BRSA,(
+select ORDN.App_Req_ID,ORDN.BranchID,Binfo.BranchName,ORDN.Requested_by,ORDN.DepartmentId,DEntry.DepartmentName,max(ORDN.Status)Status,ORDN.RequestName,RCN.Id RequestType,ORDN.BranchReqSeqAssignsId
+from OtherRequistionDetailsNews ORDN, ReqCategoryNames RCN, BranchInfoes Binfo,DepartmentEntries DEntry
+where RCN.TypeName=ORDN.RequestName and Binfo.BranchID=ORDN.BranchID and ORDN.DepartmentId=DEntry.DepartmentId
+group by ORDN.RequestName,RCN.Id,ORDN.App_Req_ID,ORDN.BranchID,ORDN.BranchReqSeqAssignsId,Binfo.BranchName,ORDN.Requested_by,ORDN.DepartmentId,DEntry.DepartmentName) RawData
+where RawData.BranchID=BRSA.BranchID and RawData.BranchReqSeqAssignsId=BRSA.ReqSeqID and RawData.Status +1= BRSA.Serial
+
+
+
+select DL2.App_Req_ID,DL2.BranchID,Ol2.BranchName,DL2.Requested_by,DL2.DepartmentId,Ol2.DepartmentName,Dl2.Status,Serial=0,CurrentStatus='',DL2.NextStatus 
+from (
+select Dl1.*,Ol1.CheckName as NextStatus from 
+(select distinct ORDN.id, ORDN.App_Req_ID,ORDN.RequestName,ORDN.Description,ORDN.Description1,ordn.Status,ordn.Requested_by,ORDN.BranchID,ORDN.DepartmentId,ORDN.ItContactPerson,ORDN.ApprovedBy,ORDN.ApprovedDate,ORDN.CompleteBy,ORDN.CompleteDate,ordn.RequestedDate,ORDN.Remarks,ORDN.Requsition_Type,ORDN.AmendmentId,ORDN.BranchReqSeqAssignsId,ORDN.IsCancel,BRSA.CheckID from OtherRequistionDetailsNews ORDN 
+inner join(select D1.*from
+(select BRA.CategoryID,bra.CheckID, BRA.BranchID, ORD.BranchReqSeqAssignsId, ORD.RequestName, ORD.DepartmentId from BranchReqSeqAssigns BRA, OtherRequistionDetailsNews ORD, 
+(select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD where ORD.BranchReqSeqAssignsId = BRA.ReqSeqID and ORD.BranchID = BRA.BranchID and BRA.Serial = ORD.Status + 1 and ORD.IsCancel = 0 and ORD.AmendmentId = MaxORD.AmendmentId and ORD.App_Req_ID = MaxORD.App_Req_ID )
+D1 inner join BranchUserApprovals BUA on BUA.UserId ='amdad_scs' and BUA.Category = D1.RequestName and BUA.BranchId = D1.BranchID and BUA.CheckId = D1.CheckID) BRSA on ORDN.BranchReqSeqAssignsId = BRSA.BranchReqSeqAssignsId and ORDN.BranchID = BRSA.BranchID and ORDN.IsCancel = 0) Dl1 inner join(select ReqCheck.CheckName,BranchReqSeq.Serial,BranchReqSeq.CheckID, BranchReqSeq.ReqSeqID, 
+BranchReqSeq.BranchID from ReqCheckLists ReqCheck, BranchReqSeqAssigns BranchReqSeq where ReqCheck.CheckId = BranchReqSeq.CheckID) Ol1 on Dl1.BranchID = Ol1.BranchID and Dl1.BranchReqSeqAssignsId = Ol1.ReqSeqID and Dl1.CheckID = Ol1.CheckID inner join(select Max(AmendmentId) AmendmentId, App_Req_ID from 
+OtherRequistionDetailsNews group by App_Req_ID)MaxORD on Dl1.AmendmentId = MaxORD.AmendmentId and Dl1.App_Req_ID = MaxORD.App_Req_ID) DL2
+inner join(select ORDN.BranchID, BInfo.BranchName,ORDN.DepartmentId, DE.DepartmentName, ORDN.App_Req_ID from OtherRequistionDetailsNews ORDN, DepartmentEntries DE,BranchInfoes BInfo, (select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD where ORDN.BranchID = BInfo.BranchID and ORDN.DepartmentId = DE.DepartmentId and ORDN.AmendmentId = MaxORD.AmendmentId and ORDN.App_Req_ID = MaxORD.App_Req_ID) Ol2 on DL2.BranchID = Ol2.BranchID 
+and DL2.DepartmentId = Ol2.DepartmentId and dl2.App_Req_ID = Ol2.App_Req_ID
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+select DL2.App_Req_ID,DL2.BranchID,Ol2.BranchName,DL2.Requested_by,DL2.DepartmentId,Ol2.DepartmentName,Dl2.Status,Serial=0,CurrentStatus='',DL2.NextStatus 
+from (
+select Dl1.*,Ol1.CheckName as NextStatus from 
+(select distinct ORDN.id, ORDN.App_Req_ID,ORDN.RequestName,ORDN.Description,ORDN.Description1,ordn.Status,ordn.Requested_by,ORDN.BranchID,ORDN.DepartmentId,ORDN.ItContactPerson,ORDN.ApprovedBy,ORDN.ApprovedDate,ORDN.CompleteBy,ORDN.CompleteDate,ordn.RequestedDate,ORDN.Remarks,ORDN.Requsition_Type,ORDN.AmendmentId,ORDN.BranchReqSeqAssignsId,ORDN.IsCancel,BRSA.CheckID from OtherRequistionDetailsNews ORDN 
+inner join(select D1.*from
+(select BRA.CategoryID,bra.CheckID, BRA.BranchID, ORD.BranchReqSeqAssignsId, ORD.RequestName, ORD.DepartmentId from BranchReqSeqAssigns BRA, OtherRequistionDetailsNews ORD, 
+(select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD where ORD.BranchReqSeqAssignsId = BRA.ReqSeqID and ORD.BranchID = BRA.BranchID and BRA.Serial = ORD.Status + 1 and ORD.IsCancel = 0 and ORD.AmendmentId = MaxORD.AmendmentId and ORD.App_Req_ID = MaxORD.App_Req_ID )
+D1 inner join BranchUserApprovals BUA on BUA.UserId ='amdad_scs' and BUA.Category = D1.RequestName and BUA.BranchId = D1.BranchID and BUA.CheckId = D1.CheckID) BRSA on ORDN.BranchReqSeqAssignsId = BRSA.BranchReqSeqAssignsId and ORDN.BranchID = BRSA.BranchID and ORDN.IsCancel = 0) Dl1 inner join(select ReqCheck.CheckName,BranchReqSeq.Serial,BranchReqSeq.CheckID, BranchReqSeq.ReqSeqID, 
+BranchReqSeq.BranchID from ReqCheckLists ReqCheck, BranchReqSeqAssigns BranchReqSeq where ReqCheck.CheckId = BranchReqSeq.CheckID) Ol1 on Dl1.BranchID = Ol1.BranchID and Dl1.BranchReqSeqAssignsId = Ol1.ReqSeqID and Dl1.CheckID = Ol1.CheckID inner join(select Max(AmendmentId) AmendmentId, App_Req_ID from 
+OtherRequistionDetailsNews group by App_Req_ID)MaxORD on Dl1.AmendmentId = MaxORD.AmendmentId and Dl1.App_Req_ID = MaxORD.App_Req_ID) DL2
+inner join(select ORDN.BranchID, BInfo.BranchName,ORDN.DepartmentId, DE.DepartmentName, ORDN.App_Req_ID from OtherRequistionDetailsNews ORDN, DepartmentEntries DE,BranchInfoes BInfo, (select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD where ORDN.BranchID = BInfo.BranchID and ORDN.DepartmentId = DE.DepartmentId and ORDN.AmendmentId = MaxORD.AmendmentId and ORDN.App_Req_ID = MaxORD.App_Req_ID) Ol2 on DL2.BranchID = Ol2.BranchID 
+and DL2.DepartmentId = Ol2.DepartmentId and dl2.App_Req_ID = Ol2.App_Req_ID
+
+select bra.CheckID, BRA.BranchID, ORD.BranchReqSeqAssignsId, ORD.RequestName, ORD.DepartmentId, BRA.CategoryID
+from BranchReqSeqAssigns BRA, OtherRequistionDetailsNews ORD, (select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD 
+where ORD.BranchReqSeqAssignsId = BRA.ReqSeqID and ORD.BranchID = BRA.BranchID and BRA.Serial = ORD.Status + 1 and ORD.IsCancel = 0 and ORD.AmendmentId = MaxORD.AmendmentId and ORD.App_Req_ID = MaxORD.App_Req_ID 
+
+select D1.*from
+(select BRA.CategoryID,bra.CheckID, BRA.BranchID, ORD.BranchReqSeqAssignsId, ORD.RequestName, ORD.DepartmentId from BranchReqSeqAssigns BRA, OtherRequistionDetailsNews ORD, 
+(select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD where ORD.BranchReqSeqAssignsId = BRA.ReqSeqID and ORD.BranchID = BRA.BranchID and BRA.Serial = ORD.Status + 1 and ORD.IsCancel = 0 and ORD.AmendmentId = MaxORD.AmendmentId and ORD.App_Req_ID = MaxORD.App_Req_ID )
+D1 inner join BranchUserApprovals BUA on BUA.UserId ='amdad_scs' and BUA.Category = D1.RequestName and BUA.BranchId = D1.BranchID and BUA.CheckId = D1.CheckID
+
+select * from BranchReqSeqAssigns
+
+select * from OtherRequistionDetailsNews
+select App_Req_ID, RequestName from OtherRequistionDetailsNews group by App_Req_ID,RequestName
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+select  DL2.App_Req_ID,DL2.BranchID,Ol2.BranchName,DL2.Requested_by,DL2.DepartmentId,Ol2.DepartmentName,Dl2.Status,Serial=0,CurrentStatus='',DL2.NextStatus 
+from (
+		select Dl1.*,Ol1.CheckName as NextStatus from 
+		(select distinct ORDN.id, ORDN.App_Req_ID,ORDN.RequestName,ORDN.Description,ORDN.Description1,ordn.Status,ordn.Requested_by,ORDN.BranchID,ORDN.DepartmentId,ORDN.ItContactPerson,ORDN.ApprovedBy,ORDN.ApprovedDate,ORDN.CompleteBy,ORDN.CompleteDate,ordn.RequestedDate,ORDN.Remarks,ORDN.Requsition_Type,ORDN.AmendmentId,ORDN.BranchReqSeqAssignsId,ORDN.IsCancel,BRSA.CheckID
+			 from OtherRequistionDetailsNews ORDN inner join
+					(select D1.*from(select BRA.CategoryID,bra.CheckID, BRA.BranchID, ORD.BranchReqSeqAssignsId, ORD.RequestName, ORD.DepartmentId 
+									from BranchReqSeqAssigns BRA, OtherRequistionDetailsNews ORD, (select Max(AmendmentId)AmendmentId, App_Req_ID 
+										from OtherRequistionDetailsNews group by App_Req_ID)MaxORD 
+									where ORD.BranchReqSeqAssignsId = BRA.ReqSeqID and ORD.BranchID = BRA.BranchID and BRA.Serial = ORD.Status + 1 and ORD.IsCancel = 0 and ORD.AmendmentId = MaxORD.AmendmentId and ORD.App_Req_ID = MaxORD.App_Req_ID )
+						D1 inner join BranchUserApprovals BUA on BUA.UserId ='amdad_scs' and BUA.Category = D1.RequestName and BUA.BranchId = D1.BranchID and BUA.CheckId = D1.CheckID) BRSA on ORDN.BranchReqSeqAssignsId = BRSA.BranchReqSeqAssignsId and ORDN.BranchID = BRSA.BranchID and ORDN.IsCancel = 0) Dl1 inner join(select ReqCheck.CheckName,BranchReqSeq.Serial,BranchReqSeq.CheckID, BranchReqSeq.ReqSeqID, BranchReqSeq.BranchID from ReqCheckLists ReqCheck, BranchReqSeqAssigns BranchReqSeq where ReqCheck.CheckId = BranchReqSeq.CheckID) Ol1 on Dl1.BranchID = Ol1.BranchID and Dl1.BranchReqSeqAssignsId = Ol1.ReqSeqID and Dl1.CheckID = Ol1.CheckID 
+						inner join(select Max(AmendmentId) AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD on Dl1.AmendmentId = MaxORD.AmendmentId and Dl1.App_Req_ID = MaxORD.App_Req_ID) DL2
+						inner join(select ORDN.BranchID, BInfo.BranchName,ORDN.DepartmentId, DE.DepartmentName, ORDN.App_Req_ID from OtherRequistionDetailsNews ORDN, DepartmentEntries DE,BranchInfoes BInfo, (select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD where ORDN.BranchID = BInfo.BranchID and ORDN.DepartmentId = DE.DepartmentId and ORDN.AmendmentId = MaxORD.AmendmentId and ORDN.App_Req_ID = MaxORD.App_Req_ID) Ol2 on DL2.BranchID = Ol2.BranchID 
+						and DL2.DepartmentId = Ol2.DepartmentId and dl2.App_Req_ID = Ol2.App_Req_ID
+
+
+
+
+select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID
+
+select BRA.CategoryID,bra.CheckID, BRA.BranchID, ORD.BranchReqSeqAssignsId, ORD.RequestName, ORD.DepartmentId 
+from BranchReqSeqAssigns BRA, OtherRequistionDetailsNews ORD,ReqCategoryNames RCN,  (select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD 
+where ORD.BranchReqSeqAssignsId = BRA.ReqSeqID and ORD.BranchID = BRA.BranchID and BRA.Serial = ORD.Status + 1 and ORD.IsCancel = 0 and ORD.AmendmentId = MaxORD.AmendmentId and ORD.App_Req_ID = MaxORD.App_Req_ID and RCN.TypeName=ORD.RequestName
+
+select D1.*from(
+				select BRA.CategoryID,bra.CheckID, BRA.BranchID, ORD.BranchReqSeqAssignsId, ORD.RequestName, ORD.DepartmentId 
+				from BranchReqSeqAssigns BRA, OtherRequistionDetailsNews ORD,ReqCategoryNames RCN,  (select Max(AmendmentId)AmendmentId, App_Req_ID from OtherRequistionDetailsNews group by App_Req_ID)MaxORD 
+				where ORD.BranchReqSeqAssignsId = BRA.ReqSeqID and ORD.BranchID = BRA.BranchID and BRA.Serial = ORD.Status + 1 and ORD.IsCancel = 0 and ORD.AmendmentId = MaxORD.AmendmentId and ORD.App_Req_ID = MaxORD.App_Req_ID and RCN.TypeName=ORD.RequestName ) 
+				D1 inner join BranchUserApprovals BUA on BUA.UserId ='amdad_scs' and BUA.Category = D1.RequestName and BUA.BranchId = D1.BranchID and BUA.CheckId = D1.CheckID
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+select NextLevel.App_Req_ID,NextLevel.BranchID,NextLevel.BranchName,NextLevel.Requested_by,NextLevel.DepartmentId,NextLevel.DepartmentName,NextLevel.AmendmentId as Status,NextLevel.Serial,CurrentLevel.CurrentStatus,NextLevel.CheckName as NextStatus 
+from(select RawData.*, ISNULL(ExtraData.CheckName,'Plased_Requsition') AS CurrentStatus  
+	from (select App_Req_ID, max(AmendmentId)AmendmentId,BranchReqSeqAssignsId 
+		 from OtherRequistionDetailsNews group by App_Req_ID,BranchReqSeqAssignsId)RawData 
+		 left outer join (select BRSA.*,RCL.CheckName from BranchReqSeqAssigns BRSA,ReqCheckLists RCL where BRSA.CheckID=RCL.CheckId)ExtraData on RawData.BranchReqSeqAssignsId=ExtraData.ReqSeqID and RawData.AmendmentId=ExtraData.Serial) CurrentLevel,(select NextSteps.*,AllReq.*,BInfo.BranchName,DE.DepartmentName from (select ReqSeqID,Serial,CheckName,RCL.CheckId from BranchReqSeqAssigns BRSA,ReqCheckLists RCL where RCL.CheckId=BRSA.CheckID group by ReqSeqID,Serial,CheckName,RCL.CheckId ) NextSteps,(select App_Req_ID, max(AmendmentId)AmendmentId,RequestName,BranchReqSeqAssignsId,BranchID,DepartmentId,Requested_by from OtherRequistionDetailsNews group by App_Req_ID,RequestName, BranchReqSeqAssignsId,BranchID,DepartmentId,Requested_by) AllReq, BranchUserApprovals BUA,BranchInfoes BInfo,DepartmentEntries DE where AllReq.BranchReqSeqAssignsId=NextSteps.ReqSeqID and NextSteps.Serial=AllReq.AmendmentId+1 and BUA.CheckId=NextSteps.CheckId and AllReq.BranchID=BUA.BranchId and AllReq.DepartmentId=BUA.DepartmentId and BUA.Category=AllReq.RequestName and AllReq.DepartmentId=de.DepartmentId and AllReq.BranchID=BInfo.BranchID and BUA.UserId='amdad_scs')NextLevel where CurrentLevel.App_Req_ID=NextLevel.App_Req_ID and CurrentLevel.BranchReqSeqAssignsId=NextLevel.BranchReqSeqAssignsId
+
+select Datas.DepartmentName,Datas.Requested_by,Datas.BranchName,Datas.Description,Datas.RequestName,Datas.App_Req_ID,Datas.BranchID,Datas.Currents 'Status',Datas.Next 'Serial',(CASE WHEN Datas.Currents=0 then 'Requisition Entered' else (select RCL.CheckName from BranchReqSeqAssigns BRSA, ReqCheckLists RCL where BRSA.ReqSeqID = Datas.BranchReqSeqAssignsId and BRSA.Serial = Datas.Currents and RCL.CheckId = BRSA.CheckID) END) as Current_Status,RCL.CheckName 'Next_Status' from (select DE.DepartmentName, ORDN.Requested_by,BInfo.BranchName, ORDN.Description, ORDN.RequestName, ORDN.App_Req_ID, ORDN.BranchID, ORDN.Status as Currents, ORDN.Status + 1 'Next',ORDN.BranchReqSeqAssignsId from OtherRequistionDetailsNews ORDN, DepartmentEntries DE, BranchInfoes BInfo ,(select max(AmendmentId)AmendmentId from OtherRequistionDetailsNews where App_Req_ID=1025)MaxAmendmentID where MaxAmendmentID.AmendmentId=ORDN.AmendmentId and  ORDN.DepartmentId = DE.DepartmentId and ORDN.BranchID = BInfo.BranchID and ORDN.App_Req_ID = 1025) Datas left join BranchReqSeqAssigns BRSA on Datas.Next = BRSA.Serial and BRSA.ReqSeqID = Datas.BranchReqSeqAssignsId left join ReqCheckLists RCL on BRSA.CheckID = RCL.CheckId
+
+--select DE.DepartmentName,Requested_by,BI.BranchName,Description,RequestName,App_Req_ID,BI.BranchID,Status,BranchReqSeqAssignsId
+--from OtherRequistionDetailsNews ORDN,DepartmentEntries DE, BranchInfoes BI
+--where AmendmentId=(select max(AmendmentId)AmendmentId from OtherRequistionDetailsNews where App_Req_ID=1025) and App_Req_ID=1025 and ORDN.DepartmentId=DE.DepartmentId and ORDN.BranchID=BI.BranchID
+select * from
+(select DE.DepartmentName,Requested_by,BI.BranchName,Description,RequestName,App_Req_ID,BI.BranchID,Status,BranchReqSeqAssignsId,AmendmentId
+from OtherRequistionDetailsNews ORDN,DepartmentEntries DE,BranchInfoes BI
+where AmendmentId=(select max(AmendmentId)AmendmentId from OtherRequistionDetailsNews where App_Req_ID=1025) and App_Req_ID=1025 and ORDN.DepartmentId=DE.DepartmentId and ORDN.BranchID=BI.BranchID) Fst,
+(select BRSA.CheckID,ReqSeqID,Serial,CheckName from BranchReqSeqAssigns BRSA,ReqCheckLists RCL where BRSA.CheckID=RCL.CheckId) Scnd 
+
+
+
+select BranchReqSeqAssignsId,App_Req_ID,max(AmendmentId)AmendmentId
+from OtherRequistionDetailsNews ORDN,BranchReqSeqAssigns BRSA 
+where BRSA.ReqSeqID=ORDN.BranchReqSeqAssignsId and App_Req_ID=1025
+group by BranchReqSeqAssignsId,App_Req_ID
+
+select * from ReqCheckLists
+
+select * from OtherRequistionDetailsNews where App_Req_ID=1025
+

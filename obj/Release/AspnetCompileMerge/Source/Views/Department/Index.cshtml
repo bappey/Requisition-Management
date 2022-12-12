@@ -1,0 +1,159 @@
+﻿@model IEnumerable<scs_Project.Models.DepartmentInfo>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+<link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+
+<div class="card">
+    <div class="card-header bg-info">
+        <h3 class="card-title">Branch Department List</h3>
+
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+            @*<p>
+                <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#mdlDepartment">Create</button>
+            </p>*@
+        <div class="text-right mb-2">
+            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdlDepartment"><i class="fa fa-plus"></i> Add New</button>
+        </div>
+        <div class="container">
+            <table id="table_id" class="cell-border" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Branch Name</th>
+                        <th>Department Name</th>
+                        <th>Focal Person Name</th>
+                        <th>Contact</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.departmentsRecord)
+                    {
+                        <tr>
+                            <td>
+                                @item.BInfo.BranchName
+                            </td>
+                            <td>
+                                @item.D_Entry.DepartmentName
+                            </td>
+                            <td>
+                                @item.DeptInfo.Focal_Person
+                            </td>
+                            <td>
+                                @item.DeptInfo.Contact
+                            </td>
+                            <td>
+                                <a href="javascript:void(0)" onclick="OpenEditDepartment(@item.DeptInfo.id)" class="mr-2"><i title="edit" class="fa fa-pencil-alt  text-secondary"></i></a>
+                                <a href="@Url.Action("DeleteDepartment","Department", new { id = item.DeptInfo.id })"><i title="delete" class="fa fa-trash text-danger"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>                
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="mdlDepartment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-info">
+                @*<h5 class="modal-title" id="exampleModalLabel">New Department</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>*@
+
+                <h4 class="modal-title">New Department</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                }
+            </div>
+            @using (Html.BeginForm("AddDepartment", "Department"))
+            {
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Branch Name</label>
+                        @Html.DropDownList("BranchId", (IEnumerable<SelectListItem>)ViewBag.BranchName, new { @class = "form-control extra-class" })
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Department Name</label>
+                        @Html.DropDownList("DepartmentId", (IEnumerable<SelectListItem>)ViewBag.DepartmentName, new { @class = "form-control extra-class" })
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Focal Person Name</label>
+                        <input type="text" class="form-control" name="Focal_Person" />
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Contact</label>
+                        <input type="text" class="form-control" name="Contact" />
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Active </label>
+                        @Html.CheckBox("Row_Status")
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info">Save</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editDepartment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="editDiv">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/jscript">
+    function OpenEditDepartment(id) {
+        $.ajax({
+            url: "/Department/EditDepartment/" + id,
+            success: function (result) {
+                $('#editDiv').html(result);
+                $('#editDepartment').modal('toggle');
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        var table = $('#table_id').DataTable({
+            rowReorder: {
+                selector: 'td:nth-child(2)'
+            },
+            responsive: true
+        });
+    });
+
+</script>

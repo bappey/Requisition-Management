@@ -1,0 +1,198 @@
+﻿@model SCS_Inventory.Models.RequisitionDetails
+@{
+    Layout = "";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Req_Id)
+
+    <div class="modal-header bg-info">
+        <h3 class="modal-title">CMDC Authorization</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        @foreach (var items in ViewBag.RequstionMaster)
+        {
+            <div class="row">
+                <div class="col-12 col-md-4">                    
+                    <div class="card-body">
+                        <h6>Branch Name </h6>
+                        <h6 class="font-weight-bolder">@items.B_info.BranchName</h6>
+                    </div>
+                    <div class="card-body">
+                        <h6>Requisition Date </h6>
+                        <h6 class="font-weight-bolder">@items.R_master.Requisition_Date</h6>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4" style="margin-left:auto">
+                    <div class="card-body">
+                        <h6>Status</h6>
+                        @if (items.R_master.Req_Status == 0)
+                        {
+                            <h6 class="font-weight-bolder">Waiting For CMDC</h6>
+                        }
+                        else if (items.R_master.Req_Status == 1)
+                        {
+                            <h6 class="font-weight-bolder">CMDC Accept, Waiting For Procurement</h6>
+                        }
+                        else if (items.R_master.Req_Status == 2)
+                        {
+                            <h6 class="font-weight-bolder">Procurement Accept, Waiting For Price Qurtation</h6>
+                        }
+                        else if (items.R_master.Req_Status == 3)
+                        {
+                            <h6 class="font-weight-bolder">Price Qurtation are waiting for CS</h6>
+                        }
+                        else if (items.R_master.Req_Status == 4)
+                        {
+                            <h6 class="font-weight-bolder">CS are Waiting for CMDC Approved</h6>
+                        }
+                        else if (items.R_master.Req_Status == 5)
+                        {
+                            <h6 class="font-weight-bolder">CS are Waiting for Procurement Approved</h6>
+                        }
+                        else if (items.R_master.Req_Status == 6)
+                        {
+                            <h6 class="font-weight-bolder">CS are Waiting for PO</h6>
+                        }
+                        else
+                        {
+                            <h6 class="font-weight-bolder">PO has been generated, Waiting for Vendor</h6>
+                        }
+                    </div>
+
+                    @*<div class="form-group row">*@
+                    @*<div class="col-md-3">
+            <label for="message-text" class="col-form-label">Requisition Type</label>
+        </div>*@
+                    @*<div class="col-md-3">
+            <label for="message-text" class="col-form-label">@items.R_master.Requsition_Type</label>
+            <input type="hidden" id="MasterId" name="masterId" value="@items.R_master.MasterId">
+        </div>*@
+
+                    <input type="hidden" id="ReqId" name="ReqId" value="@items.R_master.ReqId">
+                    <input type="hidden" id="Id1" name="id1" value="@items.R_master.id">
+
+                    <div class="card-body">
+                        <h6>Requisition Type</h6>
+                        <h6 class="font-weight-bolder">@items.R_master.Requsition_Type</h6>
+                    </div>
+                </div>
+            </div>
+        }
+        <table id="detailsTable2" class="table table-bordered">
+            <tr>
+                <th>Product Name</th>
+                <th>Qty</th>
+                <th>Approved Qty</th>
+                <th>Unit</th>
+                <th>Description</th>
+                @*<th>
+                        Commends
+                    </th>*@
+                <th></th>
+            </tr>
+            @foreach (var item in ViewBag.RequisitionDetail)
+            {
+                <tr>
+                    <td>@item.SP_List.ProductModel</td>
+                    <td style="display:none;">
+                        <input type="text" class="form-control id" name="Change Qty" value="@item.R_Details.id" />
+                    </td>
+                    <td style="display:none;">
+                        <input type="text" class="form-control SubProductId" name="Change Qty" value="@item.R_Details.SubProductId" />
+                    </td>
+                    <td>@item.R_Details.Qty </td>
+                    <td>
+                        <input type="number" class="form-control ApprovedQty" name="Approved Qty" placeholder="Approved Qty" />
+                    </td>
+                    <td>@item.R_Details.Unit</td>
+                    <td>@item.R_Details.Description</td>
+                    @*<td>
+                            <input type="text" class="form-control CMDC_Command" name="Commands" placeholder="Commands" />
+                        </td>*@
+                    <td>
+                        <i value="Delete" type="button" alt="Delete4" class="deleteIcon fa fa-trash text-danger"></i>
+                        @*<a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons" style="color: #E34724">&#xE872;</i></a>*@
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" id="btnSave" value="Save" class="btn btn-info" />
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('tr td .CMDC_Qty').on('change', function () {
+        //    var inputValue = $(this).val();
+        //    $('tr td ')
+        //    if()
+        //    alert(inputValue);
+        //});
+
+        $(document).on("click", ".delete", function () {
+            $(this).parents("tr").remove();
+            //$(".add-new").removeAttr("disabled");
+        });
+        $("#btnSave").click(function () {
+            //var text = "";
+            //$("#detailsTable2 TBODY TR:not(:first)").each(function () {
+            //    row = $(this).find("TD");
+            //    var status;
+            //    var Qty = parseInt(row.eq(3).text());
+            //    var cngQty = row.eq(4).find("input").val();
+            //    var commends = row.eq(7).find("input").val();
+            //    if (cngQty != '' && Qty != cngQty && commends == '') {
+            //        row.eq(7).find("input").css('border-color', 'red');
+            //        text += 0;
+            //    } else {
+            //        row.eq(7).find("input").css('border-color', '');
+            //        text += 1;
+            //    }
+            //});
+            //if (text.indexOf("0") > -1) {
+            //}
+            //else {
+            var R_Master = [{ "ReqId": $('#ReqId').val(), "id": $('#Id1').val() }];
+
+            var R_Details = new Array();
+            $("#detailsTable2 TBODY TR:not(:first)").each(function () {
+                row = $(this);
+                var details = {};
+                details.Id = row.find("TD").eq(1).find("input").val();
+                details.SubProductId = row.find("TD").eq(2).find("input").val();
+                details.ApprovedQty = row.find("TD").eq(4).find("input").val();
+                //details.CMDC_Command = row.find("TD").eq(7).find("input").val();
+                R_Details.push(details);
+            });
+            var model = {
+                "R_Master": R_Master,
+                "R_Details": R_Details
+            }
+            $.ajax({
+                type: "POST",
+                url: "../Requestion/CCMDC_AuthorazationUpdate",
+                data: JSON.stringify(model),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " record(s) Accepted.");
+                    //$('#detailsTable2 tbody').empty();
+                    window.location.href = '/Requestion/RequestionList/'; 
+                }
+            });
+        //    }
+        });
+    });
+</script>

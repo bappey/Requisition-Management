@@ -1,0 +1,64 @@
+﻿
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">Requestion Approved Details</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row border bg-light">
+
+        </div>
+        <div>
+            <br />
+        </div>
+        <div class="row border">
+            <table class="table table-bordered table-sm table-striped" id="ReqPendingListByID">
+                <tr class="table-info">
+                    <th></th>
+                    <th>Request For</th>
+                    <th>Request Details</th>
+                    <th>Approved Details</th>
+                    <th>Approved By</th>
+                    <th>Approved Date</th>
+                </tr>
+               
+                @foreach (var OthersRequisitionByID in ViewBag.OthersRequisitionByID)
+                {
+                    <tr>
+                        <td>Steps- @OthersRequisitionByID.Status</td>
+                        <td>@OthersRequisitionByID.RequestName</td>
+                        <td>@OthersRequisitionByID.Description</td>
+                        <td>@OthersRequisitionByID.Description1</td>
+                        <td>@OthersRequisitionByID.ApprovedBy</td>
+                        <td>@OthersRequisitionByID.ApprovedDate</td>
+                    </tr>                    
+                }
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-horizontal">
+            <div class="btn-toolbar">
+                @*<input type="button" id="btnCancel" value="Cancel" class="btn btn-danger" />*@
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+
+            @*<div class=" row">
+                    <div class="col-md-offset-2 col-md-10 ">
+                        <input type="button" id="btnApproved" value="Approved" class="btn btn-info" />
+                        <input type="button" id="btnCancel" value="Cancel" class="btn btn-info" />
+                    </div>
+                </div>*@
+        </div>
+    </div>
+}

@@ -1,0 +1,81 @@
+﻿
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="AppReqId" id="AppReqId" value="@ViewBag.AppReqID" />
+
+    <div class="modal-header bg-info">
+        <h4 class="modal-title">Application Requestion Approved Details</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <table class="table table-bordered table-sm table-striped" id="ReqPendingListByID">
+            <tr class="table-info">
+                <th>Request For</th>
+                <th>Request Details</th>
+                <th>Approved Details</th>
+            </tr>
+            @foreach (var OthersRequisitionByID in ViewBag.OthersRequisitionByID)
+            {
+                <tr>
+                    <td>@OthersRequisitionByID.RequestName</td>
+                    <td>@OthersRequisitionByID.Description</td>
+                    <td>@OthersRequisitionByID.Description1</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="modal-footer">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" id="btnDone" value="Done" class="btn btn-info" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on("click", ".delete", function () {
+            $(this).parents("tr").remove();
+        });
+    });
+</script>
+<script type="text/javascript">
+    $("#btnDone").click(function () {
+        var ReqPending_Details = new Array();
+        $("#ReqPendingListByID TBODY TR:not(:first)").each(function () {
+            var row = $(this);
+            var details = {};
+            details.App_Req_ID = $("#AppReqId").val();
+            details.RequestName = row.find("TD").eq(0).html();            
+            ReqPending_Details.push(details);
+        });
+
+        var model = {
+            "model": ReqPending_Details
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "../Requestion/AppReqDone",
+            data: JSON.stringify(model),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                alert(r + " record(s) Updated.");
+                $('#ReqPendingListByID tbody').empty();
+                window.location.href = "/Requestion/ApplicationRequestionApprovedList";
+            }
+        });
+    });
+</script>
+

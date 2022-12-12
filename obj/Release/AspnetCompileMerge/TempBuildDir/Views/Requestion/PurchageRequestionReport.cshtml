@@ -1,0 +1,170 @@
+﻿
+@{
+    ViewBag.Title = "Purchage Requestion Report";
+    Layout = "~/Views/Shared/_mainView.cshtml";
+}
+
+
+
+<style>
+    .table {
+        /*width: 18.5cm;
+        margin-left: 1.25cm;
+        border: 1px solid #ccc;*/
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .report td, .report th {
+        border-right: 1px solid #ccc;
+        border-bottom: inherit;
+        border-top: inherit;
+    }
+
+    .report > tbody > tr > td {
+        border-top: inherit;
+    }
+
+    .report tr {
+        border: inherit;
+    }
+
+    .report th {
+        border: 1px solid #ccc;
+        background-color: #ccc;
+        color: #000;
+    }
+
+    .companyInformation {
+        position: relative;
+        padding-top: 20px;
+    }
+
+        .companyInformation img {
+            position: absolute;
+            left: 50px;
+        }
+
+        .companyInformation p {
+            margin-bottom: 0px;
+        }
+
+        .companyInformation .invoiceNum {
+            position: absolute;
+            right: 100px;
+        }
+
+    .tblAmountInfo, .tblAmountInfo > tbody > tr > td {
+        border: inherit;
+        padding: 0px;
+    }
+
+        .tblAmountInfo > tbody > tr > td label {
+            font-weight: bold !important;
+        }
+
+    .d-none-p a {
+        color: #000;
+    }
+
+    .d-none-p .btn:hover a {
+        color: #fff;
+    }
+
+    table tr {
+        font-size: 12px;
+    }
+
+        table tr td, table tr th {
+            padding: 3px !important;
+        }
+
+    p {
+        margin-bottom: 0px !important;
+    }
+</style>
+<div class="container" style="padding: 12px; box-shadow: 0.1px 0.1px 1px 0.1px;  background-color: white;">
+    <page size="A4">
+        <div style="padding: 15px 0px;">
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="~/Picture/839448blob.png" class="avatar" alt="avatar" style="height: auto; width: 100px; margin-bottom: 10px;">
+                </div>
+                <div class="col-md-8">
+                    <h3 style="padding: 0px!important; margin: 0px!important">
+                        Sundorbon Courier Service
+                    </h3>
+                    <div class="col-md-12">
+                        <p>Address:XYZ</p>
+                        <p>Phone:01124578235</p>
+                    </div>
+                </div>
+            </div>
+            @foreach (var items in ViewBag.RequstionMaster)
+            {
+                <div class="row ">
+                    <div class="col-md-4">
+                        From
+                        <address>
+                            <strong>Branch: @items.B_info.BranchName</strong><br>
+                            @*<strong>User: @ViewBag.OthersRequisition[1].UserName</strong><br>
+                        <strong>Department: @ViewBag.OthersRequisition[1].DepartmentName</strong><br>*@
+                            <strong>Req Type: @items.Req_Type.TypeName</strong>
+                        </address>
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4" align="right">
+                        To
+                        <address>
+                            @*<strong>Destination: @ViewBag.OthersRequisition[1].Destination</strong><br>
+                        <strong>Designation: @ViewBag.OthersRequisition[1].Designation</strong><br>
+                        <strong>Address: @ViewBag.OthersRequisition[1].Address</strong>*@
+                        </address>
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Qty</th>
+                    <th>Unit</th>
+                    <th>Description</th>
+                </tr>
+                <tbody>
+                    @foreach (var item in ViewBag.RequisitionDetais)
+                    {
+                        <tr>
+                            <td>
+                                @item.SP_List.ProductModel
+                            </td>
+                            <td>
+                                @item.R_Details.Qty
+                            </td>
+                            <td>
+                                @item.R_Details.Unit
+                            </td>
+                            <td>
+                                @item.R_Details.Description
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>        
+        
+        <div class="row no-print">
+            <div class="card-style-footer">
+                <div class="btn-group right">
+                    <button type="button" onclick="print()" class="btn btn-outline-primary button button4"> Print </button>
+                </div>
+                <div class="clearfix">
+                </div>
+            </div>
+        </div>
+
+
+</div>
